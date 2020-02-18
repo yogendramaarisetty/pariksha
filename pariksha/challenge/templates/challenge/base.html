@@ -1,0 +1,102 @@
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    {%if title%}
+    <title>{{title}}</title>
+    {%else%}
+    <title>pariksha</title>
+    {% endif %} 
+    {% load static %}
+      <style>
+    @font-face {
+    font-family: myFirstFont;
+    src: url("{% static 'challenge/font/avant_garde_medium.woff' %}");
+    }
+    </style>
+
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/notifications.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/richtext.min.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_design.css' %}" />
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link href="https://unpkg.com/material-components-web@latest/dist/material-components-web.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+   
+    <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="{% static 'challenge/scripts/notifications.js' %}" type=" text/javascript "></script>
+    
+    <script src="{% static 'challenge/scripts/ace.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/mode-java.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/mode-c_cpp.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/theme-monokai.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/theme-xcode.js' %}" type=" text/javascript "></script>
+    {%block head%}
+    {% endblock head %}
+</head>
+<body>
+    <header id="header_nav" class="pariksha-top-header-light">
+           
+              <a  href="/home">
+                <div id="pariksha-logo" class="inline_block">
+                        <img id="pariksha_logo"src="{% static 'img/pariksha_logo.png'%}"/>
+                </div>
+            </a>
+                </h1>
+            {% if user.is_authenticated %}
+            <div class="pariksha-admin-management-icons">
+                <div class="header_icons float_right">
+                    
+                    <a href="" onclick="return false;" >
+                        <i></i>
+                        <span class="block label">Question Bank</span>
+                    </a>
+                    <a href="" onclick="return false;" >
+                        <i></i>
+                        <span class="block label">Results</span>
+                    </a>
+                    <a href="" onclick="return false;">
+                        <i></i>
+                        <span class="block label">Challenge</span>
+                    </a>
+                    
+                </div>
+    
+            </div>
+            {% endif %}
+    {% block timer%}
+    {% endblock timer%}
+            <div class="pariksha-admin-management-icons-right-pane">
+                <div class="header_icons float_right">
+                    <a href="" id = "candidate_name" onclick="return false;" >
+                        <i class="material-icons">
+                            person_outline
+                            </i>
+                        <span class="candidate_name">Yogendra maarisetty</span>
+                    </a>
+                    <a href="" class="logout_btn" onclick="return false;" id="plans_switcher">
+                        <i></i>
+                        <span id="logout_btn"class="block label">Logout</span>
+                    </a>
+                </div>
+    
+            </div>
+        </header>
+        <div id="page" style="min-height: 100vh;" class="pariksha-content-wrapper">
+            <div id="page_contents" class="pariksha-main-content">
+                
+            {% block content %}
+            {% endblock content %}
+            </div>
+        </div>
+    
+    </body>
+</html>
+
+    

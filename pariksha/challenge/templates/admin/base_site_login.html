@@ -1,0 +1,17 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Pariksha Admin{% endblock %}{% load static %}
+ {% block extrahead %}
+        <link rel="icon" href="{% static 'img/favicon.ico' %}" sizes="48x48" />
+    {% endblock %}
+
+{% block branding %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'challenge/content/admin.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Hind&display=swap" rel="stylesheet">
+
+<img class="navbar-brand" src="{% static 'img/logo.png' %}" style="width:auto;height:auto;"/>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Administration</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

@@ -1,0 +1,49 @@
+{% extends "challenge/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+{% load crispy_forms_tags %}
+{% load static %}
+{% block name %}
+
+
+<div id="name" >{{candidate.fullname}}</div>
+
+{% endblock name %}
+<br>
+
+<div class="instructions">
+    <div class="card bg-light mb-2 d-inline-block" >
+         <div class="card-header" id="instruction">
+            <h4 id ="instruct">INSTRUCTIONS</h4>
+        </div>
+        <div class="card-body" id="instruction">
+            <h4 class="card-title">{{challenge.Title}}</h4>
+            <p class="card-text">
+                <div><strong>About Test</strong></div>
+                <div>{{challenge.Description}}</div>
+                <br>
+                <div><strong>Important:</strong></div>
+                <ul>
+                    <li><strong>Test Duration: {{challenge.Duration}} Hrs.</strong></li>
+                    <li>Date: {{challenge.Date}}</li>
+                    <li><strong>2 Programming Questions</strong> based upon Data Structures & Algorithms - Open to all
+                        programming languages</li>
+                    <li>Make sure a stable internet connection while taking test</li>
+                    <li>Donot reload the page or navigate to other pages</li>
+                    <p><strong>Note: </strong>You are not allowed to copy paste the content. You are not allowed to
+                        shift tabs</p>
+
+                </ul>
+            </p>
+            <a href="{% url 'testpage' challenge_id=challenge.id  c_id=candidate.id %}">
+            <button type="button" class="btn btn-outline-success">Proceed
+                <img class="form-brand-details" src="{% static 'img/arrow_icon.svg' %}" />
+              
+              </button>
+                </a>
+        </div>
+        
+    </div>
+</div>
+{% endif %}
+{% endblock content %}

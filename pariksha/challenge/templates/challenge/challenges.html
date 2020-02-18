@@ -1,0 +1,42 @@
+{% extends "challenge/base.html" %} {% block content %}
+{% if user.is_authenticated %}
+<ul class="challenges">
+<li class="challenges">
+        <div class="posts">
+            {% for i in challenges %}
+            {% if i.Active %}
+            
+            
+            
+            <div class="card bg-light mb-3" style="max-width: 40rem;">
+                <div class="card-header">
+                    <h4>{{ i.Title }}</h4>
+                    <small>{{i.College}}</small>
+                    <small>{{i.Date}}</small>
+                </div>
+                <div class="card-body">
+                    <pre>{{i.Description}}</pre>
+                    <a href="{% url 'candidate_form' challenge_id=i.id  %}">
+                    <button type="button" class="btn btn-outline-success">Start now</button>
+                    </a>
+                    
+                </div>
+            </div>
+            {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+</li>
+</ul>
+{% else %}
+<div class="row mt-3">
+
+    <div class="col-lg-4 col-md-6">
+        <div class="mb-2 alert alert-info" role="alert">
+            <h4>Please Register to take the test</h4>
+            <p>Click here to <a href="{% url 'challenge_register' %}">Register</a>
+        </div>
+    </div>
+</div>
+{% endif %} {% endblock content %}

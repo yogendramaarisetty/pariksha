@@ -1,0 +1,45 @@
+{% extends "challenge/base.html" %}
+{% block content %}
+{% if user.is_authenticated %}
+{% load crispy_forms_tags %}
+{% load static %}
+<br>
+<div class="col-lg-3 col-md-6">
+</div>
+<img class="form-brand-details" src="{% static 'img/arrow_icon.svg' %}" />
+<div id="candidateform" class="card bg-light mb-3" style="margin:auto;">
+    <div class="card-header">
+        <div id="formheader" class="logo2">
+
+          
+        </div>
+        <div class="form-title">
+            <h5>Enter the following details</h5>
+        </div>
+    </div>
+    <div class="card-body">
+        <form style="max-width: fit-content;min-width: 350px;margin: auto;" method='POST'>
+            {% csrf_token %}
+            <fieldset>
+                {{form.fullname | as_crispy_field}}
+                {{form.rollnumber | as_crispy_field}}
+                {{form.college | as_crispy_field}}
+                {{form.branch | as_crispy_field}}
+                {{form.graduation_year | as_crispy_field}}
+                {{form.mobile_number | as_crispy_field}}
+                {{ form.resume |as_crispy_field  }}
+
+            </fieldset>
+            <br>
+            <div class="form-group">
+                <button type="submit" class="btn btn-primary">Submit and Proceed 
+                    <img class="form-brand-details" src="{% static 'img/arrow_icon.svg' %}" />
+                   
+                </button> 
+            </div> 
+        </form> 
+    </div>
+  
+</div> 
+{% endif %} 
+{% endblock %}

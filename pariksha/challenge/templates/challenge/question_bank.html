@@ -1,0 +1,66 @@
+<!-- @format -->
+
+{% extends "challenge/base.html" %} {% load static %} {% block content %} {% if messages %} {% for message in messages %}
+<div class="alert-{{message.tags}}">
+  {{message}}
+</div>
+{% endfor %} {% endif %}
+
+{% load crispy_forms_tags %}
+<div class="add_question">
+  <button class="JPO_open" id="popup-trigger" href = "{% url 'question_create' %}">
+    <img
+      class="Add_icon"
+      src="https://www.gstatic.com/images/icons/material/colored_icons/1x/create_32dp.png"
+    />Add question
+  </button>
+</div>
+<table class="table table-sm">
+  <thead>
+    <tr>
+      <th scope="col">Title</th>
+      <th scope="col">Slug</th>
+      <th scope="col">Challenge</th>
+      <th scope="col">Edit</th>
+      <th scope="col">View</th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for question in questions %}
+
+    <tr>
+      <td>{{question.Title}}</td>
+      <td>{{question.Slug}}</td>
+      <td>{{question.challenge}}</td>
+      <td><a href="{% url 'question_edit' q_id=question.id  %}">Edit</a></td>
+      <td><a>View</a></td>
+    </tr>
+
+    {% endfor %}
+  </tbody>
+</table>
+
+<div id="JPO">
+    <form class="question_form" method="post" action="#" novalidate="novalidate">
+      {% csrf_token %} {{form|crispy }}
+      <button type="submit" class="btn btn-primary">
+        Save
+        <img
+          class="form-brand-details"
+          src="{% static 'img/arrow_icon.svg' %}"
+        />
+      </button>
+    </form>
+</div>
+
+<script src="{% static 'challenge/scripts/jquery.popupoverlay.js' %}"></script>
+<script src="{% static 'challenge/scripts/jquery.richtext.js' %}"></script>
+<script src="{% static 'challenge/scripts/text_editor.js' %}"></script>
+{% if errors %}
+<script>
+$(document).ready(function() { 
+document.getElementById('popup-trigger').click();
+});
+</script>
+{% endif %}
+{% endblock content %}

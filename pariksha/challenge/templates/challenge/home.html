@@ -1,0 +1,49 @@
+{% extends "challenge/base.html" %}
+{% load static %}
+{% block content %}
+<style>
+@import url(https://fonts.googleapis.com/css?family=Anonymous+Pro);
+
+/* Global */
+
+.line-1{
+    position: relative;
+    width: auto;
+    border-right: 2px solid #0c1a29;
+    border-color:black;
+    font-size: 30px;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+/* Animation */
+.anim-typewriter{
+  animation: typewriter 3s steps(19) 0.5s 1 normal both,
+             blinkTextCursor 1000ms steps(19) infinite normal;
+}
+@keyframes typewriter{
+  from{width: 0;}
+  to{width: 18rem;}
+}
+@keyframes blinkTextCursor{
+  from{border-right-color: #0c1a29;}
+  to{border-right-color: transparent;}
+}
+</style>
+
+
+<h1 class="line-1 anim-typewriter">Welcome to Pariksha</h1>
+<div class="home_description">
+    <p>Take you test and get hired.</p>
+</div>
+<div class="pariksha_steps_card">
+    <div class="image_row">
+    <div class="image_container"><img src="{% static 'img/register.jpg' %}"><span>1. Register</span></div>
+    
+    <div class="image_container"><img src="{% static 'img/take_test.jpg' %}"><span>2. Take Test</span></div>
+    
+    <div class="image_container"><img src="{% static 'img/get_shortlist.jpg' %}"><span>3. Get Shortlisted</span></div>
+    </div>
+</div>
+
+{% endblock content %}

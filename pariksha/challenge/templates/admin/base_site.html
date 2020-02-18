@@ -1,0 +1,45 @@
+{% extends "admin/base.html" %}
+
+{% block title %}Pariksha Admin{% endblock %}{% load static %}
+ {% block extrahead %}
+        <link rel="icon" href="{% static 'img/favicon.ico' %}" sizes="48x48" />
+    {% endblock %}
+{% block sidebar-manage %}
+<div class="admin-sidebar">
+<ul class ="manage-items-list">
+<a href="/admin" data-toggle="tooltip" data-placement="top" title="Manage users and challenges">
+<li class="manage-list-item">
+            <img class="manage-list-item" src="{% static 'img/admin_manage_icon.png' %}"/>
+</li>
+ </a>
+ 
+ <a href="#" data-toggle="tooltip" data-placement="top" title="Results">
+<li class="manage-list-item">
+        <img class="manage-list-item" src="{% static 'img/results1_icon.png' %}"/>
+</li>
+    </a>
+    
+ <a href="{% url 'question_bank' %}" data-toggle="tooltip" data-placement="top" title="Question bank">
+<li class="manage-list-item">
+        <img class="manage-list-item" src="{% static 'img/questionbank_icon.png' %}"/>
+</li>
+    </a>
+    
+ <a href="{% url 'home' %}" data-toggle="tooltip" data-placement="top" title="Home">
+<li class="manage-list-item">
+        <img class="manage-list-item" src="{% static 'img/home_icon.png' %}"/>
+</li>
+    </a>
+</ul>
+</div>
+{% endblock sidebar-manage %}
+{% block branding %}
+
+<link rel="stylesheet" type="text/css" href="{% static 'challenge/content/admin.css' %}">
+<link href="https://fonts.googleapis.com/css?family=Hind&display=swap" rel="stylesheet">
+
+<img class="navbar-brand" src="{% static 'img/logo.png' %}" style="width:auto;height:auto;"/>
+<h1 id="site-name"><a href="{% url 'admin:index' %}">Administration</a></h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}
