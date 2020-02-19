@@ -24,7 +24,33 @@ from django.db.models import Q
 from django.utils import timezone
 from .coderun_api import compile_run
 from django.core.mail import EmailMessage
+from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import user_passes_test
+from django.contrib.auth import login
+from .forms import UserLoginForm
+
+
+def pariksha_register(request):
+    if request.method == "POST":
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            email = form.cleaned_data.get('email')
+            rollnumber = form.cleaned_data.get('username')
+            pwd = form.cleaned_data.get('password1')
+            user = User.objects.all().filter(username=rollnumber).first()
+            form.is_active = False
+            current_site = get_current_site(request)
+            print(current_site)
+            subject = 'Activate Your your test'          
+            messages.success(request, f'Your test registration Link is sent to {email}.')
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+    return render(request,'challenge/register.html',
+    {'form':form},)
+
+
 
 
 class QuestionCreate(CreateView):
@@ -107,33 +133,6 @@ def candidate_form(request,challenge_id):
         c = candidate.filter(test_name = test).first()
         return redirect('test_instruction',pk=challenge_id,c_id=c.id)
 
-def challenge_register(request):
-    if request.method == "POST":
-        form = UserRegisterForm(request.POST)
-        if form.is_valid():
-            form.save()
-            email = form.cleaned_data.get('email')
-            rollnumber = form.cleaned_data.get('username')
-            pwd = form.cleaned_data.get('password1')
-            user = User.objects.all().filter(username=rollnumber).first()
-            form.is_active = False
-            current_site = get_current_site(request)
-            subject = 'Activate Your your test'
-            message = render_to_string('challenge/account_activation_email.html', {
-                'user': form,
-                'domain': current_site.domain,
-                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                'token': account_activation_token.make_token(user),
-            })           
-            messages.success(request, f'Your test registration Link is sent to {email}.')
-            #mail_subject = 'Activate your blog account.'
-            #to_email = form.cleaned_data.get('email')
-            #email = EmailMessage(mail_subject, message, to=[to_email])
-            return redirect('login')
-    else:
-        form = UserRegisterForm()
-    return render(request,'challenge/register.html',
-    {'form':form},)
 
 def account_activation_sent(request):
     return render(request, 'challenge/account_activation_sent.html')

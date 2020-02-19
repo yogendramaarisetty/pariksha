@@ -20,7 +20,7 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('pariksha_administration/', admin.site.urls),
-    path('home/',views.home,name="home"),
+    path('',views.home,name="home"),
     path('pariksha/',include('challenge.urls')),
 
 ]

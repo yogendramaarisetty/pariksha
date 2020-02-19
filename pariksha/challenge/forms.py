@@ -3,12 +3,13 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 from .models import Candidate,Question
 from django.core.validators import RegexValidator
+from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 class UserRegisterForm(UserCreationForm) :
-    email = forms.EmailField()
-    password1 = forms.CharField(widget=forms.PasswordInput, label ="Password")
-    username = forms.CharField(label="Rollnumber")
-        
+    email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Email Address','id':'email'}))
+    password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password','id':'pass'}), label ="Password",)
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Full Name','id':'name'}))
+    password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Re-Enter Password','id':'re_pass'}))  
     class Meta:
         model = User
         help_texts = {
@@ -47,4 +48,16 @@ class QuestionCreateForm(forms.ModelForm):
         'default_csharp_code',
         'default_java_code',
         'default_python_code')
-    
+
+class UserLoginForm(AuthenticationForm):
+    def __init__(self, *args, **kwargs):
+        super(UserLoginForm, self).__init__(*args, **kwargs)
+
+    username = forms.CharField(widget=forms.TextInput(
+        attrs={'placeholder': 'Username/Roll number', 'id': 'name'}))
+    password = forms.CharField(widget=forms.PasswordInput(
+        attrs={
+            'placeholder': 'Password',
+            'id': 'pass',
+        }
+))

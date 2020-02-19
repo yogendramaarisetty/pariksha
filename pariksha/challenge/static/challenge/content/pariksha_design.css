@@ -162,7 +162,7 @@ header #pariksha-logo {
     }
      header .header_icons a {
         text-align: center;
-        font-size: .8rem;
+        font-size: 1rem;
         color: #616061;
         cursor: pointer;
         display: inline-flex;
@@ -333,7 +333,7 @@ a#candidate_name:hover {
 }
 #page_contents {
     margin: 0 auto;
-    padding: 4rem 2rem;
+    padding: 5rem 2rem;
     height: 100vh;
 }
 .home_description {
@@ -345,6 +345,8 @@ body {
     font-size: 1.125rem;
 }
 .pariksha_steps_card {
+    
+    margin-top: 2rem;
     width: 100%;
     height: auto;
     background: white;
@@ -375,8 +377,11 @@ body {
 }
 .pariksha_steps_card span {
     height: fit-content;
-    position: absolute;
+    position: relative;
     bottom: 18%;
+    right: 220px;
+    top: 240px;
+    min-width: 250px;
     align-items: center;
     font-weight: 600;
     letter-spacing: 0.5px;
@@ -384,7 +389,12 @@ body {
     color: #674ded;
     padding-top: rem;
 }
-
+.home_description {
+    width: 62rem;
+}
+a{
+    text-decoration: none;
+}
 
 
 

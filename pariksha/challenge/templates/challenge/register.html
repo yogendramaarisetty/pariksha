@@ -1,64 +1,100 @@
 {% extends "challenge/base.html" %}
- {% block content %} 
- {% load crispy_forms_tags %}
- {% load static %}
- {% if user.is_authenticated %}
- <div class="row mt-3">	
-  
-<div class="col-lg-4 col-md-6">
-<div class="mb-2 alert alert-success" role="alert">	
-Hey you are already registered for the test You can now go to available Tests and
-  <a href="{% url 'tests'%}"><strong>Access the tests.</strong></a>
-  </div>
-  </div>
-  </div>
- {% else %}
-<br>
-<div id="form" class="card bg-light mb-3" style="margin:auto;">
-    <div class="card-header">
-        <div id="formheader" class="logo2">
-            {% comment %} <svg width="70" height="49" viewBox="0 0 103 69" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M7.76108 22.4914C9.71925 20.0875 12.2665 18.8855 15.4027 18.8855C20.8633 18.8855 23.6175 21.9661 23.6652 28.1271V45.2014H19.2474V28.1033C19.2315 26.2406 18.8017 24.8635 17.9579 23.972C17.13 23.0805 15.8326 22.6347 14.0654 22.6347C12.6326 22.6347 11.3749 23.0168 10.2924 23.781C9.20981 24.5451 8.36605 25.5481 7.76108 26.7899V45.2014H3.34326V8.52158H7.76108V22.4914Z" fill="#1B3264"/>
-                <path d="M71.0539 38.3478C71.0539 37.1538 70.6002 36.2305 69.6927 35.5777C68.8012 34.9091 67.2331 34.336 64.9883 33.8584C62.7595 33.3808 60.9844 32.8077 59.6631 32.139C58.3576 31.4704 57.3865 30.6744 56.7497 29.751C56.1288 28.8276 55.8184 27.7291 55.8184 26.4555C55.8184 24.3382 56.7099 22.5472 58.493 21.0825C60.2919 19.6179 62.5844 18.8855 65.3704 18.8855C68.2997 18.8855 70.6718 19.6417 72.4867 21.1542C74.3175 22.6666 75.2329 24.6009 75.2329 26.957H70.7912C70.7912 25.7471 70.2738 24.7043 69.239 23.8287C68.2201 22.9531 66.9306 22.5153 65.3704 22.5153C63.7625 22.5153 62.5048 22.8656 61.5974 23.566C60.6899 24.2665 60.2362 25.1819 60.2362 26.3123C60.2362 27.3789 60.6581 28.1829 61.5018 28.7242C62.3456 29.2654 63.866 29.7828 66.0629 30.2764C68.2758 30.7699 70.0668 31.3589 71.436 32.0435C72.8051 32.7281 73.816 33.5559 74.4687 34.527C75.1374 35.4822 75.4717 36.6523 75.4717 38.0374C75.4717 40.3458 74.5483 42.2005 72.7016 43.6015C70.8549 44.9865 68.4589 45.679 65.5137 45.679C63.4441 45.679 61.6133 45.3129 60.0213 44.5805C58.4293 43.8482 57.1795 42.8293 56.2721 41.5239C55.3806 40.2025 54.9348 38.7777 54.9348 37.2494H59.3526C59.4322 38.7299 60.0213 39.908 61.1198 40.7836C62.2342 41.6433 63.6988 42.0731 65.5137 42.0731C67.1853 42.0731 68.5226 41.7388 69.5256 41.0702C70.5444 40.3856 71.0539 39.4782 71.0539 38.3478Z" fill="#1B3264"/>
-                <path d="M87.7098 13.1066V19.3631H92.5336V22.778H87.7098V38.8016C87.7098 39.8364 87.9247 40.6164 88.3546 41.1418C88.7844 41.6513 89.5167 41.906 90.5515 41.906C91.061 41.906 91.7615 41.8105 92.653 41.6194V45.2014C91.4908 45.5198 90.3605 45.679 89.262 45.679C87.2879 45.679 85.7994 45.082 84.7964 43.888C83.7935 42.694 83.292 40.9985 83.292 38.8016V22.778H78.5876V19.3631H83.292V13.1066H87.7098Z" fill="#1B3264"/>
-                <path d="M41.1259 18.8957L40.0144 18.9131V22.6007C40.0144 22.6007 40.8099 22.6267 41.1259 22.6007V18.8957Z" fill="white"/>
-                <path d="M8.4507 59.7915H4.36937L3.51548 62.2446H1.6123L5.59232 51.7084H7.23499L11.2222 62.2446H9.31183L8.4507 59.7915ZM4.88316 58.3153H7.93692L6.41004 53.9445L4.88316 58.3153Z" fill="#003B72"/>
-                <path d="M22.7822 62.2446H20.9514L16.255 54.7694V62.2446H14.4242V51.7084H16.255L20.9659 59.2126V51.7084H22.7822V62.2446Z" fill="#003B72"/>
-                <path d="M32.9746 59.7915H28.8932L28.0393 62.2446H26.1362L30.1162 51.7084H31.7589L35.7461 62.2446H33.8357L32.9746 59.7915ZM29.407 58.3153H32.4608L30.9339 53.9445L29.407 58.3153Z" fill="#003B72"/>
-                <path d="M40.7789 60.7829H45.5621V62.2446H38.9481V51.7084H40.7789V60.7829Z" fill="#003B72"/>
-                <path d="M50.3778 56.7015L52.802 51.7084H54.8282L51.2968 58.3659V62.2446H49.4588V58.3659L45.9202 51.7084H47.9536L50.3778 56.7015Z" fill="#003B72"/>
-                <path d="M65.7152 53.1846H62.4299V62.2446H60.6136V53.1846H57.3572V51.7084H65.7152V53.1846Z" fill="#003B72"/>
-                <path d="M71.0374 62.2446H69.2139V51.7084H71.0374V62.2446Z" fill="#003B72"/>
-                <path d="M83.3283 58.8146C83.2222 59.9386 82.8073 60.8166 82.0837 61.4486C81.36 62.0758 80.3976 62.3893 79.1963 62.3893C78.3569 62.3893 77.6164 62.1915 76.9748 61.796C76.338 61.3955 75.8459 60.8287 75.4985 60.0954C75.1512 59.3621 74.9703 58.5106 74.9558 57.541V56.5568C74.9558 55.563 75.1319 54.6874 75.4841 53.93C75.8362 53.1726 76.3404 52.5888 76.9965 52.1788C77.6574 51.7687 78.4196 51.5637 79.2832 51.5637C80.4458 51.5637 81.3817 51.8797 82.0909 52.5117C82.8001 53.1436 83.2125 54.0361 83.3283 55.1891H81.5048C81.4179 54.4317 81.196 53.8866 80.839 53.5537C80.4868 53.216 79.9682 53.0472 79.2832 53.0472C78.4872 53.0472 77.8745 53.339 77.4451 53.9228C77.0206 54.5017 76.8035 55.3532 76.7939 56.4772V57.4107C76.7939 58.5492 76.9965 59.4176 77.4017 60.0158C77.8118 60.614 78.41 60.9131 79.1963 60.9131C79.9152 60.9131 80.4555 60.7515 80.8173 60.4283C81.1791 60.1051 81.4083 59.5671 81.5048 58.8146H83.3283Z" fill="#003B72"/>
-                <path d="M92.4786 59.531C92.4786 59.0678 92.3146 58.7108 91.9865 58.46C91.6633 58.2091 91.0772 57.9558 90.2281 57.7002C89.379 57.4445 88.7036 57.1598 88.2019 56.8463C87.2419 56.2432 86.7618 55.4569 86.7618 54.4872C86.7618 53.6381 87.1068 52.9386 87.7967 52.3886C88.4913 51.8387 89.3911 51.5637 90.4958 51.5637C91.2291 51.5637 91.8828 51.6988 92.4569 51.9689C93.031 52.2391 93.4821 52.625 93.8101 53.1268C94.1382 53.6237 94.3022 54.176 94.3022 54.7839H92.4786C92.4786 54.2339 92.3049 53.8046 91.9576 53.4958C91.6151 53.1822 91.123 53.0254 90.4814 53.0254C89.8831 53.0254 89.4176 53.1533 89.0847 53.409C88.7567 53.6647 88.5927 54.0217 88.5927 54.48C88.5927 54.8659 88.7712 55.1891 89.1281 55.4496C89.4851 55.7053 90.0737 55.9562 90.8938 56.2022C91.714 56.4434 92.3725 56.7208 92.8694 57.0344C93.3663 57.3432 93.7305 57.7002 93.9621 58.1054C94.1936 58.5058 94.3094 58.9762 94.3094 59.5165C94.3094 60.3945 93.9717 61.094 93.2963 61.615C92.6257 62.1312 91.714 62.3893 90.561 62.3893C89.7987 62.3893 89.0968 62.2494 88.4552 61.9696C87.8184 61.685 87.3215 61.2942 86.9645 60.7973C86.6123 60.3004 86.4362 59.7215 86.4362 59.0606H88.267C88.267 59.6588 88.4648 60.1219 88.8604 60.45C89.256 60.778 89.8228 60.9421 90.561 60.9421C91.1978 60.9421 91.6754 60.8142 91.9938 60.5585C92.317 60.298 92.4786 59.9555 92.4786 59.531Z" fill="#003B72"/>
-                <path d="M34.0864 28.8993L30.3813 25.9352L30.7519 24.8237L34.0864 27.7878V28.8993Z" fill="white"/>
-                <path d="M32.6028 29.9907C33.8936 26.3966 36.2172 24.6662 39.4443 24.1337V20.0072C33.3773 20.4065 29.5047 23.8675 27.9557 28.5264L32.6028 29.9907Z" fill="#00C2FF"/>
-                <path d="M32.2161 31.1709L27.6592 29.7755C26.1813 38.6557 31.6003 45.8867 40.4678 45.5062C49.3353 45.1256 53.3421 37.3871 52.5374 31.1709C51.7328 24.9548 47.3647 20.3878 40.5909 20.0072V24.0667C45.271 24.5742 47.3416 28.5069 47.611 31.1709C48.2268 37.2602 45.0247 41.3198 40.0983 41.4466C34.3098 41.4466 31.7234 36.6259 32.2161 31.1709Z" fill="#1B3264"/>
-                <path d="M37.0193 37.1334V27.7457H38.6204V31.5515C39.852 29.6486 42.8078 30.2829 42.8078 32.4395V37.1334H41.3299L41.2067 33.2007C41.0836 31.6784 39.3593 31.2978 38.6204 33.2007V37.1334H37.0193Z" fill="#1B3264"/>
-                <path d="M47.4245 32.6043C47.4245 37.106 44.1069 40.7554 40.0144 40.7554C35.922 40.7554 32.6044 37.106 32.6044 32.6043C32.6044 28.1026 35.922 24.4532 40.0144 24.4532C44.1069 24.4532 47.4245 28.1026 47.4245 32.6043Z" fill="white"/>
-        </svg> {% endcomment %}
-        <img class="form-brand" src="{% static 'img/halogo.png' %}"/>
+{% block content %}
+{% load crispy_forms_tags %}
+{% load static %}
+<style>
+    
+.signup-image {
+    background-image: url("{% static 'img/signup.jpg'%}");
+    border-radius: inherit;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+</style>
+{% if user.is_authenticated %}
+<div class="mb-2 alert alert-success" role="alert">
+    Hey you are already registered for the test You can now go to available Tests and
+    <a href="{% url 'tests'%}"><strong>Access the tests.</strong></a>
+</div>
+{% else %}
+
+
+<section class="signup">
+    <div class="container">
+        <div class="signup-content">
+            <div class="signup-form">
+                <h2 class="form-title">Sign up</h2>
+                <form method="POST" class="register-form" id="register-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                        {{form.username}}
+                       
+                    </div>
+                    {% if form.username.errors %}
+                        {% for error in form.username.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="email"><i class="zmdi zmdi-email"></i></label>
+                        {{form.email}}
+                    </div>
+                    {% if form.username.errors %}
+                        {% for error in form.email.errors %}
+                        <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="pass"><i class="zmdi zmdi-lock"></i></label>
+                        {{form.password1}}
+                    </div>
+                    {% if form.password1.errors %}
+                        {% for error in form.password1.errors %}
+                        <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="form-group">
+                        <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
+                        {{form.password2}}
+                    </div>
+                    {% if form.password2.errors %}
+                        {% for error in form.password2.errors %}
+                        <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="form-group">
+                        <input type="checkbox" name="agree-term" id="agree-term" class="agree-term">
+                        <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all
+                            statements in <a href="#" class="term-service">Terms of service</a></label>
+                    </div>
+                    <div class="form-group form-button">
+                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register" disabled>
+                    </div>
+                </form>
+            </div>
+            
+        </div>
+        <div class="signup-image">
         </div>
     </div>
-    <div class="card-body">
-        <form style="max-width: fit-content;min-width: 350px;margin: auto;" method='POST'>
-            {% csrf_token %}
-            <fieldset>
-                {{form.email | as_crispy_field}} {{form.username | as_crispy_field}}  {{form.password1 | as_crispy_field}} {{form.password2 | as_crispy_field}}
-                <div class="form-groupbtn">
-
-                    <button type="submit" class="btn btn-primary" >Register</button>
-                    {% comment %} <small style="max-width:fit-content;margin:auto; padding: 10px;">Already have an account? <a href="{% url 'login' %}">Sign in</small> {% endcomment %}
-                </div>
-
-                </p>
-            </fieldset>
-        </form>
-    </div>
+</section>
 </div>
+{% endif %}
+<script>
+    var checkbox = document.getElementById('agree-term');
+    var register = document.getElementById('signup');
+checkbox.addEventListener( 'change', function() {
+    if(this.checked) {
+        register.disabled = false;
+    } else {
+        register.disabled = true;
+    }
+});
+</script>
 
-
- {% endif %}
-
-
-    {% endblock content %}
+{% endblock content %}
