@@ -1,6 +1,6 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm
+from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm
 from .models import Candidate,Challenge,Question,Candidate_codes,testcases
 from django.contrib import messages
 from django.contrib.auth import login
@@ -88,7 +88,8 @@ def question_bank(request):
                                 )
 @user_passes_test(lambda u: u.is_superuser)
 def admin_management(request):
-    return render(request,'challenge/admin_manage.html',{'challenges': Question.objects.all()})
+   
+    return render(request,'challenge/admin_manage.html',{'challenges': Question.objects.all(), 'test_count' : test_count})
 
 def home(request):
     if request.user.is_authenticated:
@@ -100,10 +101,19 @@ def home(request):
 
 
 def challenges(request):
+    test_count = Challenge.objects.all().count()
+    print('\n\n\n\n',test_count,'\n\n\n')
     context ={
-        'challenges':Challenge.objects.all()
+        'challenges':Challenge.objects.all(),
+        'test_count': test_count
     }
     return render(request,'challenge/challenges.html',context)
+
+@user_passes_test(lambda u: u.is_superuser)
+def create_contest_form(request):
+    form = ContestCreationForm()
+
+    return render(request,'challenge/contest_create_form.html',{'form':form,'model_name':'Contest','question_bank':Question.objects.all()})
 
 def completed_testpage(request):
     return render(request,'challenge/completed_test.html')

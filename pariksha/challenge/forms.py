@@ -43,11 +43,21 @@ class QuestionCreateForm(forms.ModelForm):
     Description = forms.CharField(widget=forms.TextInput(attrs={'class': 'content','id':'text_editor'}))
     class Meta:
         model = Question
-        fields = ('Slug','Title','Type','Description','challenge','sample_inputs','sample_outputs','default_c_code',
+        fields = ('Slug','Title','Type','Description','sample_inputs','sample_outputs','default_c_code',
         'default_cpp_code',
         'default_csharp_code',
         'default_java_code',
         'default_python_code')
+class ContestCreationForm(forms.ModelForm):
+    Slug = forms.SlugField()
+    Title = forms.CharField()
+    Duration = forms.IntegerField()
+    Active = forms.BooleanField()
+    College = forms.CharField()
+    Description = forms.CharField(widget=forms.TextInput(attrs={'class': 'content','id':'text_editor'}))
+    class Meta:
+        model = Question
+        fields = ('Slug','Title','Type','Description','Duration','College')
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):

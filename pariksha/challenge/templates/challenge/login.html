@@ -1,9 +1,22 @@
- {% extends "challenge/base.html" %} {% block content %} {% load crispy_forms_tags %} {% if messages %} {% for message in messages %}
+ {% extends "challenge/base.html" %} {% block content %} {% load crispy_forms_tags %}{% load static %} {% if messages %} {% for message in messages %}
 <div class="alert-{{message.tags}}">
     {{message}}
 </div>
 {% endfor %} {% endif %}
 <br>
+<style>
+.signin-image {
+    background-image: url("{% static 'img/signin.jpg'%}");
+    border-radius: inherit;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    width: 50%;
+}
+</style>
 
 <section class="signup">
     <div class="container">
@@ -32,7 +45,7 @@
             </div>
             
         </div>
-        <div class="signup-image">
+        <div class="signin-image">
         </div>
     </div>
 </section>

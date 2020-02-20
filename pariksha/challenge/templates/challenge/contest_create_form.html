@@ -1,0 +1,91 @@
+{% extends "challenge/base.html" %} {% block content %}
+<style>
+    .pretty.p-switch .state:before {
+        height: 1rem;
+    }
+</style>
+{% if user.is_authenticated %}
+<div class="model_form_outer_wrapper">
+    <div class="header_wrapper">
+        <div class="model_form_title">
+            <h1>{{model_name}}</h1>
+            <p class="Description_para">Host this contest on pariksha and allow users to take the test.</p>
+            <p class="Description_para italic">Get started by providing the initial details for your contest.</p>
+        </div>
+        <div class="header_description"></div>
+    </div>
+    <div class="model_form_main_wrapper">
+        <section class="model_form_section">
+            <div class="label_field_wrapper">
+                <label for="{{form.Title.name}}">Title</label>
+                {{form.Title}}
+            </div>
+            <div class="label_field_wrapper">
+                <label for="{{form.Slug.name}}">Slug</label>
+                {{form.Slug}}
+            </div>
+            <div class="label_field_wrapper">
+                <label for="{{form.Description.name}}">Description</label>
+                {{form.Description}}
+            </div>
+            <div class="label_field_wrapper">
+                <label for="{{form.Duration.name}}">Duration</label>
+                {{form.Duration}}
+            </div>
+            <div class="label_field_wrapper">
+                <label for="form.College.name">College</label>
+                {{form.College}}
+            </div>
+            <div class="label_field_wrapper">
+                <label for="name">Active</label>
+                <div class="pretty p-switch p-fill">
+                    {{form.Active}}
+                    <div class="state p-success">
+                        <label></label>
+                    </div>
+                </div>
+
+
+            </div>
+        </section>
+        <div class="bank_and_contestq_wrapper">
+            <div class="question_container">
+                <div class="question_container_header">
+                    <h4>Contest Questions</h4>
+                    <div class="floater_right">
+                        <button class="negative_button">Clear all questions</button>
+                    </div>
+                </div>
+                <div class="selected_question_list_container">
+
+                </div>
+            </div>
+            <div class="existing_question_bank_list">
+                <div class="question_container_header">
+                    <h4>Questions Bank</h4>
+                    <div class="floater_right">
+                        <button class="start_active">Create Question</button>
+                    </div>
+                </div>
+                <div class="question_list_body">
+                    {% for question in question_bank %}
+                    <div class="questions_list_item">
+                        <div class="question_id">
+                            {{question.id}}
+                        </div>
+                        <div class="question_name">
+                            {{question.Title}}
+                        </div>
+                        <div class="add_button">
+                            <button class="positive_button">Add</button>
+                        </div>
+                    </div>
+                    {% endfor %}
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {% endif %}
+    {% endblock content %}

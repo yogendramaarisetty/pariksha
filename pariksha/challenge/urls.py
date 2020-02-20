@@ -26,6 +26,7 @@ urlpatterns = [
     path('login/',auth_views.LoginView.as_view( template_name="challenge/login.html",authentication_form=UserLoginForm),name="login"),
     path('question_bank/',views.question_bank,name="question_bank"),
     path('questioncreate/',views.QuestionCreate.as_view(),name="question_create"),
+    path('create_Contest/',views.create_contest_form,name="create_contest"),
     # path('question_bank/<q_id>/view/',views.question_view(),name="question_edit"),
     path(r'challenge/testpage/(?P<challenge_id>\d+)/(?P<u_id>\d+)/compile_run/',views.compile_run,name='compile_run'),
     path('admin_management/',views.admin_management,name='admin_manage'),

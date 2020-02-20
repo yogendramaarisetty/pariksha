@@ -39,7 +39,6 @@ class Question(models.Model):
     Description = models.TextField(max_length=1000000)
     sample_inputs= models.TextField(max_length=500)
     sample_outputs= models.TextField(max_length=500)
-    challenge = models.ForeignKey(Challenge,on_delete=models.SET_NULL,null=True)
     default_code={
         'java': "//NOTE: Don't change class name\npublic class MyClass {\n    public static void main(String args[]) {\n      System.out.println(\"\" );\n    }\n}\n",
         'python':"if __name__ == '__main__':\n",
@@ -59,7 +58,9 @@ class Question(models.Model):
     def get_absolute_url(self):
         return reverse('question_edit', kwargs={'q_id' :self.id})
 
-
+class challenge_questions(models.Model):
+    challenge = models.ForeignKey(Challenge,on_delete=models.SET_NULL,null=True)
+    Question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
 class testcases(models.Model):
     question = models.OneToOneField(Question,on_delete=models.CASCADE)
     input1 = models.TextField(default="",max_length=1000000)

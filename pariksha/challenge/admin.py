@@ -6,12 +6,7 @@ from . models import Challenge,Question,Candidate,testcases,submittedcodes,Candi
 # admin.site.register(Question)
 
 
-class InLineQuestions(admin.TabularInline):
-    model = Question
-    extra = 0
-
 class ChallengeAdmin(admin.ModelAdmin):
-    inlines = [InLineQuestions]
     list_display=('Title','Slug','Test_Duration','combine_title_slug','College')
     list_display_links = ('Title',
                         'Slug')
@@ -40,7 +35,7 @@ class InLineTestcases(admin.TabularInline):
     extra = 0
 class QuestionAdmin(admin.ModelAdmin):
     inlines = [InLineTestcases]
-    list_display=('Title','Slug','Type','combine_title_slug','challenge')
+    list_display=('Title','Slug','Type','combine_title_slug')
     list_display_links = ('Title',
                         'Slug')
     list_filter = ('Title', 'Type',
@@ -54,7 +49,6 @@ class QuestionAdmin(admin.ModelAdmin):
                   'Description',
                   'sample_inputs',
                   'sample_outputs',
-                  'challenge',
                   'default_c_code',
                   'default_cpp_code',
                   'default_csharp_code',

@@ -1,42 +1,102 @@
 {% extends "challenge/base.html" %} {% block content %}
 {% if user.is_authenticated %}
-<ul class="challenges">
-<li class="challenges">
-        <div class="posts">
-            {% for i in challenges %}
-            {% if i.Active %}
-            
-            
-            
-            <div class="card bg-light mb-3" style="max-width: 40rem;">
-                <div class="card-header">
-                    <h4>{{ i.Title }}</h4>
-                    <small>{{i.College}}</small>
-                    <small>{{i.Date}}</small>
-                </div>
-                <div class="card-body">
-                    <pre>{{i.Description}}</pre>
-                    <a href="{% url 'candidate_form' challenge_id=i.id  %}">
-                    <button type="button" class="btn btn-outline-success">Start now</button>
-                    </a>
-                    
-                </div>
+<section class="available_tests" data-tab="emoji">
+    <div class="table_content_wrapper">
+        <div class="table_head_content_wrapper">
+            <h4 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">{{ test_count }} Tests available</h4>
+            {% if user.is_superuser %}
+            <div class="table_action_buttons">
+                <a href="{% url 'create_contest'%}">
+                <button  class="positive_button pariksha_button">Create Contenst</button>
+            </a>
+                <button class="negative_button pariksha_button">Manage</button>
+            </div>
+            {% else %}
+            <div class="table_action_buttons">
+                <h5 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">Find your test below</h5>
             </div>
             {% endif %}
-            {% endfor %}
+        </div>
+        <div class="search_bar_wrapper">
+            <span class="search_icon"><i id="search_icon" class="material-icons">
+                    search
+                </i></span>
+            <input type="text" id="search_box" onkeyup="myFunction()"  placeholder="Search by test name">
+        </div>
+        <div class="table_main_content_wrapper" id="table_wrapper">
+            <div class="list_element_wrapper">
+                <table id="myTable">
+                    <thead class="header_row">
+                        <tr>
+                            <th>Test id</th>
+                            <th>Test Name</th>
+                            <th>Status</th>
+                            <th>Duration</th>
+                            <th>College</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="main_table_records">
+                    {% for test in challenges %}
+                        <tr>
+                            <td>{{ test.id }}</td>
+                            <td>{{ test.Title }}</td>
+                            {% if test.Active %}
+                            <td class="active">Active</td>
+                            {% else %}
+                            <td class="expired">Expired</td>
+                            {% endif %}
+                            <td>{{ test.Test_Duration }} mins</td>
+                            <td>{{test.College}}</td>
+                            {% if test.Active%}
+                            <td><button class="start_active">Start</button></td>
+                            {% else %}
+                            <td><button class="start_disable" disabled>Expired</button></td>
+                            {% endif %}
+                           
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
-</div>
-</li>
-</ul>
-{% else %}
-<div class="row mt-3">
+</section>
 
-    <div class="col-lg-4 col-md-6">
-        <div class="mb-2 alert alert-info" role="alert">
-            <h4>Please Register to take the test</h4>
-            <p>Click here to <a href="{% url 'challenge_register' %}">Register</a>
+<!-- DivTable.com -->
+
+<div>
+    <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("search_box");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }       
+          }
+          
+        }
+        </script>
+
+    {% else %}
+    <div class="row mt-3">
+
+        <div class="col-lg-4 col-md-6">
+            <div class="mb-2 alert alert-info" role="alert">
+                <h4>Please Register to take the test</h4>
+                <p>Click here to <a href="{% url 'challenge_register' %}">Register</a>
+            </div>
         </div>
     </div>
-</div>
-{% endif %} {% endblock content %}
+    {% endif %}
+    {% endblock content %}
