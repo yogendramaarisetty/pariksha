@@ -14,78 +14,172 @@
         </div>
         <div class="header_description"></div>
     </div>
+<form method="POST">
+    {% if form.errors %}
+    {{form.errors}}
+    {% endif %}
+    {% csrf_token %}
     <div class="model_form_main_wrapper">
         <section class="model_form_section">
             <div class="label_field_wrapper">
                 <label for="{{form.Title.name}}">Title</label>
                 {{form.Title}}
             </div>
+            {% if form.Title.errors %}
+                        {% for error in form.Title.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
             <div class="label_field_wrapper">
                 <label for="{{form.Slug.name}}">Slug</label>
                 {{form.Slug}}
             </div>
+            {% if form.Slug.errors %}
+                        {% for error in form.Slug.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
             <div class="label_field_wrapper">
                 <label for="{{form.Description.name}}">Description</label>
                 {{form.Description}}
             </div>
+            
+            {% if form.Description.errors %}
+                        {% for error in form.Description.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
             <div class="label_field_wrapper">
                 <label for="{{form.Duration.name}}">Duration</label>
-                {{form.Duration}}
+                {{form.Test_Duration}}
             </div>
+            {% if form.Duration.errors %}
+                        {% for error in form.Duration.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
             <div class="label_field_wrapper">
                 <label for="form.College.name">College</label>
                 {{form.College}}
             </div>
+            {% if form.College.errors %}
+                        {% for error in form.College.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+            <div class="label_field_wrapper">
+                <label for="form.College.name">Date</label>
+                {{form.Date}}
+            </div>
+            {% if form.Date.errors %}
+                        {% for error in form.Date.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
             <div class="label_field_wrapper">
                 <label for="name">Active</label>
                 <div class="pretty p-switch p-fill">
                     {{form.Active}}
+                
                     <div class="state p-success">
                         <label></label>
                     </div>
                 </div>
-
+                
 
             </div>
+            
+            {% if form.Active.errors %}
+                        {% for error in form.Active.errors %}
+                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+            {{form.contest_questions}}
+            {% if form.contest_questions.errors %}
+            {% for error in form.contest_questions.errors %}
+                <p class="form_error"><strong>{{ error|escape }}</strong></p>
+            {% endfor %}
+        {% endif %}
         </section>
         <div class="bank_and_contestq_wrapper">
             <div class="question_container">
                 <div class="question_container_header">
                     <h4>Contest Questions</h4>
                     <div class="floater_right">
-                        <button class="negative_button">Clear all questions</button>
+                        <button type="button" class="negative_button">Clear all questions</button>
                     </div>
                 </div>
                 <div class="selected_question_list_container">
-
+                    
+                <div class="question_list_body" id="selected_question_container">
+                </div>
                 </div>
             </div>
             <div class="existing_question_bank_list">
                 <div class="question_container_header">
                     <h4>Questions Bank</h4>
                     <div class="floater_right">
-                        <button class="start_active">Create Question</button>
+                        <button type="button" class="start_active">Create Question</button>
                     </div>
                 </div>
-                <div class="question_list_body">
+                <div class="question_list_body" id="question_bank_container">
                     {% for question in question_bank %}
-                    <div class="questions_list_item">
+                    <div class="list_element_wrap" data-mainid = "{{question.id}}"id = "question_{{question.id}}" data-state = "not_selected">
+                    <div class="questions_list_item" >
                         <div class="question_id">
                             {{question.id}}
                         </div>
                         <div class="question_name">
                             {{question.Title}}
                         </div>
-                        <div class="add_button">
-                            <button class="positive_button">Add</button>
-                        </div>
                     </div>
+                    
+                    <div class="add_button">
+                        <button type="button" class="positive_button"  onclick="add_question('question_{{question.id}}')">Add</button>
+                    </div>
+                </div>
                     {% endfor %}
 
                 </div>
             </div>
         </div>
     </div>
+    <div class="form-group form-button">
+        <input type="submit" name="save" id="submit_model" class="form-submit" value="Save">
+    </div>
+</form>
+<script>
+    window.onload = function() {
+        document.getElementById('selected_question_id_string').value = '';
+};
+    function add_question(question_id){
+    var contest_questions = document.getElementById('selected_question_id_string');
+    var selected_question = document.getElementById(question_id);
+    var question_state = selected_question.getAttribute('data-state');
+    console.log(question_state);
+    if(question_state=='not_selected'){
+        var target_container = document.getElementById('selected_question_container');
+        target_container.appendChild(selected_question);
+        selected_question.setAttribute('data-state','selected');
+        var button = selected_question.getElementsByTagName('button')[0];
+        button.innerText = 'Remove';
+        button.style.background = '#a71414';
+        
+        var curr_id = selected_question.getAttribute('data-mainid');
+        contest_questions.value+= curr_id+'|';
+    }
+    else if(question_state == 'selected'){
+        var target_container = document.getElementById('question_bank_container');
+        target_container.appendChild(selected_question);
+        selected_question.setAttribute('data-state','not_selected');
+        var button = selected_question.getElementsByTagName('button')[0];
+        button.innerText = 'Add';
+        button.style.background = '#06944d';
+        var curr_id = selected_question.getAttribute('data-mainid');
+        contest_questions.value = contest_questions.value.replace( curr_id+'|','');
+    }
 
+    }
+</script>
     {% endif %}
     {% endblock content %}

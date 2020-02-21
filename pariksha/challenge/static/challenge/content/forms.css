@@ -984,3 +984,25 @@ p.italic{
 .question_name {
     width: 79%;
 }
+.list_element_wrap {
+    display: flex;
+    align-items: baseline;
+}
+.hidden{
+    display: none;
+}
+.model_form_section p.form_error {
+    margin-left: 2rem;
+}
+.list_element_wrapper th {
+    font-size: 14px;
+    background: white;
+    padding: 10px;
+    border-bottom: 1px solid;
+    border-color: #2196F3;
+    border-width: 2px;
+    background: #f0f4f7;
+}
+h4 {
+    word-spacing: .3rem;
+}

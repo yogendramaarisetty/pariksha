@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm
-from .models import Candidate,Challenge,Question,Candidate_codes,testcases
+from .models import Candidate,Challenge,Question,Candidate_codes,testcases,challenge_questions
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -28,6 +28,7 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import login
 from .forms import UserLoginForm
+
 
 
 def pariksha_register(request):
@@ -111,8 +112,27 @@ def challenges(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def create_contest_form(request):
-    form = ContestCreationForm()
-
+    if request.method == "POST":
+        form = ContestCreationForm(request.POST)
+        print('form is post')
+        if form.is_valid():
+            # print(form.cleaned_data.get('Active'))
+            # form.instance.Active = True if form.cleaned_data.get('Active') == 'on' else False
+            # print('form is valid')
+            current_contest = form.save()
+            contest_questions_string = form.cleaned_data.get('contest_questions')
+            contest_questions_string = contest_questions_string.split('|')
+            print(contest_questions_string)
+            for question_id in contest_questions_string:
+                if question_id !='':
+                    print('question id : ',question_id)
+                    question = Question.objects.get(pk = int(question_id))
+                    cq = challenge_questions(challenge = current_contest, Question = question)
+                    cq.save()
+            return redirect('tests')
+    else:
+        print('form is not valid')
+        form = ContestCreationForm()
     return render(request,'challenge/contest_create_form.html',{'form':form,'model_name':'Contest','question_bank':Question.objects.all()})
 
 def completed_testpage(request):

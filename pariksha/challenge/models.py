@@ -23,9 +23,9 @@ class Challenge(models.Model):
     Title = models.CharField(max_length=120)
     Description = models.TextField(max_length=520)
     College = models.CharField(max_length=120)
-    Date = models.CharField(default="",max_length=20)
+    Date = models.CharField( blank =True,default="",max_length=20)
     Test_Duration = models.IntegerField(default=0)
-    Active = models.BooleanField()
+    Active = models.BooleanField(default=True)
     
     def __str__(self):
         return f'{self.Title}'
@@ -59,8 +59,10 @@ class Question(models.Model):
         return reverse('question_edit', kwargs={'q_id' :self.id})
 
 class challenge_questions(models.Model):
+    class Meta:
+        unique_together = [['challenge','question'],]
     challenge = models.ForeignKey(Challenge,on_delete=models.SET_NULL,null=True)
-    Question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
+    question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
 class testcases(models.Model):
     question = models.OneToOneField(Question,on_delete=models.CASCADE)
     input1 = models.TextField(default="",max_length=1000000)

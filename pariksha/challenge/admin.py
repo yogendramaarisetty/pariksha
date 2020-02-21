@@ -1,10 +1,14 @@
 from django.contrib import admin
 from django.contrib.auth.models import User,Group
-from . models import Challenge,Question,Candidate,testcases,submittedcodes,Candidate_codes
+from . models import Challenge,Question,Candidate,testcases,submittedcodes,Candidate_codes,challenge_questions
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
-
+class contestQuestion(admin.ModelAdmin):
+    list_display=('combine_contest_question','challenge','question')
+    def combine_contest_question(self,obj):
+        return "{}  - {} ".format(obj.challenge,obj.question)
+admin.site.register(challenge_questions, contestQuestion)
 
 class ChallengeAdmin(admin.ModelAdmin):
     list_display=('Title','Slug','Test_Duration','combine_title_slug','College')

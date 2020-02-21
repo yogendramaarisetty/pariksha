@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Candidate,Question
+from .models import Candidate,Question,Challenge
 from django.core.validators import RegexValidator
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
@@ -49,15 +49,11 @@ class QuestionCreateForm(forms.ModelForm):
         'default_java_code',
         'default_python_code')
 class ContestCreationForm(forms.ModelForm):
-    Slug = forms.SlugField()
-    Title = forms.CharField()
-    Duration = forms.IntegerField()
-    Active = forms.BooleanField()
-    College = forms.CharField()
     Description = forms.CharField(widget=forms.TextInput(attrs={'class': 'content','id':'text_editor'}))
+    contest_questions = forms.CharField(widget = forms.TextInput(attrs={'id': 'selected_question_id_string','class':'hidden'}))
     class Meta:
-        model = Question
-        fields = ('Slug','Title','Type','Description','Duration','College')
+        model = Challenge
+        fields = ('Slug','Title','Description','Test_Duration','Date','College','Active','contest_questions')
 
 class UserLoginForm(AuthenticationForm):
     def __init__(self, *args, **kwargs):
