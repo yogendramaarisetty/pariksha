@@ -1,15 +1,9 @@
 {% extends "challenge/base.html" %} {% block content %}
 {% load crispy_forms_tags %}
-<style>
-    .pretty.p-switch .state:before {
-        height: 1rem;
-    }
-</style>
-{% if user.is_authenticated %}
 <div class="model_form_outer_wrapper">
     <div class="header_wrapper">
         <div class="model_form_title">
-            <h1>Create {{model_name}}</h1>
+            <h1>Edit {{model_name}} ( id : {{form.id}} )</h1>
             <p class="Description_para">Host this contest on pariksha and allow users to take the test.</p>
             <p class="Description_para italic">Get started by providing the initial details for your contest.</p>
         </div>
@@ -110,19 +104,12 @@
                 {% endif %}
 
                 <div class="footer_form_button floater_right">
-                    <a id= "contest_edit_link" href="">
-                        <button type="button" id = "contest_edit_link" onclick="window.location.href = 'https://w3docs.com';" class="positive_button">Edit</button>
-                    </a>
                     <button id="save_btn" class="positive_button" onclick="formAsyncSave()" type="button">
                         Save
-                    </button>
-                </div>
+                    </button></div>
             </section>
         </div>
     </form>
-    <div class="qfooter_form_button">
-       
-    </div>
     <div class="section collapsible">
         <div class="bank_and_contestq_wrapper">
             <div class="question_container">
@@ -135,6 +122,7 @@
                 <div class="selected_question_list_container">
 
                     <div class="question_list_body" id="selected_question_container">
+                   
                     </div>
                 </div>
                 <div class="qfooter_form_button">
@@ -177,80 +165,31 @@
     </div>
     <div class="qfooter_form_button">
         <a href="{% url 'tests' %}">
-            <button type="button" class="positive_button">Done</button>
+            <button class="positive_button">Done</button>
         </a>
     </div>
 </div>
-    <script>
-        // This is the important part!
-        var edit_contest_url;
-        function collapseSection(element) {
-            // get the height of the element's inner content, regardless of its actual size
-            var sectionHeight = element.scrollHeight;
+<script>
+var selected_qids = [];
+{% for question in contest_questions %}
+selected_qids.push("question_{{question.question.id}}");
+{% endfor %}
+ window.onload = function () {
+           
+    for(let i = 0; i < selected_qids.length; i++){
+        var selected_question = document.getElementById(selected_qids[i].toString());
+        var target_container = document.getElementById('selected_question_container');
+        target_container.appendChild(selected_question);
+                    selected_question.setAttribute('data-state', 'selected');
+                    var button = selected_question.getElementsByTagName('button')[0];
+                    button.innerText = 'Remove';
+                    button.style.background = '#a71414';
 
-            // temporarily disable all css transitions
-            var elementTransition = element.style.transition;
-            element.style.transition = '';
-
-            // on the next frame (as soon as the previous style change has taken effect),
-            // explicitly set the element's height to its current pixel height, so we 
-            // aren't transitioning out of 'auto'
-            requestAnimationFrame(function () {
-                element.style.height = sectionHeight + 'px';
-                element.style.transition = elementTransition;
-
-                // on the next frame (as soon as the previous style change has taken effect),
-                // have the element transition to height: 0
-                requestAnimationFrame(function () {
-                    element.style.height = 0 + 'px';
-                });
-            });
-
-            // mark the section as "currently collapsed"
-            element.setAttribute('data-collapsed', 'true');
         }
-
-        function expandSection(element) {
-            // get the height of the element's inner content, regardless of its actual size
-            var sectionHeight = element.scrollHeight;
-
-            // have the element transition to the height of its inner content
-            element.style.height = sectionHeight + 'px';
-
-            // when the next css transition finishes (which should be the one we just triggered)
-            element.addEventListener('transitionend', function (e) {
-                // remove this event listener so it only gets triggered once
-                element.removeEventListener('transitionend', arguments.callee);
-
-                // remove "height" from the element's inline styles, so it can return to its initial value
-                element.style.height = null;
-            });
-
-            // mark the section as "currently not collapsed"
-            element.setAttribute('data-collapsed', 'false');
-        }
-        /***********************************************/
-        function sleep(milliseconds) {
-            const date = Date.now();
-            let currentDate = null;
-            do {
-                currentDate = Date.now();
-            } while (currentDate - date < milliseconds);
-        }
-        var section = document.querySelector('.section.collapsible');
-       
-        window.onload = function () {
-            document.getElementById('selected_question_id_string').value = '';
-            $('#save_btn_loader').hide();
-
-            var isCollapsed = section.getAttribute('data-collapsed') === 'true';
-            collapseSection(section);
-            
-            var edit_button_link = document.getElementById('contest_edit_link');
-            edit_button_link.style.display = "none";
-
-        };
-        function add_question(question_id) {
+ };
+ var removed_questions = [];
+ var newly_added_questions = [];
+ function add_question(question_id) {
             var contest_questions = document.getElementById('selected_question_id_string');
             var selected_question = document.getElementById(question_id);
             var question_state = selected_question.getAttribute('data-state');
@@ -258,28 +197,36 @@
             if (question_state == 'not_selected') {
                 var target_container = document.getElementById('selected_question_container');
                 target_container.appendChild(selected_question);
+                
+                if(!selected_qids.includes(question_id)){
+                    newly_added_questions.push(question_id);
+                }
+                else{
+                    removed_questions.pop(question_id);
+                }
                 selected_question.setAttribute('data-state', 'selected');
                 var button = selected_question.getElementsByTagName('button')[0];
                 button.innerText = 'Remove';
                 button.style.background = '#a71414';
 
-                var curr_id = selected_question.getAttribute('data-mainid');
-                contest_questions.value += curr_id + '|';
             }
             else if (question_state == 'selected') {
                 var target_container = document.getElementById('question_bank_container');
                 target_container.appendChild(selected_question);
+                    if(selected_qids.includes(question_id)){
+                        removed_questions.push(question_id);
+                    }
+                    else{
+                        newly_added_questions.pop(question_id);
+                    }
                 selected_question.setAttribute('data-state', 'not_selected');
                 var button = selected_question.getElementsByTagName('button')[0];
                 button.innerText = 'Add';
                 button.style.background = '#06944d';
-                var curr_id = selected_question.getAttribute('data-mainid');
-                contest_questions.value = contest_questions.value.replace(curr_id + '|', '');
             }
 
         }
-        var created_contest_id;
-        function formAsyncSave() {
+ function formAsyncSave() {
             $('#save_btn_loader').show();
             var save_button = document.getElementById('save_btn');
             save_button.innerText = 'Saving...';
@@ -367,10 +314,6 @@
                         current_contest_id = json.contest_id;
                         save_button.textContent = "Saved";
                         expandSection(section)
-                        edit_contest_url = "/pariksha/modify/"+current_contest_id+"/contest";
-                        var edit_button_link1 = document.getElementById('contest_edit_link');
-                        edit_button_link1.style.display = "initial";
-                        edit_button_link1.href = "{% url 'contest_edit_form' contest_id=12345 %}".replace(/12345/, current_contest_id.toString());
                         section.setAttribute('data-collapsed', 'false')
 
                     }
@@ -390,71 +333,7 @@
             });
 
         }
-        function edit_redirect(){
-            window.location.href = edit_contest_url;
-        }
 
-        function ContestQuestionAsyncSave() {
-            var save_button = document.getElementById('save_btn_q');
-            var selected_question_list = [];
-            $('#selected_question_container').find('div').each(function () {
-                if ($(this).attr('data-mainid') != undefined) {
-                    var innerDivId = $(this).attr('data-mainid');
-                    selected_question_list.push(innerDivId);
-                }
+</script>
 
-            });
-            console.log(selected_question_list);
-            $.ajax({
-
-                type: 'POST',
-                url: '',
-                dataType: 'json',
-                cache: false,
-                async: true,
-                data: {
-                    csrfmiddlewaretoken: "{{ csrf_token }}",
-                    challenge_question: "yes",
-                    list: selected_question_list,
-                    contest_id: current_contest_id,
-                },
-                success: function (json) {
-                    if (json.errors == 'yes') {
-                        save_button.setAttribute('saved_status', 'unsaved');
-                        save_button.textContent = "Save";
-                        $('#save_btn_loader').hide();
-                    }
-                    else {
-
-                        var remove_btns = document.querySelectorAll('#selected_question_container button.positive_button');
-                        [].forEach.call(remove_btns, function (btn) {
-                            btn.disabled = true;
-                            btn.innerText = 'Saved';
-                        });
-                        document.querySelectorAll('#selected_question_container button.positive_button').innerText = "Saved";
-                        save_button.setAttribute('saved_status', 'saved');
-                        save_button.disabled = true;
-                        save_button.textContent = "Saved";
-                        expandSection(section)
-                        section.setAttribute('data-collapsed', 'false')
-
-                    }
-
-                },
-
-                statusCode: {
-                    500: function () {
-                    }
-                },
-            }).done(function () {
-                var ajaxMins2 = new Date().getMinutes() - ajaxMins;
-                var ajaxSecs2 = (new Date().getSeconds() % 60) - ajaxSecs;
-                var ajaxMS2 = new Date().getMilliseconds() - ajaxMS;
-                console.log(ajaxSecs2, " seconds");
-                $('#save_btn_loader').hide();
-            });
-        }
-
-    </script>
-    {% endif %}
-    {% endblock content %}
+{%endblock content %}

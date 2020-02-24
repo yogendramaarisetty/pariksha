@@ -50,7 +50,8 @@ class QuestionCreateForm(forms.ModelForm):
         'default_python_code')
 class ContestCreationForm(forms.ModelForm):
     Description = forms.CharField(widget=forms.TextInput(attrs={'class': 'content','id':'text_editor'}))
-    contest_questions = forms.CharField(widget = forms.TextInput(attrs={'id': 'selected_question_id_string','class':'hidden'}))
+    contest_questions = forms.CharField(required=False,widget = forms.TextInput(attrs={'id': 'selected_question_id_string','class':'hidden'}))
+    Active = forms.CheckboxInput()
     class Meta:
         model = Challenge
         fields = ('Slug','Title','Description','Test_Duration','Date','College','Active','contest_questions')

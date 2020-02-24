@@ -9,9 +9,7 @@
                 <a href="{% url 'create_contest'%}">
                 <button  class="positive_button pariksha_button">Create Contenst</button>
             </a>
-            <a href = "{% url 'manage_contests' %}">
                 <button class="negative_button pariksha_button">Manage</button>
-            </a>
             </div>
             {% else %}
             <div class="table_action_buttons">
@@ -33,6 +31,7 @@
                             <th>Test id</th>
                             <th>Test Name</th>
                             <th>Status</th>
+                            <th>Date</th>
                             <th>Duration</th>
                             <th>College</th>
                             <th></th>
@@ -40,7 +39,7 @@
                     </thead>
                     <tbody class="main_table_records">
                     {% for test in challenges %}
-                        <tr>
+                        <tr id="{{test.id}}">
                             <td>{{ test.id }}</td>
                             <td>{{ test.Title }}</td>
                             {% if test.Active %}
@@ -48,13 +47,10 @@
                             {% else %}
                             <td class="expired">Expired</td>
                             {% endif %}
+                            <td>{{ test.Date }}</td>
                             <td>{{ test.Test_Duration }} mins</td>
                             <td>{{test.College}}</td>
-                            {% if test.Active%}
-                            <td><button class="start_active">Start</button></td>
-                            {% else %}
-                            <td><button class="start_disable" disabled>Expired</button></td>
-                            {% endif %}
+                            <td><button type="button" onclick="deleteContest('{{test.id}}')" class="negative_button" style="margin-right:1rem;">Delete</button><a href= "{% url 'contest_edit_form' contest_id=test.id %}"><button  class="positive_button">Edit Contest</button></a></td>
                            
                         </tr>
                         {% endfor %}
@@ -69,6 +65,69 @@
 
 <div>
     <script>
+ 
+    function deleteContest(test_id){
+         var ajaxMins = new Date().getMinutes();
+            var ajaxSecs = new Date().getSeconds();
+            var ajaxMS = new Date().getMilliseconds();
+         $.ajax({
+
+                type: 'POST',
+                url: '',
+                dataType: 'json',
+                cache: false,
+                async: true,
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    contest_id:test_id ,
+                },
+                success: function (json) {
+                    
+                   document.getElementById(test_id).style.display = "none";
+                        const myNotification = window.createNotification({
+                            });
+                        myNotification({ 
+                            title: 'Deleted',
+                            message: json.msg 
+                            });
+
+                           myNotification({ 
+                                
+                                        // close on click
+                                        closeOnClick: true,
+
+                                        // displays close button
+                                        displayCloseButton: false,
+
+                                        // nfc-top-left
+                                        // nfc-bottom-right
+                                        // nfc-bottom-left
+                                        positionClass: 'nfc-top-right',
+
+                                        // callback
+                                        onclick: false,
+
+                                        // timeout in milliseconds
+                                        showDuration: 9500,
+
+                                        // success, info, warning, error, and none
+                                        theme: 'error'
+                                        
+                                        });
+
+                },
+
+                statusCode: {
+                    500: function () {
+                    }
+                },
+            }).done(function () {
+                var ajaxMins2 = new Date().getMinutes() - ajaxMins;
+                var ajaxSecs2 = (new Date().getSeconds() % 60) - ajaxSecs;
+                var ajaxMS2 = new Date().getMilliseconds() - ajaxMS;
+                console.log(ajaxSecs2, " seconds");
+            });
+    }
         function myFunction() {
           var input, filter, table, tr, td, i, txtValue;
           input = document.getElementById("search_box");

@@ -946,10 +946,11 @@ input{
     margin-top: .2rem;
 }
 .bank_and_contestq_wrapper {
-    padding: .01rem;
-    background: #19324838;
-    border: 0px solid;
-    border-radius: 0.3rem;
+  padding: .01rem;
+  background: #19324838;
+  border: 0px solid;
+  border-radius: 0.3rem;
+  margin-bottom: 1rem;
 }
 p.Description_para {
     width: 50%;
@@ -1005,4 +1006,77 @@ p.italic{
 }
 h4 {
     word-spacing: .3rem;
+}
+.footer_form_button.floater_right {
+    width: fit-content;
+    margin-bottom: 2rem;
+}
+button[saved_status="saved"] {
+    background-color: #797979;
+    box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.28);
+  }
+  button#save_btn:disabled {
+    background: #797979;
+}
+
+.section {
+    overflow: hidden;
+    transition: height 0.8s ease-out;
+    height: auto;
+  }
+  .label_field_wrapper {
+    margin: 2rem;
+    margin-bottom: .2rem;
+    display: flex;
+}
+.qfooter_form_button {
+  position: relative;
+  margin-top: auto;
+  width: fit-content;
+  height: fit-content;
+  margin-left: auto;
+  padding-right: 1rem;
+  /* padding-bottom: 1rem; */
+}
+
+.selected_question_list_container {
+  height: 74%;
+  overflow: auto;
+}
+
+
+
+button[saved_status="saved"]:hover {
+  background-color: #5d5d5d;
+  box-shadow: inset 0 1px 8px rgba(0, 0, 0, 0.28);
+}
+#selected_question_container button.positive_button:disabled {
+  background: #715252!important;
+}
+th {
+  z-index: 111;
+}
+.ncf-container .error {
+  background: #bd362f;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR…ftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=)!important;
+  background-position-x: initial;
+  background-position-y: initial;
+  background-size: initial;
+  background-repeat-x: initial;
+  background-repeat-y: initial;
+  background-attachment: initial;
+  background-origin: initial;
+  background-clip: initial;
+  background-color: rgb(189, 54, 47);
+  color: #fff!important;
+  padding: 15px 15px 15px 50px;
+  background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR…ftP4P7SP4N3CJZdvzoNyGq2c/HWOXJGsvVg+RA/k2MC/wN6I2YA2Pt8GkAAAAASUVORK5CYII=)!important;
+}
+
+p.ncf-title {
+  color: white;
+}
+
+p.nfc-message {
+  color: white;
 }

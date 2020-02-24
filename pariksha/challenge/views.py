@@ -114,26 +114,125 @@ def challenges(request):
 def create_contest_form(request):
     if request.method == "POST":
         form = ContestCreationForm(request.POST)
-        print('form is post')
-        if form.is_valid():
-            # print(form.cleaned_data.get('Active'))
-            # form.instance.Active = True if form.cleaned_data.get('Active') == 'on' else False
-            # print('form is valid')
-            current_contest = form.save()
-            contest_questions_string = form.cleaned_data.get('contest_questions')
-            contest_questions_string = contest_questions_string.split('|')
-            print(contest_questions_string)
-            for question_id in contest_questions_string:
-                if question_id !='':
-                    print('question id : ',question_id)
-                    question = Question.objects.get(pk = int(question_id))
-                    cq = challenge_questions(challenge = current_contest, Question = question)
-                    cq.save()
-            return redirect('tests')
+        print('form is post',request.POST)
+        data = request.POST
+        contest = Challenge()
+        current_contest_id = None
+        if request.is_ajax():
+            if request.POST.get('contest')=='yes':
+                csrf = request.POST.get('csrfmiddlewaretoken')
+                Title = request.POST.get('Title')
+                Slug = request.POST.get('Slug')
+                Duration = request.POST.get('Duration')
+                Description = request.POST.get('Description')
+                Date = request.POST.get('Date')
+                Active = request.POST.get('Active')
+                College = request.POST.get('College')
+                if form.is_valid():
+                    print(Active)
+                    activation_bool = True
+                    if(Active == 'true'):
+                        activation_bool = True
+                    else:
+                        activation_bool = False
+                    form.instance.Active = activation_bool
+                    form.save()
+                    contest = form.save(commit=False)
+                    res = {'saved':'yes',
+                            'msg':'Contest Saved successfully',
+                            'contest_id': contest.pk}
+                    return HttpResponse(json.dumps(res), content_type="application/json")
+                else:
+                    return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
+            elif request.POST.get('challenge_question') == "yes":
+                question_list = data.getlist('list[]')
+                contest_id = data.get('contest_id')
+                print('CURRENT_CONTEST_ID = ',contest_id) 
+                for i in question_list:
+                    q = Question.objects.all().get(pk = int(i))
+                    c = Challenge.objects.all().get(pk = contest_id)
+                    c_q = challenge_questions(challenge = c,question = q)
+                    c_q.save()
+                res = {'msg':'Successflly got list'}
+                return HttpResponse(json.dumps(res), content_type="application/json")
+
+
+            # return HttpResponse(json.dumps(res), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps(form.errors), content_type="application/json")      
+
     else:
-        print('form is not valid')
         form = ContestCreationForm()
     return render(request,'challenge/contest_create_form.html',{'form':form,'model_name':'Contest','question_bank':Question.objects.all()})
+def manage_contests(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            contest_id = request.POST.get('contest_id')
+            contest = Challenge.objects.get(pk = contest_id)
+            title = contest.Title
+            contest.delete()
+            res = {
+                'msg' : title+f' (id={contest_id}) deleted successfully'
+            }
+            return HttpResponse(json.dumps(res), content_type="application/json")
+    test_count = Challenge.objects.all().count()
+    print('\n\n\n\n',test_count,'\n\n\n')
+    context ={
+        'challenges':Challenge.objects.all(),
+        'test_count': test_count
+    }
+    return render(request,'challenge/contest_management.html',context)
+
+def contest_edit_form(request, contest_id):
+    contest = Challenge.objects.all().get(pk = contest_id)
+    if request.method == "POST":
+        data = request.POST
+        form = ContestCreationForm(request.POST,instance = contest)
+        if request.is_ajax():
+            if request.POST.get('contest')=='yes':
+                csrf = request.POST.get('csrfmiddlewaretoken')
+                Title = request.POST.get('Title')
+                Slug = request.POST.get('Slug')
+                Duration = request.POST.get('Duration')
+                Description = request.POST.get('Description')
+                Date = request.POST.get('Date')
+                Active = request.POST.get('Active')
+                College = request.POST.get('College')
+                if form.is_valid():
+                        print(Active)
+                        activation_bool = True
+                        if(Active == 'true'):
+                            activation_bool = True
+                        else:
+                            activation_bool = False
+                        form.instance.Active = activation_bool
+                        form.save()
+                        res = {'saved':'yes',
+                            'msg':'Contest Updated successfully',
+                            'contest_id': contest.pk}
+                        return HttpResponse(json.dumps(res), content_type="application/json")
+                else:
+                    return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
+            elif request.POST.get('challenge_question') == "yes":
+                question_list = data.getlist('list[]')
+                contest_id = data.get('contest_id')
+                print('CURRENT_CONTEST_ID = ',contest_id) 
+                for i in question_list:
+                    q = Question.objects.all().get(pk = int(i))
+                    c = Challenge.objects.all().get(pk = contest_id)
+                    c_q = challenge_questions(challenge = c,question = q)
+                    c_q.save()
+                res = {'msg':'Successflly got list'}
+                return HttpResponse(json.dumps(res), content_type="application/json")
+
+
+            # return HttpResponse(json.dumps(res), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps(form.errors), content_type="application/json")
+    else:
+        form = ContestCreationForm(instance = contest)
+        this_contest_questions = challenge_questions.objects.filter(challenge = contest)
+        return render(request,'challenge/contest_edit_form.html',{'form':form,'model_name':'Contest','question_bank':Question.objects.all(),'contest_questions':this_contest_questions})
 
 def completed_testpage(request):
     return render(request,'challenge/completed_test.html')
