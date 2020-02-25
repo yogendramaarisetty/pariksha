@@ -108,7 +108,7 @@ body {
   font-weight: 400;
   font-family: 'Lato', sans-serif;
 }
-.container {
+.signcontainer {
   width: 900px;
   background: #fff;
   display:flex;
@@ -449,13 +449,13 @@ label.valid:after {
   margin-left: 80px;
 }
 @media screen and (max-width: 1200px) {
-  .container {
+  .signcontainer {
     width: calc(100% - 30px);
     max-width: 100%;
   }
 }
 @media screen and (min-width: 1024px) {
-  .container {
+  .signcontainer {
     max-width: 1200px;
   }
 }
@@ -532,7 +532,7 @@ label.valid:after {
     margin-bottom: 10px;
   }
 }
-.container{
+.signcontainer{
     padding-right: 0px;
 }
 .signup-image {
@@ -544,6 +544,8 @@ label.valid:after {
 }
 input#signup:disabled {
     background: #656565;
+    cursor: no-drop;
+    
 }
 p.form_error {
     color: #d00000;
@@ -552,7 +554,7 @@ p.form_error {
     letter-spacing: 0.2px;
     word-spacing: 2px;
 }
-.container:hover {
+.signcontainer:hover {
     box-shadow: 0px 4px 16.83px 0.17px rgba(140, 140, 140, 0.14);
     box-shadow: -2px 6px 16.83px 0.17px rgba(0, 0, 0, 0.18);
 }
@@ -1017,6 +1019,7 @@ button[saved_status="saved"] {
   }
   button#save_btn:disabled {
     background: #797979;
+    cursor: no-drop;
 }
 
 .section {
@@ -1052,6 +1055,7 @@ button[saved_status="saved"]:hover {
 }
 #selected_question_container button.positive_button:disabled {
   background: #715252!important;
+  cursor: no-drop;
 }
 th {
   z-index: 111;
@@ -1078,5 +1082,36 @@ p.ncf-title {
 }
 
 p.nfc-message {
+  color: white;
+}
+button.delete_buttons {
+  transition: all 80ms linear;
+  background: #ffffff;
+  color: rgb(155, 35, 35);
+  font-weight: 900;
+  user-select: none;
+  outline: none;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  align-items: center;
+  position: relative;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+  white-space: nowrap;
+  -webkit-appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow: none;
+  font-size: 15px;
+  height: 36px;
+  min-width: 80px;
+  padding: 0 12px 1px;
+  border: solid;
+  border-width: 1px;
+  border-color: #b83127;
+}
+button.delete_buttons:hover {
+  background: #b83127;
   color: white;
 }

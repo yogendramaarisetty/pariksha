@@ -50,7 +50,7 @@
                             <td>{{ test.Date }}</td>
                             <td>{{ test.Test_Duration }} mins</td>
                             <td>{{test.College}}</td>
-                            <td><button type="button" onclick="deleteContest('{{test.id}}')" class="negative_button" style="margin-right:1rem;">Delete</button><a href= "{% url 'contest_edit_form' contest_id=test.id %}"><button  class="positive_button">Edit Contest</button></a></td>
+                            <td><button type="button" data-contestid = "{{test.id}}" class="delete_buttons" style="margin-right:1rem;">Delete</button><a href= "{% url 'contest_edit_form' contest_id=test.id %}"><button  class="positive_button">Edit Contest</button></a></td>
                            
                         </tr>
                         {% endfor %}
@@ -64,8 +64,35 @@
 <!-- DivTable.com -->
 
 <div>
-    <script>
- 
+ <script type="text/javascript">
+                                $('.delete_buttons').on('click', function(){
+                                    var contest_id = $(this).attr('data-contestid'); 
+                                    $.confirm({
+                                        title: 'Confirm!',
+                                        content: 'Are you sure you want to delete the contest?',
+                                        buttons: {
+                                            delete: function(){
+                                               deleteContest(contest_id); 
+                                                $.alert('Deleted!');
+                                            },
+                                            cancel: function(){
+                                                $.alert('Canceled!');
+                                            },
+                                            // somethingElse: {
+                                            //     text: 'Something else',
+                                            //     btnClass: 'btn-blue',
+                                            //     keys: [
+                                            //         'enter',
+                                            //         'shift'
+                                            //     ],
+                                            //     action: function(){
+                                            //         this.$content // reference to the content
+                                            //         $.alert('Something else?');
+                                            //     }
+                                            // }
+                                        }
+                                    });
+                                });
     function deleteContest(test_id){
          var ajaxMins = new Date().getMinutes();
             var ajaxSecs = new Date().getSeconds();

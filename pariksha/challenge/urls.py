@@ -32,5 +32,6 @@ urlpatterns = [
     # path('question_bank/<q_id>/view/',views.question_view(),name="question_edit"),
     path(r'challenge/testpage/(?P<challenge_id>\d+)/(?P<u_id>\d+)/compile_run/',views.compile_run,name='compile_run'),
     path('admin_management/',views.admin_management,name='admin_manage'),
+    path('testpage/',views.temp_testpage_design,name='testpage_design'),
 
 ]

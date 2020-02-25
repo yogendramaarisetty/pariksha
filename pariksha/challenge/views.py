@@ -29,7 +29,8 @@ from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import login
 from .forms import UserLoginForm
 
-
+def temp_testpage_design(request):
+    return render(request, 'challenge/testpage.html')
 
 def pariksha_register(request):
     if request.method == "POST":
@@ -164,6 +165,8 @@ def create_contest_form(request):
     else:
         form = ContestCreationForm()
     return render(request,'challenge/contest_create_form.html',{'form':form,'model_name':'Contest','question_bank':Question.objects.all()})
+
+@user_passes_test(lambda u: u.is_superuser)
 def manage_contests(request):
     if request.method == "POST":
         if request.is_ajax():
@@ -183,6 +186,7 @@ def manage_contests(request):
     }
     return render(request,'challenge/contest_management.html',context)
 
+@user_passes_test(lambda u: u.is_superuser)
 def contest_edit_form(request, contest_id):
     contest = Challenge.objects.all().get(pk = contest_id)
     if request.method == "POST":
@@ -232,7 +236,7 @@ def contest_edit_form(request, contest_id):
     else:
         form = ContestCreationForm(instance = contest)
         this_contest_questions = challenge_questions.objects.filter(challenge = contest)
-        return render(request,'challenge/contest_edit_form.html',{'form':form,'model_name':'Contest','question_bank':Question.objects.all(),'contest_questions':this_contest_questions})
+        return render(request,'challenge/contest_edit_form.html',{'form':form,'contest_id':contest.id,'model_name':'Contest','question_bank':Question.objects.all(),'contest_questions':this_contest_questions})
 
 def completed_testpage(request):
     return render(request,'challenge/completed_test.html')

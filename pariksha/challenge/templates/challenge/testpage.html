@@ -1,337 +1,143 @@
-<!-- @format -->
-
-{% extends "challenge/base.html" %}
- {% block content %}
- {% if user.is_authenticated %}
-  {% load crispy_forms_tags %}
-   {% load static %}
-{%block head%}
-  <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<!DOCTYPE html>
+<html>
+    <head>
+    {% load static %}
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Poppins|Raleway|Roboto+Mono&display=swap" rel="stylesheet">
+    
+    <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/parikshatestpage.css' %}"/>
+   <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="{% static 'challenge/scripts/ace.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/mode-java.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/mode-c_cpp.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/theme-monokai.js' %}" type=" text/javascript "></script>
+    <script src="{% static 'challenge/scripts/theme-xcode.js' %}" type=" text/javascript "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+     
   <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-{%endblock%}
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+  </head>
+    <style>
+        .gutter {
+    cursor: e-resize;
+    height: 100%;
+    background-image: url({% static 'img/download.png' %});
+    background-position: 50%;
+    background-repeat: no-repeat;
+    cursor: ew-resize;
+    background-color: #fafafa;
 
-{% block  timer%}
-
-        <span class="timer"><div id ="demo"></div></span>
-{% endblock  %}
-{% block submittest %}
-<button type="button" class="btn btn-outline-danger" data-toggle="modal" data-target="#exampleModal" ">
-  Submit Test
-</button>
-{% endblock submittest %}
-{% block name %}
-
-
-<div id="name" >{{candidate.fullname}}</div>
-
-{% endblock name %}
-<div class="row">
-
-  <nav class="sidebar">
-    <div class="sidebar-content">
-      <div class="scrollbar-container ps">
-        <a class="sidebar-brand" href="#">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="24"
-            height="24"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            stroke-width="2"
-            stroke-linecap="round"
-            stroke-linejoin="round"
-            class="align-middle text-primary"
-          >
-            <path
-              d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
-            ></path>
-            <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-            <line x1="12" y1="22.08" x2="12" y2="12"></line>
-        </svg>
-        <span class="align-middle">{{ challenge.Title }}</span></a>
-        
-
-        <ul class="sidebar-nav">
-          <li class="sidebar-header">Questions</li>
-        {% for q in questions %}
-           <li  class="tablinks"  onclick="openQuestion(event, '{{q.Title}}','{{q.id}}')">
-            <span
-              data-toggle="collapse"
-              id="{{q.id}}"
-              class="sidebar-link collapsed"
-              aria-expanded="false">
-              <span class="align-middle">{{ forloop.counter }}. {{q.Title}}</span>
-          </li></a>
-        {% endfor %}
-        
-        <div class="popup" onclick="instructionPop2()" style="margin-left: 40%;margin-top: 230px;">Note
-        <span class="popuptext" id="myPopup2">
-        <ul class="note">
-        <li class="notelist">Test duration: {{challenge.Test_Duration}} mins</li>
-        <li class="notelist">Please ensure your code is submitted</li>
-        <li class="notelist">Marks will be alloted only if you submit code</li>
-         </ul>       </span>
-        </div>
-        <!-- Button trigger modal -->
-
-
-<!-- Modal -->
- 
-        </ul>
-        </div>
-      </div>
-    </div>
-  </nav>
-
-</div>
-
-<div class="content" id="content">
-<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLabel">Confirm Test Submission!</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to submit the test ?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-        <button type="button" class="btn btn-primary" onclick="submitTestFinal()">Submit Test</button>
-      </div>
-    </div>
-  </div>
-</div>
-  {% for q in questions %}
-  <div id="{{q.Title}}" class="tabcontent">
-    <h3>{{q.Title}}</h3>
-    <div class="question-content">{{q.Description | safe}}<br>
-    <strong>Sample Input</strong>
-    <div class="sample-input">{{q.sample_inputs|safe}}</div>
-    <strong>Sample Output</strong>
-    <div class="sample-input">{{q.sample_outputs}}</div>
-    </div>
-  </div>
-  {% endfor %}
-</div>
-<div class="compiler-container" id="compiler">
-
-<form id="codeform" method="POST" >
-      {% csrf_token %}
-      <div class="editor">
-<div class="editor-header">
-  <div class="language-selector">
-    <select id="language" onchange="selectLang()"  class="selectpicker">
-      <option>Java</option>
-      <option>Python</option>
-      <option>C</option>
-      <option>C++</option>
-      <option>C#</option>
-    </select>
-  </div>
-  <img style="
-    position: absolute;
-    top: 6.2%;
-" id="internet" src="https://img.icons8.com/color/24/000000/wifi.png">
-<div id="nointernet">
-  <svg xmlns="http://www.w3.org/2000/svg" x="0px" y="0px"
-width="24" height="24"
-viewBox="0 0 172 172" style="fill:#000000;position: absolute;right: 45%;top: 35px;"
-><g fill="none" fill-rule="nonzero" stroke="none" stroke-width="1" stroke-linecap="butt" stroke-linejoin="miter" stroke-miterlimit="10" stroke-dasharray="" stroke-dashoffset="0" font-family="none" font-weight="none" font-size="none" text-anchor="none" style="mix-blend-mode: normal"><path d="M0,172v-172h172v172z" fill="none"></path><g id="original-icon" fill="#e67e22"><path d="M21.43001,14.26335c-2.91628,0.00077 -5.54133,1.76841 -6.63871,4.47035c-1.09737,2.70194 -0.44825,5.79937 1.64164,7.83336l20.9541,20.9541c-6.84143,3.47872 -13.30399,7.59816 -19.20443,12.40169c-4.60817,3.74817 -4.87154,10.72156 -0.67187,14.92122c3.49733,3.49733 9.03358,3.94648 12.98958,0.99382c6.92197,-5.17267 14.63297,-9.26818 22.84375,-12.3597l11.39388,11.39388c-7.08392,1.95222 -13.81804,4.73797 -19.93229,8.52441c-5.90533,3.64783 -6.8828,11.85972 -1.97363,16.76887c3.56183,3.56183 9.05352,4.05107 13.35352,1.41374c7.93819,-4.87295 17.1795,-7.73819 27.04297,-8.21647l16.37696,16.37695c-4.27589,-1.44127 -8.8473,-2.23958 -13.60547,-2.23958c-6.493,0 -12.63629,1.45774 -18.15462,4.05924c-4.50067,2.11417 -5.53446,8.08501 -2.01562,11.60384l12.76563,12.76562c4.09217,4.09217 10.71708,4.09217 14.80924,0l12.76563,-12.76562c1.34535,-1.34535 2.02422,-3.04968 2.09961,-4.75912l37.16309,37.16309c1.79752,1.87223 4.46675,2.62641 6.97825,1.97168c2.5115,-0.65472 4.47282,-2.61605 5.12755,-5.12755c0.65472,-2.5115 -0.09946,-5.18073 -1.97168,-6.97825l-129,-129c-1.34928,-1.38698 -3.20203,-2.16948 -5.13704,-2.1696zM86,35.83333c-6.19917,0 -12.26328,0.55038 -18.16862,1.55371l20.01627,20.03027c20.09534,0.40133 38.60919,7.18324 53.65202,18.42057c3.96317,2.95983 9.49225,2.48952 12.98958,-1.00781c4.19967,-4.19967 3.92912,-11.17306 -0.67187,-14.92122c-18.49717,-15.05 -42.10339,-24.07552 -67.81739,-24.07552zM104.32259,73.87826l25.48925,25.48925c4.17817,-4.90917 3.11862,-12.41871 -2.43554,-15.87304c-7.03051,-4.3645 -14.79771,-7.62388 -23.05371,-9.61621z"></path></g></g></svg>
- </div>   
-    <span id="save" style="
-      color: aliceblue;
-      position: relative;
-      right: -90%;
-      top: -10px;
-      ">Saved
-    </span>
-    <img id='saveico' src="https://img.icons8.com/nolan/30/checkmark.png" style="
-    position: absolute;
-    top: 36px;
-    right: 36.5%;
-    width: 20px;">
-    <div class="lds-ripple">
-      <div></div>
-      <div></div>
-      <div></div>
-    </div>
-
-</div>
-      <div class='code-editor' id='codeeditor' ></div>
-      </div>
-      <div class="control">
-      
-      <div class="form-group-dark purple-border">
-        <label for="exampleFormControlTextarea4">Custom Inputs</label>
-        <textarea id="input" class="form-control" id="exampleFormControlTextarea4" rows="3"></textarea>
-      </div><br>
-      <div class="form-group-dark purple-border">
-        <label for="exampleFormControlTextarea4">Output</label>
-        <textarea id="output" class="form-control" id="exampleFormControlTextarea4" style="height: 230px;"rows="3" disabled></textarea>
-      </div>
-      <div class="popup" onclick="instructionPop()">Instructions
-      <span class="popuptext" id="myPopup">Save & run the code before  navigating to other question or changing language</span>
-      </div>
-      <br>
-      <div class="loader">Loading...</div>
-      <br>
-      <button type="button" class="btn btn-primary-dark" onclick="runCode()" > Save & Run </button>
-      <button type="button" class="btn btn-outline-success" onclick="submitCode()" style="    margin-inline-start: 20%;">Submit</button>
-      
-      </div>
-</form>
-</div>
-<div id="testcase-table" class="testcases">
-<table class="table table-borderless">
-  <thead>
-    <tr>
-      <th scope="col">Sno.</th>
-      <th scope="col">Testcase</th>
-      <th scope="col">Description</th>
-      <th scope="col">Result</th>
-      <th scope="col">Score</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th scope="row">1</th>
-      <td>Test Case 1</td>
-      <td id="tcdescription1"></td>
-      <td id="tcstatus1"></td>
-      <td id="tcscore1"></td>
-    </tr>
-    <tr>
-      <th scope="row">2</th>
-      <td>Test Case 2</td>
-      <td id="tcdescription2"></td>
-      <td id="tcstatus2"></td>
-      <td id="tcscore2"></td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Test Case 3</td>
-      <td id="tcdescription3"></td>
-      <td id="tcstatus3"></td>
-      <td id="tcscore3"></td>
-    </tr>
-    <tr>
-      <th scope="row">4</th>
-      <td>Test Case 4</td>
-      <td id="tcdescription4"></td>
-      <td id="tcstatus4"></td>
-      <td id="tcscore4"></td>
-    </tr>
-    <tr>
-      <th scope="row">5</th>
-      <td>Test Case 5</td>
-      <td id="tcdescription5"></td>
-      <td id="tcstatus5"></td>
-      <td id="tcscore5"></td>
-    </tr>
-  </tbody>
-</table>
-</div>
-
-</div>
-<div class="overlay-trigger">
-  <button id="ovl"></button>
-</div>
-
-<button class="overlay-close" onclick="fullscreencount()">Fullscreen Mode</button>
-
-<div class="overlay overlay01"></div>
-<div class="overlay overlay02"></div>
-<div class="overlay overlay03"></div>
-<div class="overlay overlay04"></div>
-<div class="overlay overlay05"></div>
-<div class="overlay overlay06"></div>
-<div class="overlay overlay07"></div>
-<div class="overlay overlay08"></div>
-<div class="overlay overlay09"></div>
-<div class="overlay overlay10">
-  <div></div>
-  <div></div>
-  <div></div>
-</div>
-{% else %}
-{% endif %}
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ext-language_tools.js"></script>
-
-<script>
-
-{% with questions|first as question %}
- $(window).load(function() {
-   $('.lds-ripple').hide();
-    $("#{{question.id}}").click();
-    document.getElementById("ovl").click();
-    fullscreen();
-     $('#testcase-table').hide();
-     document.getElementById("fs").click();
-  });
-{% endwith %}
-var CSRF_TOKEN = '{{ csrf_token }}';
-var candidate_id = '{{ candidate.id }}';
-
-$(document).on("keydown",function(ev){
-	console.log(ev.keyCode);
-	if(ev.keyCode===122 || ev.keyCode===27 || ev.keyCode===17) return false
-})
-  $(window).on('keydown',function(event)
-    {
-    if(event.keyCode==123  || event.key == "ESC")
-    {
-        alert('Entered F12');
-        return false;
-    }
-    else if(event.ctrlKey && event.shiftKey && event.keyCode==73)
-    {
-        //alert('Entered ctrl+shift+i')
-       //return false;  //Prevent from ctrl+shift+i
-    }
-    else if(event.ctrlKey && event.keyCode==73)
-    {
-        alert('Dont try to inspect element')
-        return false;  //Prevent from ctrl+shift+i
-    }
-});
-$(document).on("contextmenu",function(e)
-{
-alert('Right Click Not Allowed')
-e.preventDefault();
-});
-
-document.addEventListener("fullscreenchange", function (event) {
-    if (document.fullscreenElement)
-        document.getElementById("ovl").style.display="none";
-    else 
-      document.getElementById("ovl").click();
-    
-});
-
-function fullscreen(){
-  document.documentElement.requestFullscreen();
 }
-document.addEventListener("fullscreenchange", function (event) {
-    if (document.fullscreenElement) {
-        // fullscreen is activated
-    } else {
-        // fullscreen is cancelled
-        //alert("Press F11 to get fullscreen. you will be marked suspicious if you exit full screen");
-            }
-});
-var end_time= "{{candidate.end_time|date:"M d, Y H:i:s"}}";
-var url_path="{{request.path}}"
-var r=url_path.split("/");
+    </style>
+    <body>
+      <div id="testpage_header">
+        <div id="pariksha-logo" class="inline_block">
+          <img id="pariksha_logo"src="{% static 'img/pariksha_logo.png'%}"/>
+  </div>
+        <div id ="timer"></div>
+        <div id="right_button"></div>
+      </div>
+    <div class="content">
+        <div id="question_section"class="split a">
+          <div id="question_section_header" class= "sub-header">
+          </div>
+          <div class="q_navbar_pane_wrapper">
+            <div class="question_description">
+              <div class="question_title">
+                <h4>Add the sum</h4>
+                <div class="help_texts"></div> 
+              </div>
+              <div class="question_description_content">
+                Given an array of integers, return indices of the two numbers such that they add up to a specific target.
 
-</script>
-<script src="{% static 'challenge/scripts/testpage.js' %}"></script>
-<script src="{% static 'challenge/scripts/notifications.js' %}" type=" text/javascript "></script>
-    
- {% endblock content%}
+                                    You may assume that each input would have exactly one solution, and you may not use the same element twice.
+
+                                    Example:
+
+                                    Given nums = [2, 7, 11, 15], target = 9,
+
+                                    Because nums[0] + nums[1] = 2 + 7 = 9,
+                                    return [0, 1].A wiki (/ˈwɪki/ (About this soundlisten) WIK-ee) is a knowledge base website on which users collaboratively modify and structure content directly from a web browser. In a typical wiki, text is written using a simplified markup language and often edited with the help of a rich-text editor.[1]
+
+                                    A wiki is run using wiki software, otherwise known as a wiki engine. A wiki engine is a type of content management system, but it differs from most other such systems, including blog software, in that the content is created without any defined owner or leader, and wikis have little inherent structure, allowing structure to emerge according to the needs of the users.[2] There are dozens of different wiki engines in use, both standalone and part of other software, such as bug tracking systems. Some wiki engines are open source, whereas others are proprietary. Some permit control over different functions (levels of access); for example, editing rights may permit changing, adding, or removing material. Others may permit access without enforcing access control. Other rules may be imposed to organize content.
+
+                                    The online encyclopedia project Wikipedia is the most popular wiki-based website, and is one of the most widely viewed sites in the world, having been ranked in the top ten since 2007.[3] Wikipedia is not a single wiki but rather a collection of hundreds of wikis, with each one pertaining to a specific language. In addition to Wikipedia, there are hundreds of thousands of other wikis in use, both public and private, including wikis functioning as knowledge management resources, notetaking tools, community websites, and intranets. The English-language Wikipedia has the largest collection of articles: as of February 2020, it has over 6 million articles. Ward Cunningham, the developer of the first wiki software, WikiWikiWeb, originally described wiki as "the simplest online database that could possibly work".[4] "Wiki" (pronounced [ˈwiki][note 1]) is a Hawaiian word meaning "quick".[5][6][7]A wiki (/ˈwɪki/ (About this soundlisten) WIK-ee) is a knowledge base website on which users collaboratively modify and structure content directly from a web browser. In a typical wiki, text is written using a simplified markup language and often edited with the help of a rich-text editor.[1]
+
+                                    A wiki is run using wiki software, otherwise known as a wiki engine. A wiki engine is a type of content management system, but it differs from most other such systems, including blog software, in that the content is created without any defined owner or leader, and wikis have little inherent structure, allowing structure to emerge according to the needs of the users.[2] There are dozens of different wiki engines in use, both standalone and part of other software, such as bug tracking systems. Some wiki engines are open source, whereas others are proprietary. Some permit control over different functions (levels of access); for example, editing rights may permit changing, adding, or removing material. Others may permit access without enforcing access control. Other rules may be imposed to organize content.
+
+                                    The online encyclopedia project Wikipedia is the most popular wiki-based website, and is one of the most widely viewed sites in the world, having been ranked in the top ten since 2007.[3] Wikipedia is not a single wiki but rather a collection of hundreds of wikis, with each one pertaining to a specific language. In addition to Wikipedia, there are hundreds of thousands of other wikis in use, both public and private, including wikis functioning as knowledge management resources, notetaking tools, community websites, and intranets. The English-language Wikipedia has the largest collection of articles: as of February 2020, it has over 6 million articles. Ward Cunningham, the developer of the first wiki software, WikiWikiWeb, originally described wiki as "the simplest online database that could possibly work".[4] "Wiki" (pronounced [ˈwiki][note 1]) is a Hawaiian word meaning "quick".[5][6][7]
+                </div>
+            </div>
+          </div>
+          <div class="question_wrapper">
+            <div class="question_header"></div>
+            <div class="question_content"></div>
+          </div>
+          <div id="question_section_footer" class= "sub-header">
+            <div class="question_header_nav_buttons">
+              <a>
+                <div class="inner_content">
+                  <span title="Description">Description</span>
+                </div> 
+              </a> 
+            </div>
+            <div class="question_header_nav_buttons">
+              <a>
+              <div class="inner_content">
+                <span title="Description">Description</span>
+              </div> 
+            </a> 
+            </div>
+            <div class="question_header_nav_buttons">
+              <a>
+              <div class="inner_content">
+                <span title="Description">Description</span>
+              </div> 
+            </a> 
+            </div>
+            <div class="question_header_nav_buttons">
+              <a>
+     
+            </a> 
+            </div>
+             
+          </div>
+        </div>
+        <div id="editor_section" class="split b">
+          <div id="top">
+            <div id="editor_section_header" class= "sub-header"></div>
+            <div id="ace_wrapeper">
+              <div class='code-editor' id='codeeditor'></div>
+            </div>
+          </div>
+          <div id="bottom_panel" >
+            <div id="editor_section_footer" class= "sub-header">
+              <div id="action_buttons" class="float_right">
+                <button type="button" id="run_button" class="run_button">
+                  <span class="run">Run</span></button>
+                <button type="button" id="submit_button" class="submit_button">Submit</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+    <script>
+      Split(['.a', '.b'], {
+        gutterSize: 6,
+        sizes: [40,60],
+      });
+      Split(['#top', '#bottom_panel'], {
+        gutterSize: 5,
+        sizes: [97,3],
+        direction: 'vertical',
+      });
+    </script>
+    <script src="{% static 'challenge/scripts/testpage.js' %}"></script>
+    <script src="{% static 'challenge/scripts/notifications.js' %}" type=" text/javascript "></script>
+     
+    </body>
+</html>
