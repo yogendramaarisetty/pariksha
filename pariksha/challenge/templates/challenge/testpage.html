@@ -1,143 +1,112 @@
 <!DOCTYPE html>
 <html>
-    <head>
+
+<head>
     {% load static %}
     <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Poppins|Raleway|Roboto+Mono&display=swap" rel="stylesheet">
-    
+
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/parikshatestpage.css' %}"/>
-   <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_default.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_ace_editor.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/darkmode.css' %}" />
+    <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
     <script src="{% static 'challenge/scripts/ace.js' %}" type=" text/javascript "></script>
     <script src="{% static 'challenge/scripts/mode-java.js' %}" type=" text/javascript "></script>
     <script src="{% static 'challenge/scripts/mode-c_cpp.js' %}" type=" text/javascript "></script>
     <script src="{% static 'challenge/scripts/theme-monokai.js' %}" type=" text/javascript "></script>
     <script src="{% static 'challenge/scripts/theme-xcode.js' %}" type=" text/javascript "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-     
-  <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-  </head>
-    <style>
-        .gutter {
-    cursor: e-resize;
-    height: 100%;
-    background-image: url({% static 'img/download.png' %});
-    background-position: 50%;
-    background-repeat: no-repeat;
-    cursor: ew-resize;
-    background-color: #fafafa;
 
-}
-    </style>
-    <body>
-      <div id="testpage_header">
+    <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+</head>
+<style>
+    .gutter {
+        cursor: e-resize;
+        height: 100%;
+        background-image: url({% static 'img/download.png' %});
+        background-position: 50%;
+        background-repeat: no-repeat;
+        cursor: ew-resize;
+        background-color: #fafafa;
+    }
+</style>
+
+<body>
+    <div id="testpage_header">
         <div id="pariksha-logo" class="inline_block">
-          <img id="pariksha_logo"src="{% static 'img/pariksha_logo.png'%}"/>
-  </div>
-        <div id ="timer"></div>
+        </div>
+        <div id="timer"></div>
         <div id="right_button"></div>
-      </div>
-    <div class="content">
-        <div id="question_section"class="split a">
-          <div id="question_section_header" class= "sub-header">
-          </div>
-          <div class="q_navbar_pane_wrapper">
-            <div class="question_description">
-              <div class="question_title">
-                <h4>Add the sum</h4>
-                <div class="help_texts"></div> 
-              </div>
-              <div class="question_description_content">
-                Given an array of integers, return indices of the two numbers such that they add up to a specific target.
-
-                                    You may assume that each input would have exactly one solution, and you may not use the same element twice.
-
-                                    Example:
-
-                                    Given nums = [2, 7, 11, 15], target = 9,
-
-                                    Because nums[0] + nums[1] = 2 + 7 = 9,
-                                    return [0, 1].A wiki (/ˈwɪki/ (About this soundlisten) WIK-ee) is a knowledge base website on which users collaboratively modify and structure content directly from a web browser. In a typical wiki, text is written using a simplified markup language and often edited with the help of a rich-text editor.[1]
-
-                                    A wiki is run using wiki software, otherwise known as a wiki engine. A wiki engine is a type of content management system, but it differs from most other such systems, including blog software, in that the content is created without any defined owner or leader, and wikis have little inherent structure, allowing structure to emerge according to the needs of the users.[2] There are dozens of different wiki engines in use, both standalone and part of other software, such as bug tracking systems. Some wiki engines are open source, whereas others are proprietary. Some permit control over different functions (levels of access); for example, editing rights may permit changing, adding, or removing material. Others may permit access without enforcing access control. Other rules may be imposed to organize content.
-
-                                    The online encyclopedia project Wikipedia is the most popular wiki-based website, and is one of the most widely viewed sites in the world, having been ranked in the top ten since 2007.[3] Wikipedia is not a single wiki but rather a collection of hundreds of wikis, with each one pertaining to a specific language. In addition to Wikipedia, there are hundreds of thousands of other wikis in use, both public and private, including wikis functioning as knowledge management resources, notetaking tools, community websites, and intranets. The English-language Wikipedia has the largest collection of articles: as of February 2020, it has over 6 million articles. Ward Cunningham, the developer of the first wiki software, WikiWikiWeb, originally described wiki as "the simplest online database that could possibly work".[4] "Wiki" (pronounced [ˈwiki][note 1]) is a Hawaiian word meaning "quick".[5][6][7]A wiki (/ˈwɪki/ (About this soundlisten) WIK-ee) is a knowledge base website on which users collaboratively modify and structure content directly from a web browser. In a typical wiki, text is written using a simplified markup language and often edited with the help of a rich-text editor.[1]
-
-                                    A wiki is run using wiki software, otherwise known as a wiki engine. A wiki engine is a type of content management system, but it differs from most other such systems, including blog software, in that the content is created without any defined owner or leader, and wikis have little inherent structure, allowing structure to emerge according to the needs of the users.[2] There are dozens of different wiki engines in use, both standalone and part of other software, such as bug tracking systems. Some wiki engines are open source, whereas others are proprietary. Some permit control over different functions (levels of access); for example, editing rights may permit changing, adding, or removing material. Others may permit access without enforcing access control. Other rules may be imposed to organize content.
-
-                                    The online encyclopedia project Wikipedia is the most popular wiki-based website, and is one of the most widely viewed sites in the world, having been ranked in the top ten since 2007.[3] Wikipedia is not a single wiki but rather a collection of hundreds of wikis, with each one pertaining to a specific language. In addition to Wikipedia, there are hundreds of thousands of other wikis in use, both public and private, including wikis functioning as knowledge management resources, notetaking tools, community websites, and intranets. The English-language Wikipedia has the largest collection of articles: as of February 2020, it has over 6 million articles. Ward Cunningham, the developer of the first wiki software, WikiWikiWeb, originally described wiki as "the simplest online database that could possibly work".[4] "Wiki" (pronounced [ˈwiki][note 1]) is a Hawaiian word meaning "quick".[5][6][7]
+    </div>
+    <div class="contents-wrapper">
+        <div class="fs-pains-container">
+            <div id="left_pane" class="fs-left-pane split">
+                <div id="vertical_navbar_wrapper"></div>
+                <div class="left-pane-content-wrapper"></div>
+            </div>
+            <div id="right_pane" class="fs-right-pane split">
+                <div id="top_section">
+                    <div class="editor_section_header"> </div>
+                    <div class="editor_wrapper">
+                        <div class='code-editor' id='codeeditor'></div>
+                    </div>
+                </div>
+                <div id="bottom_section" class="challenge-response fs-container ">
+                    <div class="bottom_header_controller">
+                        <div class="left_section">
+                            <div class="nav_btns">Testcases</div>
+                            <div class="nav_btns">CustomInput</div>
+                            <div class="nav_btns">Output</div>
+                        </div>
+                        <div class="right_section">
+                            <div>
+                                <button type="button">Run</button>
+                            </div>
+                            <div>
+                                <button type="button">Submit</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="output-area-wrap ">
+                    </div>
                 </div>
             </div>
-          </div>
-          <div class="question_wrapper">
-            <div class="question_header"></div>
-            <div class="question_content"></div>
-          </div>
-          <div id="question_section_footer" class= "sub-header">
-            <div class="question_header_nav_buttons">
-              <a>
-                <div class="inner_content">
-                  <span title="Description">Description</span>
-                </div> 
-              </a> 
-            </div>
-            <div class="question_header_nav_buttons">
-              <a>
-              <div class="inner_content">
-                <span title="Description">Description</span>
-              </div> 
-            </a> 
-            </div>
-            <div class="question_header_nav_buttons">
-              <a>
-              <div class="inner_content">
-                <span title="Description">Description</span>
-              </div> 
-            </a> 
-            </div>
-            <div class="question_header_nav_buttons">
-              <a>
-     
-            </a> 
-            </div>
-             
-          </div>
-        </div>
-        <div id="editor_section" class="split b">
-          <div id="top">
-            <div id="editor_section_header" class= "sub-header"></div>
-            <div id="ace_wrapeper">
-              <div class='code-editor' id='codeeditor'></div>
-            </div>
-          </div>
-          <div id="bottom_panel" >
-            <div id="editor_section_footer" class= "sub-header">
-              <div id="action_buttons" class="float_right">
-                <button type="button" id="run_button" class="run_button">
-                  <span class="run">Run</span></button>
-                <button type="button" id="submit_button" class="submit_button">Submit</button>
-              </div>
-            </div>
-          </div>
         </div>
     </div>
-    <script src="https://unpkg.com/split.js/dist/split.min.js"></script>
+    <script src="https://unpkg.com/split.js/dist/split.min.js "></script>
     <script>
-      Split(['.a', '.b'], {
-        gutterSize: 6,
-        sizes: [40,60],
-      });
-      Split(['#top', '#bottom_panel'], {
-        gutterSize: 5,
-        sizes: [97,3],
-        direction: 'vertical',
-      });
+        Split(['#left_pane', '#right_pane'], {
+            gutterSize: 6,
+            sizes: [40, 60],
+            minSize: [200, 600]
+        });
+
+        var sizes = localStorage.getItem('split-sizes')
+
+        if (sizes) {
+            sizes = JSON.parse(sizes)
+        } else {
+            sizes = [90, 10] // default sizes
+        }
+
+        var split = Split(['#top_section', '#bottom_section'], {
+            gutterSize: 5,
+            sizes: [90, 10],
+            direction: 'vertical',
+            minSize: 40,
+            sizes: sizes,
+            onDragEnd: function(sizes) {
+                localStorage.setItem('split-sizes', JSON.stringify(sizes))
+            },
+        });
     </script>
-    <script src="{% static 'challenge/scripts/testpage.js' %}"></script>
-    <script src="{% static 'challenge/scripts/notifications.js' %}" type=" text/javascript "></script>
-     
-    </body>
+    <script src="{% static 'challenge/scripts/testpage.js' %} "></script>
+    <script src="{% static 'challenge/scripts/notifications.js' %} " type=" text/javascript "></script>
+
+</body>
+
 </html>

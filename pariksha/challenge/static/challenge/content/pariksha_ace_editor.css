@@ -1,0 +1,27 @@
+.ace_gutter {
+    color: #b9b9b9 !important;
+    background: #ffffff !important;
+    width: 3.8rem !important;
+}
+
+.ace_scroller {
+    left: 3.8rem !important;
+}
+
+.ace_marker-layer .ace_active-line {
+    background: rgba(0, 103, 222, 0.1) !important;
+}
+
+.ace_layer.ace_gutter-layer.ace_folding-enabled {
+    width: 100% !important;
+}
+
+.ace_gutter-active-line {
+    background-color: rgba(255, 255, 255, 0.071) !important;
+    color: #0056a8 !important;
+    font-weight: 600 !important;
+}
+
+.ace-tm .ace_comment {
+    color: #07b100 !important;
+}
