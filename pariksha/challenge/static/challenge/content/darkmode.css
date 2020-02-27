@@ -1,0 +1,138 @@
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+ ::-webkit-scrollbar {
+    width: 8px;
+}
+
+::-webkit-scrollbar-thumb {
+    background: #505050;
+    border-radius: 19px;
+}
+
+::-webkit-scrollbar-track {
+    border-radius: 21px;
+}
+
+
+/* Track */
+
+
+/* Handle */
+
+ ::-webkit-scrollbar-thumb {
+    background: #9c9c9c;
+    border-radius: 10px;
+}
+
+
+/* Handle on hover */
+
+ ::-webkit-scrollbar-thumb:hover {
+    background: #444444;
+}
+
+body {
+    background-color: rgb(20, 20, 20);
+}
+
+.left-pane-content-wrapper_dark {
+    background: #242421;
+    color: #ddddddc7;
+}
+
+.gutter.gutter-horizontal {
+    background-color: #141414;
+    box-shadow: none;
+}
+
+div#vertical_navbar_wrapper {
+    min-height: 100%;
+    height: fit-content;
+    width: 3rem;
+    box-shadow: 1px 0 8px #2f2f2f1c;
+    background: #141414;
+}
+
+div#vertical_navbar_wrapper {
+    min-height: 100%;
+    height: fit-content;
+    width: 3rem;
+    box-shadow: 3px 0px 7px 2px #1a1a1ac2;
+    background: #141414;
+    z-index: 111;
+}
+
+.gutter.gutter-vertical {
+    background-color: #141414;
+}
+
+button {
+    background: #10101036;
+}
+
+button.run_button:hover {
+    background: #452b59;
+    color: #adadadeb;
+}
+
+div#testpage_header {
+    height: 3rem;
+    width: 100%;
+    background: #141414;
+    box-shadow: inset 0 -3px 2px #00000036;
+}
+
+button.submit_button {
+    color: #ffffff80;
+}
+
+.editor_section_header {
+    background: #303030;
+    color: aliceblue;
+}
+
+.bottom_header_controller {
+    background: #3030309e;
+    color: aliceblue;
+}
+
+.nav_btns_active {
+    font-weight: 500;
+    border-bottom: 4px solid #808080fc;
+    transition: 0.3s;
+}
+
+button#console_collapse {
+    background-color: #3d3d3d54;
+    color: aliceblue;
+}
+
+select#languages {
+    background: #111111c2;
+    border: 1px solid #2e2e2e;
+    color: white;
+}
+
+.output-area-wrap {
+    background-color: #242421a6;
+}
+
+button#console_collapse:hover {
+    background: #121212;
+}
+
+.left-pane-content-wrapper {
+    background: #1e1e1c;
+    color: #f7f7f7a6;
+}
+
+li.nav_item_active {
+    color: white;
+}
+
+.gutter.gutter-vertical {
+    background: rgb(17, 17, 17);
+}

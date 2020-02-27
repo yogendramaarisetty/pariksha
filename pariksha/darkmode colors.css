@@ -1,0 +1,22 @@
+body {
+    color: #252f3e;
+    text-color: #8a9bba;
+    editor-bg: #1c2434;
+    editor: #1c2434;
+    editor-header: #252f3e;
+    gutter: #141c24;
+    editor-spans-color: #738f93;
+}
+
+.left-pane-content-wrapper {
+    background: #1e1e1c;
+}
+
+div#vertical_navbar_wrapper {
+    min-height: 100%;
+    height: fit-content;
+    width: 3rem;
+    box-shadow: 3px 0px 2px 0px #0c0c0c40;
+    background: #6b6e7526;
+    z-index: 111;
+}
