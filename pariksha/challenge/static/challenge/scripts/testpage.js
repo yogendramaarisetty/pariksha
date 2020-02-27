@@ -5,7 +5,7 @@
 //splitjs*************
 Split(['#left_pane', '#right_pane'], {
     gutterSize: 13,
-    sizes: [40, 60],
+    sizes: [30, 70],
     minSize: [200, 600]
 });
 
