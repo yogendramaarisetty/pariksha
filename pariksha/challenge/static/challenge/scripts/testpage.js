@@ -29,3 +29,24 @@ editor.setOptions({
 editor.setOptions({
     fontSize: "11pt"
 });
+
+$(document).ready(function() {
+    // executes when HTML-Document is loaded and DOM is ready
+   });
+   
+   var current_active = "";
+   $(window).load(function() {
+    // executes when complete page is fully loaded, including all frames, objects and images
+   $(".nav_btns")[2].click();
+   });
+$(".nav_btns").click(function(){
+    if(current_active != this){
+    
+    this.className = "nav_btns_active";
+    console.log(this.getAttribute('data'));
+    current_active.className = "nav_btns";
+    current_active = this;
+    }
+  });
+
+  
