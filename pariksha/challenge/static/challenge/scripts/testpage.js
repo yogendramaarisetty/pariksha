@@ -4,7 +4,7 @@
 
 //splitjs*************
 Split(['#left_pane', '#right_pane'], {
-    gutterSize: 13,
+    gutterSize: 7,
     sizes: [30, 70],
     minSize: [200, 600]
 });
@@ -14,7 +14,7 @@ var sizes = localStorage.getItem('split-sizes')
 if (sizes) {
     sizes = JSON.parse(sizes)
 } else {
-    sizes = [90, 10] // default sizes
+    sizes = [50, 50] // default sizes
 }
 
 var splitV = Split(['#top_section', '#bottom_section'], {
@@ -69,18 +69,21 @@ $(window).load(function() {
     });*/
     // editor.setOptions({
     //     maxLines: Infinity
-    // });
+    // });]
     editor.setOptions({
         fontSize: "11pt"
     });
+    editor.addEventListener('click', function(){ editor.resize(); console.log('clicked');}); 
 
-    $(document).ready(function() {
-        // executes when HTML-Document is loaded and DOM is ready
-    });
 });
 
+
+$(document).ready(function() {
+    // executes when HTML-Document is loaded and DOM is ready
+});
 var draggerV = $(".gutter-vertical")[0];
 draggerV.addEventListener("click", function(event) {
+    editor.resize();
     var s = splitV.getSizes();
     console.log("dragged");
     if (s[1] < 25) {
@@ -103,14 +106,20 @@ $(".nav_btns").click(function() {
         current_active = this;
     }
 });
+$('#ew').bind('resize', function(){
+    alert( 'Height changed to' + $(this).height() );
+});
 $('#console_collapse').click(function() {
+    editor.resize();
     var icon = $('#up_down');
     icon = icon[0];
     if (icon.innerText == "keyboard_arrow_down") {
         splitV.setSizes([100, 0]);
+        editor.resize();
         icon.innerText = "keyboard_arrow_up";
     } else if (icon.innerText == "keyboard_arrow_up") {
         splitV.setSizes([70, 30]);
+        editor.resize();
         icon.innerText = "keyboard_arrow_down";
     }
 
@@ -130,12 +139,10 @@ function set_ace_editor_mode(mode) {
     if (mode == "dark") {
         editor.setTheme("ace/theme/monokai");
         $('.ace_gutter')[0].setAttribute('style', 'background:#272822 !important');
-        $(".ace_gutter-active-line")[0].style.color = "#00a8cc";
         $('link[title=darkmode]')[0].disabled = false;
     } else if (mode == "light") {
         editor.setTheme("ace/theme/textmate");
         $('.ace_gutter')[0].setAttribute('style', '');
-        $(".ace_gutter-active-line")[0].style.color = "#0056a8";
         $('link[title=darkmode]')[0].disabled = true;
     }
 }
