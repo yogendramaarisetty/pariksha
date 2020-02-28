@@ -1,0 +1,94 @@
+{% extends "challenge/base.html" %} {% block content %} {% load crispy_forms_tags %}
+<style>
+    .pretty.p-switch .state:before {
+        height: 1rem;
+    }
+</style>
+{% if user.is_authenticated %}
+<div class="model_form_outer_wrapper">
+    <div class="header_wrapper">
+        <div class="model_form_title">
+            <h1>Create {{model_name}}</h1>
+            <p class="Description_para">Host this contest on pariksha and allow users to take the test.</p>
+            <p class="Description_para italic">Get started by providing the initial details for your contest.</p>
+        </div>
+        <div class="header_description"></div>
+    </div>
+    <form method="POST" id="form">
+        {% csrf_token %}
+        <div class="model_form_main_wrapper">
+            <section class="model_form_section">
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.Title.name}}">Title</label> {{form.Title}}
+                </div>
+                {% if form.Title.errors %} {% for error in form.Title.errors %}
+                <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                {% endfor %} {% endif %}
+
+                <p id="contest_title_error" class="form_error"><strong></strong></p>
+                <div class="label_field_wrapper">
+                    <label for="{{form.Slug.name}}">Slug</label> {{form.Slug}}
+                </div>
+                {% if form.Slug.errors %} {% for error in form.Slug.errors %}
+                <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                {% endfor %} {% endif %}
+                <p id="contest_slug_error" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.Type.name}}">Type</label> {{form.Type}}
+                </div>
+                <p id="contest_description_error" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.Description.name}}">Description</label> {{form.Description}}
+                </div>
+                <p id="contest_description_error" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.default_c_code.name}}">Default C code</label> {{form.default_c_code}}
+                </div>
+                <p id="default_c_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.default_cpp_code.name}}">Default C++ code</label> {{form.default_cpp_code}}
+                </div>
+                <p id="default_cpp_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.default_java_code.name}}">Default Java code</label> {{form.default_java_code}}
+                </div>
+                <p id="default_java_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.default_csharp_code.name}}">Default C# code</label> {{form.default_csharp_code}}
+                </div>
+                <p id="default_csharp_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.default_python_code.name}}">Default Python code</label> {{form.default_python_code}}
+                </div>
+                {% if form.default_python_code.errors %} {% for error in form.default_python_code.errors %}
+                <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                {% endfor %} {% endif %}
+                <p id="default_python_code" class="form_error"><strong></strong></p>
+
+
+
+                <div class="footer_form_button floater_right">
+                    <a id="contest_edit_link" href="">
+                        <button type="button" id="contest_edit_link" onclick="window.location.href = 'https://w3docs.com';" class="positive_button">Edit</button>
+                    </a>
+                    <button id="save_btn" class="positive_button" onclick="formAsyncSave()" type="button">
+                        Save
+                    </button>
+                </div>
+            </section>
+        </div>
+    </form>
+    <div class="qfooter_form_button">
+
+    </div>
+</div>
+
+{% endif %} {% endblock content %}

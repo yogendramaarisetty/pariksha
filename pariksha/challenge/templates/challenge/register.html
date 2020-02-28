@@ -1,19 +1,14 @@
-{% extends "challenge/base.html" %}
-{% block content %}
-{% load crispy_forms_tags %}
-{% load static %}
+{% extends "challenge/base.html" %} {% block content %} {% load crispy_forms_tags %} {% load static %}
 <style>
-    
-.signup-image {
-    background-image: url("{% static 'img/signup.jpg'%}");
-    border-radius: inherit;
-    background-size: cover;
-    background-repeat: no-repeat;
-    background-position: 50% 50%;
-    
-    border-top-left-radius: 0px;
-    border-bottom-left-radius: 0px;
-}
+    .signup-image {
+        background-image: url("{% static 'img/signup.jpg'%}");
+        border-radius: inherit;
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-position: 50% 50%;
+        border-top-left-radius: 0px;
+        border-bottom-left-radius: 0px;
+    }
 </style>
 {% if user.is_authenticated %}
 <div class="mb-2 alert alert-success" role="alert">
@@ -31,53 +26,36 @@
                 <form method="POST" class="register-form" id="register-form">
                     {% csrf_token %}
                     <div class="form-group">
-                        <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label>
-                        {{form.username}}
-                       
+                        <label for="name"><i class="zmdi zmdi-account material-icons-name"></i></label> {{form.username}}
+
                     </div>
-                    {% if form.username.errors %}
-                        {% for error in form.username.errors %}
-                            <p class="form_error"><strong>{{ error|escape }}</strong></p>
-                        {% endfor %}
-                    {% endif %}
+                    {% if form.username.errors %} {% for error in form.username.errors %}
+                    <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %} {% endif %}
                     <div class="form-group">
-                        <label for="email"><i class="zmdi zmdi-email"></i></label>
-                        {{form.email}}
+                        <label for="email"><i class="zmdi zmdi-email"></i></label> {{form.email}}
                     </div>
-                    {% if form.username.errors %}
-                        {% for error in form.email.errors %}
-                        <p class="form_error"><strong>{{ error|escape }}</strong></p>
-                        {% endfor %}
-                    {% endif %}
+                    {% if form.username.errors %} {% for error in form.email.errors %}
+                    <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %} {% endif %}
                     <div class="form-group">
-                        <label for="pass"><i class="zmdi zmdi-lock"></i></label>
-                        {{form.password1}}
+                        <label for="pass"><i class="zmdi zmdi-lock"></i></label> {{form.password1}}
                     </div>
-                    {% if form.password1.errors %}
-                        {% for error in form.password1.errors %}
-                        <p class="form_error"><strong>{{ error|escape }}</strong></p>
-                        {% endfor %}
-                    {% endif %}
+                    {% if form.password1.errors %} {% for error in form.password1.errors %}
+                    <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %} {% endif %}
                     <div class="form-group">
-                        <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label>
-                        {{form.password2}}
+                        <label for="re-pass"><i class="zmdi zmdi-lock-outline"></i></label> {{form.password2}}
                     </div>
-                    {% if form.password2.errors %}
-                        {% for error in form.password2.errors %}
-                        <p class="form_error"><strong>{{ error|escape }}</strong></p>
-                        {% endfor %}
-                    {% endif %}
-                    <div class="form-group">
-                        <input type="checkbox" name="agree-term" id="agree-term" class="agree-term">
-                        <label for="agree-term" class="label-agree-term"><span><span></span></span>I agree all
-                            statements in <a href="#" class="term-service">Terms of service</a></label>
-                    </div>
+                    {% if form.password2.errors %} {% for error in form.password2.errors %}
+                    <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                    {% endfor %} {% endif %}
                     <div class="form-group form-button">
-                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register" disabled>
+                        <input type="submit" name="signup" id="signup" class="form-submit" value="Register">
                     </div>
                 </form>
             </div>
-            
+
         </div>
         <div class="signup-image">
         </div>
@@ -86,15 +64,6 @@
 </div>
 {% endif %}
 <script>
-    var checkbox = document.getElementById('agree-term');
-    var register = document.getElementById('signup');
-checkbox.addEventListener( 'change', function() {
-    if(this.checked) {
-        register.disabled = false;
-    } else {
-        register.disabled = true;
-    }
-});
 </script>
 
 {% endblock content %}

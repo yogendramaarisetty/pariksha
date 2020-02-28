@@ -1,5 +1,4 @@
-{% extends "challenge/base.html" %} {% block content %}
-{% if user.is_authenticated %}
+{% extends "challenge/base.html" %} {% block content %} {% if user.is_authenticated %}
 <section class="available_tests" data-tab="emoji">
     <div class="table_content_wrapper">
         <div class="table_head_content_wrapper">
@@ -7,8 +6,8 @@
             {% if user.is_superuser %}
             <div class="table_action_buttons">
                 <a href="{% url 'create_contest'%}">
-                <button  class="positive_button pariksha_button">Create Contenst</button>
-            </a>
+                    <button class="positive_button pariksha_button">Create Contenst</button>
+                </a>
                 <button class="negative_button pariksha_button">Manage</button>
             </div>
             {% else %}
@@ -21,7 +20,7 @@
             <span class="search_icon"><i id="search_icon" class="material-icons">
                     search
                 </i></span>
-            <input type="text" id="search_box" onkeyup="myFunction()"  placeholder="Search by test name">
+            <input type="text" id="search_box" onkeyup="myFunction()" placeholder="Search by test name">
         </div>
         <div class="table_main_content_wrapper" id="table_wrapper">
             <div class="list_element_wrapper">
@@ -35,10 +34,11 @@
                             <th>Duration</th>
                             <th>College</th>
                             <th></th>
+                            <th></th>
                         </tr>
                     </thead>
                     <tbody class="main_table_records">
-                    {% for test in challenges %}
+                        {% for test in challenges %}
                         <tr id="{{test.id}}">
                             <td>{{ test.id }}</td>
                             <td>{{ test.Title }}</td>
@@ -50,8 +50,9 @@
                             <td>{{ test.Date }}</td>
                             <td>{{ test.Test_Duration }} mins</td>
                             <td>{{test.College}}</td>
-                            <td><button type="button" data-contestid = "{{test.id}}" class="delete_buttons" style="margin-right:1rem;">Delete</button><a href= "{% url 'contest_edit_form' contest_id=test.id %}"><button  class="positive_button">Edit Contest</button></a></td>
-                           
+                            <td><button type="button" data-contestid="{{test.id}}" class="delete_buttons" style="margin-right:1rem;">Delete</button></td>
+                            <td><a href="{% url 'contest_edit_form' contest_id=test.id %}"><button  class="positive_button">Edit Contest</button></a></td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -64,40 +65,41 @@
 <!-- DivTable.com -->
 
 <div>
- <script type="text/javascript">
-                                $('.delete_buttons').on('click', function(){
-                                    var contest_id = $(this).attr('data-contestid'); 
-                                    $.confirm({
-                                        title: 'Confirm!',
-                                        content: 'Are you sure you want to delete the contest?',
-                                        buttons: {
-                                            delete: function(){
-                                               deleteContest(contest_id); 
-                                                $.alert('Deleted!');
-                                            },
-                                            cancel: function(){
-                                                $.alert('Canceled!');
-                                            },
-                                            // somethingElse: {
-                                            //     text: 'Something else',
-                                            //     btnClass: 'btn-blue',
-                                            //     keys: [
-                                            //         'enter',
-                                            //         'shift'
-                                            //     ],
-                                            //     action: function(){
-                                            //         this.$content // reference to the content
-                                            //         $.alert('Something else?');
-                                            //     }
-                                            // }
-                                        }
-                                    });
-                                });
-    function deleteContest(test_id){
-         var ajaxMins = new Date().getMinutes();
+    <script type="text/javascript">
+        $('.delete_buttons').on('click', function() {
+            var contest_id = $(this).attr('data-contestid');
+            $.confirm({
+                title: 'Confirm!',
+                content: 'Are you sure you want to delete the contest?',
+                buttons: {
+                    delete: function() {
+                        deleteContest(contest_id);
+                        $.alert('Deleted!');
+                    },
+                    cancel: function() {
+                        $.alert('Canceled!');
+                    },
+                    // somethingElse: {
+                    //     text: 'Something else',
+                    //     btnClass: 'btn-blue',
+                    //     keys: [
+                    //         'enter',
+                    //         'shift'
+                    //     ],
+                    //     action: function(){
+                    //         this.$content // reference to the content
+                    //         $.alert('Something else?');
+                    //     }
+                    // }
+                }
+            });
+        });
+
+        function deleteContest(test_id) {
+            var ajaxMins = new Date().getMinutes();
             var ajaxSecs = new Date().getSeconds();
             var ajaxMS = new Date().getMilliseconds();
-         $.ajax({
+            $.ajax({
 
                 type: 'POST',
                 url: '',
@@ -106,75 +108,74 @@
                 async: true,
                 data: {
                     csrfmiddlewaretoken: "{{ csrf_token }}",
-                    contest_id:test_id ,
+                    contest_id: test_id,
                 },
-                success: function (json) {
-                    
-                   document.getElementById(test_id).style.display = "none";
-                        const myNotification = window.createNotification({
-                            });
-                        myNotification({ 
-                            title: 'Deleted',
-                            message: json.msg 
-                            });
+                success: function(json) {
 
-                           myNotification({ 
-                                
-                                        // close on click
-                                        closeOnClick: true,
+                    document.getElementById(test_id).style.display = "none";
+                    const myNotification = window.createNotification({});
+                    myNotification({
+                        title: 'Deleted',
+                        message: json.msg
+                    });
 
-                                        // displays close button
-                                        displayCloseButton: false,
+                    myNotification({
 
-                                        // nfc-top-left
-                                        // nfc-bottom-right
-                                        // nfc-bottom-left
-                                        positionClass: 'nfc-top-right',
+                        // close on click
+                        closeOnClick: true,
 
-                                        // callback
-                                        onclick: false,
+                        // displays close button
+                        displayCloseButton: false,
 
-                                        // timeout in milliseconds
-                                        showDuration: 9500,
+                        // nfc-top-left
+                        // nfc-bottom-right
+                        // nfc-bottom-left
+                        positionClass: 'nfc-top-right',
 
-                                        // success, info, warning, error, and none
-                                        theme: 'error'
-                                        
-                                        });
+                        // callback
+                        onclick: false,
+
+                        // timeout in milliseconds
+                        showDuration: 9500,
+
+                        // success, info, warning, error, and none
+                        theme: 'error'
+
+                    });
 
                 },
 
                 statusCode: {
-                    500: function () {
-                    }
+                    500: function() {}
                 },
-            }).done(function () {
+            }).done(function() {
                 var ajaxMins2 = new Date().getMinutes() - ajaxMins;
                 var ajaxSecs2 = (new Date().getSeconds() % 60) - ajaxSecs;
                 var ajaxMS2 = new Date().getMilliseconds() - ajaxMS;
                 console.log(ajaxSecs2, " seconds");
             });
-    }
-        function myFunction() {
-          var input, filter, table, tr, td, i, txtValue;
-          input = document.getElementById("search_box");
-          filter = input.value.toUpperCase();
-          table = document.getElementById("myTable");
-          tr = table.getElementsByTagName("tr");
-          for (i = 0; i < tr.length; i++) {
-            td = tr[i].getElementsByTagName("td")[1];
-            if (td) {
-              txtValue = td.textContent || td.innerText;
-              if (txtValue.toUpperCase().indexOf(filter) > -1) {
-                tr[i].style.display = "";
-              } else {
-                tr[i].style.display = "none";
-              }
-            }       
-          }
-          
         }
-        </script>
+
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("search_box");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+
+        }
+    </script>
 
     {% else %}
     <div class="row mt-3">
@@ -186,5 +187,4 @@
             </div>
         </div>
     </div>
-    {% endif %}
-    {% endblock content %}
+    {% endif %} {% endblock content %}

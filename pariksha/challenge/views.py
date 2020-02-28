@@ -1,7 +1,7 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm
-from .models import Candidate,Challenge,Question,Candidate_codes,testcases,challenge_questions
+from .models import Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -111,6 +111,7 @@ def challenges(request):
     }
     return render(request,'challenge/challenges.html',context)
 
+
 @user_passes_test(lambda u: u.is_superuser)
 def create_contest_form(request):
     if request.method == "POST":
@@ -121,14 +122,14 @@ def create_contest_form(request):
         current_contest_id = None
         if request.is_ajax():
             if request.POST.get('contest')=='yes':
-                csrf = request.POST.get('csrfmiddlewaretoken')
-                Title = request.POST.get('Title')
-                Slug = request.POST.get('Slug')
-                Duration = request.POST.get('Duration')
-                Description = request.POST.get('Description')
-                Date = request.POST.get('Date')
+                # csrf = request.POST.get('csrfmiddlewaretoken')
+                # Title = request.POST.get('Title')
+                # Slug = request.POST.get('Slug')
+                # Duration = request.POST.get('Duration')
+                # Description = request.POST.get('Description')
+                # Date = request.POST.get('Date')
                 Active = request.POST.get('Active')
-                College = request.POST.get('College')
+                # College = request.POST.get('College')
                 if form.is_valid():
                     print(Active)
                     activation_bool = True
@@ -194,14 +195,13 @@ def contest_edit_form(request, contest_id):
         form = ContestCreationForm(request.POST,instance = contest)
         if request.is_ajax():
             if request.POST.get('contest')=='yes':
-                csrf = request.POST.get('csrfmiddlewaretoken')
-                Title = request.POST.get('Title')
-                Slug = request.POST.get('Slug')
-                Duration = request.POST.get('Duration')
-                Description = request.POST.get('Description')
-                Date = request.POST.get('Date')
+                # csrf = request.POST.get('csrfmiddlewaretoken')
+                # Title = request.POST.get('Title')
+                # Slug = request.POST.get('Slug')
+                # Duration = request.POST.get('Duration')
+                # Description = request.POST.get('Description')
+                # Date = request.POST.get('Date')
                 Active = request.POST.get('Active')
-                College = request.POST.get('College')
                 if form.is_valid():
                         print(Active)
                         activation_bool = True
@@ -237,6 +237,63 @@ def contest_edit_form(request, contest_id):
         form = ContestCreationForm(instance = contest)
         this_contest_questions = challenge_questions.objects.filter(challenge = contest)
         return render(request,'challenge/contest_edit_form.html',{'form':form,'contest_id':contest.id,'model_name':'Contest','question_bank':Question.objects.all(),'contest_questions':this_contest_questions})
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def create_question_form(request):
+    if request.method == "POST":
+        form = QuestionCreateForm(request.POST)
+        print('form is post',request.POST)
+        data = request.POST
+        question = Question()
+        current_question_id = None
+        if request.is_ajax():
+            if request.POST.get('question')=='yes':
+                if form.is_valid():
+                    form.save()
+                    question = form.save(commit=False)
+                    res = {'saved':'yes',
+                            'msg':'Question Saved successfully',
+                            'question_id': question.pk
+                            }
+                    return HttpResponse(json.dumps(res), content_type="application/json")
+                else:
+                    return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
+            elif request.POST.get('question_testcase') == "yes":
+                testcase_list = data.getlist('list[]')
+                question_id = data.get('question_id')
+                print('CURRENT_CONTEST_ID = ',question_id)
+                res = {'msg':'Successflly got list'}
+                return HttpResponse(json.dumps(res), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps(form.errors), content_type="application/json")      
+    else:
+        form = QuestionCreateForm()
+    return render(request, 'challenge/question_create_form.html',{'form':form,'model_name':'Question'})
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 def completed_testpage(request):
     return render(request,'challenge/completed_test.html')

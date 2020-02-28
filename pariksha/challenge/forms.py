@@ -39,15 +39,17 @@ class CandidateDetailsForm(forms.ModelForm):
            'resume':'upload your updated resume'  
         }
         fields = ['fullname','rollnumber','college','branch','graduation_year','mobile_number']
+
 class QuestionCreateForm(forms.ModelForm):
-    Description = forms.CharField(widget=forms.TextInput(attrs={'class': 'content','id':'text_editor'}))
+    Description = forms.CharField(widget=forms.Textarea(attrs={'class': 'content','id':'q_description_editor'}))
     class Meta:
         model = Question
-        fields = ('Slug','Title','Type','Description','sample_inputs','sample_outputs','default_c_code',
+        fields = ['Slug','Title','Type','Description','default_c_code',
         'default_cpp_code',
         'default_csharp_code',
         'default_java_code',
-        'default_python_code')
+        'default_python_code']
+
 class ContestCreationForm(forms.ModelForm):
     Description = forms.CharField(widget=forms.TextInput(attrs={'class': 'content','id':'text_editor'}))
     contest_questions = forms.CharField(required=False,widget = forms.TextInput(attrs={'id': 'selected_question_id_string','class':'hidden'}))

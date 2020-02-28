@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User,Group
-from . models import Challenge,Question,Candidate,testcases,submittedcodes,Candidate_codes,challenge_questions
+from . models import Challenge,Question,Candidate,Testcase,Candidate_codes,challenge_questions
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
@@ -34,11 +34,8 @@ class ChallengeAdmin(admin.ModelAdmin):
 
 admin.site.register(Challenge,ChallengeAdmin)
 
-class InLineTestcases(admin.TabularInline):
-    model = testcases
-    extra = 0
+
 class QuestionAdmin(admin.ModelAdmin):
-    inlines = [InLineTestcases]
     list_display=('Title','Slug','Type','combine_title_slug')
     list_display_links = ('Title',
                         'Slug')
@@ -116,5 +113,3 @@ class Candidate_codesAdmin(admin.ModelAdmin):
 
 admin.site.register(Candidate,CandidateAdmin)
 admin.site.register(Candidate_codes,Candidate_codesAdmin)
-
-admin.site.register(submittedcodes)

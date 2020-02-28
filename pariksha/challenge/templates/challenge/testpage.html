@@ -7,11 +7,12 @@
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Poppins|Raleway|Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_default.css' %}" />
-    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_ace_editor.css' %}" />
-    <link title="darkmode" rel="stylesheet" type="text/css" href="{% static 'challenge/content/darkmode.css' %}" disabled />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_ace_editor.css' %}" />
+    <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_default.css' %}" />
+    <link title="darkmode" rel="stylesheet" type="text/css" href="{% static 'challenge/content/darkmode.css' %}" disabled />
+
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js" integrity="sha256-C7DTYRJLG+B/VEzHGeoPMw699nsTQYPAXHKXZb+q04E=" crossorigin="anonymous"></script>
     <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -53,34 +54,21 @@
     <div class="contents-wrapper">
         <div class="fs-pains-container">
             <div id="left_pane" class="fs-left-pane split">
-                <div class="full_screen_sidebar">
-                    <div class="extra_sidebar">
-                        <div id="vertical_navbar_wrapper">
-                            <ul class="nav_items_list">
-                                <li class="nav_item_active">
-                                    <a class="a_nav">Longest palindrome</a>
-                                </li>
-                                <li class="nav_item">
-                                    <a class="a_nav">Longest palindrome</a>
-                                </li>
-                                <li class="nav_item">
-                                    <a class="a_nav">Longest palindrome</a>
-                                </li>
-                                <li class="nav_item">
-                                    <a class="a_nav">Longest palindrome</a>
-                                </li>
-                                <li class="nav_item">
-                                    <a class="a_nav">Longest palindrome</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                <div class="questions_list">
+
                 </div>
                 <div class="left-pane-content-wrapper">
-                    <div class="question_title">Relative Sort</div>
-                    <div class="description">Given two arrays arr1 and arr2, the elements of arr2 are distinct, and all elements in arr2 are also in arr1. Sort the elements of arr1 such that the relative ordering of items in arr1 are the same as in arr2. Elements that don't appear
-                        in arr2 should be placed at the end of arr1 in ascending order. Example 1: Input: arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6] Output: [2,2,2,1,4,3,3,9,6,7,19] Constraints: arr1.length, arr2.length
-                        <=1 000 0 <=arr1[i], arr2[i] <=1000 Each arr2[i] is distinct. Each arr2[i] is in arr1.</div>
+                    <div class="question_wrapper">
+                        <div class="question_title">Relative Sort</div>
+                        <div class="description">Given two arrays arr1 and arr2, the elements of arr2 are distinct, and all elements in arr2 are also in arr1. Sort the elements of arr1 such that the relative ordering of items in arr1 are the same as in arr2. Elements that don't
+                            appear in arr2 should be placed at the end of arr1 in ascending order. Example 1: Input: arr1 = [2,3,1,3,2,4,6,7,9,2,19], arr2 = [2,1,4,3,9,6] Output: [2,2,2,1,4,3,3,9,6,7,19] Constraints: arr1.length, arr2.length
+                            <=1 000 0 <=arr1[i], arr2[i] <=1000 Each arr2[i] is distinct. Each arr2[i] is in arr1. </div>
+                        </div>
+                    </div>
+                    <div class="top_controller_bar">
+                        <div class="right_section">
+                            <button type="button" class="change_q">Change Question</button>
+                        </div>
                     </div>
                 </div>
                 <div id="right_pane" class="fs-right-pane split">
@@ -93,13 +81,19 @@
                                     <option value="C">C</option>
                                     <option value="C++">C++</option>
                                     <option value="C#">C#</option>
-                                  </select>
+                                </select>
+                                <i id='light_mode_icon' class="material-icons ld">
+                                    wb_sunny
+                                </i>
                                 <div class="pretty p-switch p-fill">
                                     <input id="mode" type="checkbox" />
                                     <div class="state">
-                                        <label>Mode</label>
+                                        <label></label>
                                     </div>
                                 </div>
+                                <i id='dark_mode_icon' class="material-icons ld">
+                                    nights_stay
+                                </i>
                             </div>
                             <div class="right_section"></div>
                         </div>
@@ -124,22 +118,27 @@
                             </div>
                             <div class="right_section">
                                 <div>
-                                    <button class="run_button" type="button"><span class="span_button"><i id="run_icon" class="material-icons">
-                                        play_arrow
-                                        </i></span>Run</button>
+                                    <button class="run_button" type="button"><span class="span_button"><i id="run_icon"
+                                                class="material-icons">
+                                                play_arrow
+                                            </i></span>Run</button>
                                 </div>
                                 <div>
                                     <button class="submit_button" type="button">Submit</button>
                                 </div>
                                 <div>
-                                    <button id="console_collapse" style="transition:0.3s;" type="button"><i id="up_down" style="transition:0.3s;" class="material-icons">keyboard_arrow_down</i></button>
+                                    <button id="console_collapse" style="transition:0.3s;" type="button"><i id="up_down"
+                                            style="transition:0.3s;"
+                                            class="material-icons">keyboard_arrow_down</i></button>
                                 </div>
                             </div>
                         </div>
                         <div class="output-area-wrap ">
-                            <div data="output" id="output_card" class="response_cards"></div>
-                            <div data="testcases" id="testcases_card" class="response_cards"></div>
-                            <div data="custom_input" id="custom_inputcard" class="response_cards"></div>
+                            <div data="output" id="output_card" style="display:none;" class="response_cards"></div>
+                            <div data="testcases" id="testcases_card" style="display:none;" class="response_cards">
+                            </div>
+                            <div data="custom_input" id="custom_inputcard" style="display:none;" class="response_cards">
+                            </div>
 
                         </div>
                     </div>

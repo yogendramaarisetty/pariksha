@@ -21,7 +21,7 @@ def update_user_profile(sender, instance, created, **kwargs):
 class Challenge(models.Model):
     Slug = models.SlugField()
     Title = models.CharField(max_length=120)
-    Description = models.TextField(max_length=520)
+    Description = models.TextField(max_length=5520)
     College = models.CharField(max_length=120)
     Date = models.CharField( blank =True,default="",max_length=20)
     Test_Duration = models.IntegerField(default=0)
@@ -36,16 +36,14 @@ class Question(models.Model):
     Slug = models.SlugField()
     Title = models.CharField(max_length=120)
     Type= models.CharField(max_length=120)
-    Description = models.TextField(max_length=1000000)
-    sample_inputs= models.TextField(max_length=500)
-    sample_outputs= models.TextField(max_length=500)
+    Description = models.TextField()
     default_code={
         'java': "//NOTE: Don't change class name\npublic class MyClass {\n    public static void main(String args[]) {\n      System.out.println(\"\" );\n    }\n}\n",
         'python':"if __name__ == '__main__':\n",
         'csharp':"//Note don't change the class name \nusing System;\n\nclass Program\n{\n    static void Main() {\n        Console.Write(\"\");\n    }\n}\n",
         'cpp':"#include <iostream>\n\nusing namespace std;\n\nint main() {\n    \n    cout<<\"\";\n}\n",
         'c':"#include<stdio.h>\n\nint main() {\n    \n    printf(\"\");\n    \n}\n",
-            }
+                }
     default_c_code = models.TextField(default=default_code['c'],max_length=1000000)
     default_cpp_code = models.TextField(default=default_code['cpp'],max_length=1000000)
     default_csharp_code = models.TextField(default=default_code['csharp'],max_length=1000000)
@@ -63,19 +61,6 @@ class challenge_questions(models.Model):
         unique_together = [['challenge','question'],]
     challenge = models.ForeignKey(Challenge,on_delete=models.SET_NULL,null=True)
     question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
-class testcases(models.Model):
-    question = models.OneToOneField(Question,on_delete=models.CASCADE)
-    input1 = models.TextField(default="",max_length=1000000)
-    output1 = models.TextField(default="",max_length=1000000)
-    input2 = models.TextField(default="",max_length=1000000)
-    output2 = models.TextField(default="",max_length=1000000)
-    input3 = models.TextField(default="",max_length=1000000)
-    output3 = models.TextField(default="",max_length=1000000)
-    input4 = models.TextField(default="",max_length=1000000)
-    output4 = models.TextField(default="",max_length=1000000)
-    input5 = models.TextField(default="",max_length=1000000)
-    output5 = models.TextField(default="",max_length=1000000)
-# Create your models here.
 
 class Candidate(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -98,12 +83,15 @@ class Candidate(models.Model):
     def __str__(self):
         return f'{self.fullname} ({self.user.username})'
 
-class submittedcodes(models.Model):
-    user = models.ForeignKey(Candidate,on_delete=models.CASCADE)
-    question = models.ForeignKey(Question,on_delete=models.CASCADE)
-    Challenge = models.ForeignKey(Challenge,on_delete=models.CASCADE)
-    submission = models.TextField(max_length=10000)
-    score = models.IntegerField(default=0)
+class Testcase(models.Model):
+    Tinput = models.TextField()
+    Toutput = models.TextField()
+
+class Question_Testcase(models.Model):
+    class Meta:
+        unique_together = [['testcase','question'],]
+    testcase = models.ForeignKey(Testcase,on_delete=models.SET_NULL,null=True)
+    question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
 
 class Candidate_codes(models.Model):
     default_code={
