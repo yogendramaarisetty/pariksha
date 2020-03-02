@@ -1,0 +1,22 @@
+.label_field_wrapper {
+    display: block;
+}
+
+.richText {
+    width: 100%;
+}
+
+.label_field_wrapper {
+    width: 113%;
+}
+
+textarea {
+    width: 100%;
+}
+pre.ace_editor.ace-tm {
+    height: 10rem;
+}
+pre.ace_editor.ace-tm {
+    box-shadow: 1px 1px 3px #0000006b;
+    /* padding: 2rem; */
+}

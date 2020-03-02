@@ -687,3 +687,18 @@ button.change_q:hover {
     color: white;
     font-weight: 300;
 }
+
+pre.ace_editor.ace-tm {
+    height: 19rem;
+}
+.left-pane-content-wrapper {
+    position: relative;
+    top: .3rem;
+    background-color: white !important;
+}
+button:disabled {
+    cursor: not-allowed;
+}
+div#testpage_header {
+    background: #fdfdfd;
+}

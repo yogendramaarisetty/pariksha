@@ -55,10 +55,6 @@ def pariksha_register(request):
 
 
 
-class QuestionCreate(CreateView):
-    model = Question
-    template_name = 'challenge/question_create.html'
-    form_class = QuestionCreateForm
 
 @user_passes_test(lambda u: u.is_superuser)
 def question_view(request,q_id):
@@ -195,12 +191,6 @@ def contest_edit_form(request, contest_id):
         form = ContestCreationForm(request.POST,instance = contest)
         if request.is_ajax():
             if request.POST.get('contest')=='yes':
-                # csrf = request.POST.get('csrfmiddlewaretoken')
-                # Title = request.POST.get('Title')
-                # Slug = request.POST.get('Slug')
-                # Duration = request.POST.get('Duration')
-                # Description = request.POST.get('Description')
-                # Date = request.POST.get('Date')
                 Active = request.POST.get('Active')
                 if form.is_valid():
                         print(Active)
@@ -218,16 +208,21 @@ def contest_edit_form(request, contest_id):
                 else:
                     return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
             elif request.POST.get('challenge_question') == "yes":
-                question_list = data.getlist('list[]')
-                contest_id = data.get('contest_id')
+                new_question_list = data.getlist('new_question_list[]')
+                removed_question_list = data.getlist('removed_question_list[]')
+                contest_id = contest.id
                 print('CURRENT_CONTEST_ID = ',contest_id) 
-                for i in question_list:
+                for i in removed_question_list:
+                    c_q = challenge_questions.objects.all().get(pk=int(i))
+                    c_q.delete()
+                for i in new_question_list:
                     q = Question.objects.all().get(pk = int(i))
-                    c = Challenge.objects.all().get(pk = contest_id)
-                    c_q = challenge_questions(challenge = c,question = q)
+                    c_q = challenge_questions(challenge = contest,question = q)
                     c_q.save()
-                res = {'msg':'Successflly got list'}
+                res = {'success':'yes','msg':'Successflly updated the contest questions list'}
+                
                 return HttpResponse(json.dumps(res), content_type="application/json")
+            
 
 
             # return HttpResponse(json.dumps(res), content_type="application/json")
@@ -239,11 +234,30 @@ def contest_edit_form(request, contest_id):
         return render(request,'challenge/contest_edit_form.html',{'form':form,'contest_id':contest.id,'model_name':'Contest','question_bank':Question.objects.all(),'contest_questions':this_contest_questions})
 
 
+
+@user_passes_test(lambda u: u.is_superuser)
+def question_bank(request):
+    if request.method == "POST":
+        if request.is_ajax():
+            question_id = request.POST.get('question_id')
+            question = Question.objects.get(pk = question_id)
+            title = question.Title
+            question.delete()
+            res = {
+                'msg' : title+f' (id={question_id}) deleted successfully'
+            }
+            return HttpResponse(json.dumps(res), content_type="application/json")
+    question_count = Question.objects.all().count()
+    context ={
+        'questions':Question.objects.all(),
+        'question_count': question_count
+    }
+    return render(request,'challenge/question_bank.html',context)
+
 @user_passes_test(lambda u: u.is_superuser)
 def create_question_form(request):
     if request.method == "POST":
         form = QuestionCreateForm(request.POST)
-        print('form is post',request.POST)
         data = request.POST
         question = Question()
         current_question_id = None
@@ -256,6 +270,7 @@ def create_question_form(request):
                             'msg':'Question Saved successfully',
                             'question_id': question.pk
                             }
+                    print('question form saved successfully')
                     return HttpResponse(json.dumps(res), content_type="application/json")
                 else:
                     return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")

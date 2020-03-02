@@ -414,3 +414,68 @@ a{
 body {
     color: #2d2d2d;
 }
+button.primary_buttons {
+    padding: 3px 21px;
+    border: 1px solid #004e8c;
+    border-radius: 5px;
+    background: white;
+    color: #004e8c;
+    font-weight: 700;
+    transition: 0.3s;
+}
+
+button.primary_buttons:hover {
+    background: #004e8c;
+    color: white;
+    font-weight: 100;
+}
+.footer_form_button.floater_right {
+    position: relative;
+    margin-top: 4rem;
+    right: -11rem;
+}
+
+a#question_edit_link {
+    margin-right: 1rem;
+}
+.bank_and_contestq_wrapper {
+    display: flex;
+}
+
+.existing_question_bank_list {
+    margin-top: inherit;
+    margin-left: 1px;
+}
+
+
+button#save_btn_q {
+    background: #0085b7;
+}
+.existing_question_bank_list {
+    overflow: auto;
+}
+.question_container {
+    overflow: auto;
+}
+.search_bar_wrapper:focus-within {
+    border-color: #2196F3;
+}
+
+.search_bar_wrapper {
+    border-width: 2px;
+}
+/* div#testpage_header {
+    background: #fdfdfd;
+} */
+button#save_btn_q:disabled {
+    cursor: not-allowed;
+    background: gray;
+}
+button#save_btn_q:disabled:hover {
+    cursor: not-allowed;
+    background: gray;
+}
+
+button#save_btn_q:hover {
+    background: #3F51B5;
+}

@@ -20,7 +20,9 @@
     border-radius: 0px;
     border: none;
 }
-
+.left-pane-content-wrapper {
+    background: #2d2d2dc7 !important;
+}
 
 /* Track */
 
@@ -245,4 +247,7 @@ button.change_q:hover {
     color: #c5ced2;
     font-weight: 300;
     box-shadow: 1px 0 4px #00085094;
+}
+div#testpage_header {
+    background: #333333;
 }

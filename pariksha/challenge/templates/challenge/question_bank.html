@@ -1,66 +1,183 @@
-<!-- @format -->
+{% extends "challenge/base.html" %} {% block content %} {% if user.is_authenticated %}
+<section class="available_tests" data-tab="emoji">
+    <div class="table_content_wrapper">
+        <div class="table_head_content_wrapper">
+            <h4 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">{{ question_count }} Questions available</h4>
+            {% if user.is_superuser %}
+            <div class="table_action_buttons">
+                <a href="{% url 'create_question'%}">
+                    <button class="positive_button pariksha_button">Create Question</button>
+                </a>
+            </div>
+            {% else %}
+            <div class="table_action_buttons">
+                <h5 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">Find your test below</h5>
+            </div>
+            {% endif %}
+        </div>
+        <div class="search_bar_wrapper">
+            <span class="search_icon"><i id="search_icon" class="material-icons">
+                    search
+                </i></span>
+            <input type="text" id="search_box" onkeyup="myFunction()" placeholder="Search by test name">
+        </div>
+        <div class="table_main_content_wrapper" id="table_wrapper">
+            <div class="list_element_wrapper">
+                <table id="myTable">
+                    <thead class="header_row">
+                        <tr>
+                            <th>Question id</th>
+                            <th>Question Name</th>
+                            <th>Slug</th>
+                            <th>Type</th>
+                            <th>View</th>
+                            <th>Edit</th>
+                            <th>Delete</th>
+                        </tr>
+                    </thead>
+                    <tbody class="main_table_records">
+                        {% for q in questions %}
+                        <tr id="{{q.id}}">
+                            <td>{{ q.id }}</td>
+                            <td>{{ q.Title }}</td>
+                            <td>{{ q.Slug }}</td>
+                            <td>{{ q.Type }} mins</td>
+                            <td><button type="button" data-contestid="{{q.id}}" class="primary_buttons" style="margin-right:1rem;">View</button></td>
 
-{% extends "challenge/base.html" %} {% load static %} {% block content %} {% if messages %} {% for message in messages %}
-<div class="alert-{{message.tags}}">
-  {{message}}
-</div>
-{% endfor %} {% endif %}
+                            <td><a href="#"><button  class="positive_button">Edit Question</button></a></td>
+                            <td><button type="button" data-qid="{{q.id}}" class="delete_buttons" style="margin-right:1rem;">Delete</button></td>
 
-{% load crispy_forms_tags %}
-<div class="add_question">
-  <button class="JPO_open" id="popup-trigger" href = "{% url 'question_create' %}">
-    <img
-      class="Add_icon"
-      src="https://www.gstatic.com/images/icons/material/colored_icons/1x/create_32dp.png"
-    />Add question
-  </button>
-</div>
-<table class="table table-sm">
-  <thead>
-    <tr>
-      <th scope="col">Title</th>
-      <th scope="col">Slug</th>
-      <th scope="col">Challenge</th>
-      <th scope="col">Edit</th>
-      <th scope="col">View</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for question in questions %}
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
 
-    <tr>
-      <td>{{question.Title}}</td>
-      <td>{{question.Slug}}</td>
-      <td>{{question.challenge}}</td>
-      <td><a href="{% url 'question_edit' q_id=question.id  %}">Edit</a></td>
-      <td><a>View</a></td>
-    </tr>
+<!-- DivTable.com -->
 
-    {% endfor %}
-  </tbody>
-</table>
+<div>
+    <script type="text/javascript">
+        $('.delete_buttons').on('click', function() {
+            var q_id = $(this).attr('data-qid');
+            $.confirm({
+                title: 'Confirm!',
+                content: 'Are you sure you want to delete the Question?',
+                buttons: {
+                    delete: function() {
+                        deleteQuestion(q_id);
+                        $.alert('Deleted!');
+                    },
+                    cancel: function() {
+                    },
+                    // somethingElse: {
+                    //     text: 'Something else',
+                    //     btnClass: 'btn-blue',
+                    //     keys: [
+                    //         'enter',
+                    //         'shift'
+                    //     ],
+                    //     action: function(){
+                    //         this.$content // reference to the content
+                    //         $.alert('Something else?');
+                    //     }
+                    // }
+                }
+            });
+        });
 
-<div id="JPO">
-    <form class="question_form" method="post" action="#" novalidate="novalidate">
-      {% csrf_token %} {{form|crispy }}
-      <button type="submit" class="btn btn-primary">
-        Save
-        <img
-          class="form-brand-details"
-          src="{% static 'img/arrow_icon.svg' %}"
-        />
-      </button>
-    </form>
-</div>
+        function deleteQuestion(q_id) {
+            var ajaxMins = new Date().getMinutes();
+            var ajaxSecs = new Date().getSeconds();
+            var ajaxMS = new Date().getMilliseconds();
+            $.ajax({
 
-<script src="{% static 'challenge/scripts/jquery.popupoverlay.js' %}"></script>
-<script src="{% static 'challenge/scripts/jquery.richtext.js' %}"></script>
-<script src="{% static 'challenge/scripts/text_editor.js' %}"></script>
-{% if errors %}
-<script>
-$(document).ready(function() { 
-document.getElementById('popup-trigger').click();
-});
-</script>
-{% endif %}
-{% endblock content %}
+                type: 'POST',
+                url: '',
+                dataType: 'json',
+                cache: false,
+                async: true,
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    question_id: q_id,
+                },
+                success: function(json) {
+
+                    document.getElementById(q_id).style.display = "none";
+                    const myNotification = window.createNotification({});
+                    myNotification({
+                        title: 'Deleted',
+                        message: json.msg
+                    });
+
+                    myNotification({
+
+                        // close on click
+                        closeOnClick: true,
+
+                        // displays close button
+                        displayCloseButton: false,
+
+                        // nfc-top-left
+                        // nfc-bottom-right
+                        // nfc-bottom-left
+                        positionClass: 'nfc-top-right',
+
+                        // callback
+                        onclick: false,
+
+                        // timeout in milliseconds
+                        showDuration: 9500,
+
+                        // success, info, warning, error, and none
+                        theme: 'error'
+
+                    });
+
+                },
+
+                statusCode: {
+                    500: function() {}
+                },
+            }).done(function() {
+                var ajaxMins2 = new Date().getMinutes() - ajaxMins;
+                var ajaxSecs2 = (new Date().getSeconds() % 60) - ajaxSecs;
+                var ajaxMS2 = new Date().getMilliseconds() - ajaxMS;
+                console.log(ajaxSecs2, " seconds");
+            });
+        }
+
+        function myFunction() {
+            var input, filter, table, tr, td, i, txtValue;
+            input = document.getElementById("search_box");
+            filter = input.value.toUpperCase();
+            table = document.getElementById("myTable");
+            tr = table.getElementsByTagName("tr");
+            for (i = 0; i < tr.length; i++) {
+                td = tr[i].getElementsByTagName("td")[1];
+                if (td) {
+                    txtValue = td.textContent || td.innerText;
+                    if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                        tr[i].style.display = "";
+                    } else {
+                        tr[i].style.display = "none";
+                    }
+                }
+            }
+
+        }
+    </script>
+
+    {% else %}
+    <div class="row mt-3">
+
+        <div class="col-lg-4 col-md-6">
+            <div class="mb-2 alert alert-info" role="alert">
+                <h4>Please Register to take the test</h4>
+                <p>Click here to <a href="{% url 'challenge_register' %}">Register</a>
+            </div>
+        </div>
+    </div>
+    {% endif %} {% endblock content %}

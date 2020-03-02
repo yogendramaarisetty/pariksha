@@ -164,21 +164,24 @@
 
     </div>
     <div class="qfooter_form_button">
-        <a href="{% url 'tests' %}">
+        <a href="{% url 'manage_contests' %}">
             <button class="positive_button">Done</button>
         </a>
     </div>
 </div>
 <script>
 var selected_qids = [];
-{% for question in contest_questions %}
-selected_qids.push("question_{{question.question.id}}");
+var contest_questions_model_ids = [];
+{% for contest_question in contest_questions %}
+selected_qids.push("question_{{contest_question.question.id}}");
+ contest_questions_model_ids.push("{{contest_question.id}}");
 {% endfor %}
  window.onload = function () {
            
     for(let i = 0; i < selected_qids.length; i++){
         var selected_question = document.getElementById(selected_qids[i].toString());
         var target_container = document.getElementById('selected_question_container');
+        selected_question.setAttribute('contest_question_model_id',contest_questions_model_ids[i]);
         target_container.appendChild(selected_question);
                     selected_question.setAttribute('data-state', 'selected');
                     var button = selected_question.getElementsByTagName('button')[0];
@@ -187,7 +190,7 @@ selected_qids.push("question_{{question.question.id}}");
 
         }
  };
- var removed_questions = [];
+ var removed_contest_question_ids = [];
  var newly_added_questions = [];
  function add_question(question_id) {
             var contest_questions = document.getElementById('selected_question_id_string');
@@ -199,10 +202,11 @@ selected_qids.push("question_{{question.question.id}}");
                 target_container.appendChild(selected_question);
                 
                 if(!selected_qids.includes(question_id)){
-                    newly_added_questions.push(question_id);
+                    var stripped_id = question_id.split('_')[1];
+                    newly_added_questions.push(stripped_id);
                 }
                 else{
-                    removed_questions.pop(question_id);
+                    removed_contest_question_ids.pop(selected_question.getAttribute('contest_question_model_id'));
                 }
                 selected_question.setAttribute('data-state', 'selected');
                 var button = selected_question.getElementsByTagName('button')[0];
@@ -214,10 +218,11 @@ selected_qids.push("question_{{question.question.id}}");
                 var target_container = document.getElementById('question_bank_container');
                 target_container.appendChild(selected_question);
                     if(selected_qids.includes(question_id)){
-                        removed_questions.push(question_id);
+                        removed_contest_question_ids.push(selected_question.getAttribute('contest_question_model_id'));
                     }
                     else{
-                        newly_added_questions.pop(question_id);
+                    var stripped_id = question_id.split('_')[1];
+                        newly_added_questions.pop(stripped_id);
                     }
                 selected_question.setAttribute('data-state', 'not_selected');
                 var button = selected_question.getElementsByTagName('button')[0];
@@ -332,6 +337,69 @@ selected_qids.push("question_{{question.question.id}}");
                 $('#save_btn_loader').hide();
             });
 
+        }
+         var current_contest_id = "{{question.id}}";
+         function ContestQuestionAsyncSave() {
+            var save_button = document.getElementById('save_btn_q');
+            var selected_question_list = [];
+            $('#selected_question_container').find('div').each(function () {
+                if ($(this).attr('data-mainid') != undefined) {
+                    var innerDivId = $(this).attr('data-mainid');
+                    selected_question_list.push(innerDivId);
+                }
+
+            });
+            console.log(selected_question_list);
+            $.ajax({
+
+                type: 'POST',
+                url: '',
+                dataType: 'json',
+                cache: false,
+                async: true,
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    challenge_question: "yes",
+                    new_question_list: newly_added_questions,
+                    removed_question_list : removed_contest_question_ids,
+                    contest_id: current_contest_id,
+                },
+                success: function (json) {
+                    if (json.errors == 'yes') {
+                        save_button.setAttribute('saved_status', 'unsaved');
+                        save_button.textContent = "Save";
+                        $('#save_btn_loader').hide();
+                    }
+                    else {
+                        removed_contest_question_ids = [];
+                        newly_added_questions = [];
+                        var remove_btns = document.querySelectorAll('#selected_question_container button.positive_button');
+                        [].forEach.call(remove_btns, function (btn) {
+                            btn.disabled = true;
+                            btn.innerText = 'Saved';
+                        });
+                        document.querySelectorAll('#selected_question_container button.positive_button').innerText = "Saved";
+                        save_button.setAttribute('saved_status', 'saved');
+                        save_button.disabled = true;
+                        save_button.textContent = "Saved";
+                        expandSection(section)
+                        section.setAttribute('data-collapsed', 'false')
+
+                    }
+
+                },
+
+                statusCode: {
+                    500: function () {
+                    }
+                },
+            }).done(function () {
+                var ajaxMins2 = new Date().getMinutes() - ajaxMins;
+                var ajaxSecs2 = (new Date().getSeconds() % 60) - ajaxSecs;
+                var ajaxMS2 = new Date().getMilliseconds() - ajaxMS;
+                console.log(ajaxSecs2, " seconds");
+                $('#save_btn_loader').hide();
+            });
         }
 
 </script>

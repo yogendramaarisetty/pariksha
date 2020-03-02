@@ -1,4 +1,4 @@
-$('.content').richText({
+$('#q_description_editor').richText({
     // text formatting
     bold: true,
     italic: true,
@@ -130,16 +130,4 @@ $('.content').richText({
     class: "",
     useParagraph: false
     
-  });
-
-  $(document).ready(function() {
-
-    // Initialize the plugin
-    $('#JPO').popup({
-        opacity: 0.8,
-  transition: 'all 0.7s',
-    });
-
-    // Set default `pagecontainer` for all popups (optional, but recommended for screen readers and iOS*)
-    $.fn.popup.defaults.pagecontainer = '#page'
   });
