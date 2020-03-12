@@ -34,9 +34,15 @@
     </div>
     <div class="start_test">
         <a href="{% url 'testpage' challenge_id=challenge.id  c_id=candidate.id %}">
+          {% if messages %} 
+          <button type="button" class="positive_button">Resume Test
+              
+          </button> 
+          {% else %}
             <button type="button" class="positive_button">Begin Test
               
               </button>
+              {% endif %}
                 </a>
     </div>
   </div>

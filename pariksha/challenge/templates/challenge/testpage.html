@@ -97,27 +97,37 @@
                     <div id="top_section">
                         <div class="editor_section_header">
                             <div class="left_section">
-                                <select id="languages">
+                                <select onchange="selectLang()" id="languages">
                                     <option value="Java">Java</option>
-                                    <option value="Python 3">Python 3</option>
+                                    <option value="Python">Python 3</option>
                                     <option value="C">C</option>
                                     <option value="C++">C++</option>
                                     <option value="C#">C#</option>
                                 </select>
-                                <i id='light_mode_icon' class="material-icons ld">
-                                    wb_sunny
-                                </i>
-                                <div class="pretty p-switch p-fill">
-                                    <input id="mode" type="checkbox" />
-                                    <div class="state">
-                                        <label></label>
-                                    </div>
-                                </div>
-                                <i id='dark_mode_icon' class="material-icons ld">
-                                    nights_stay
-                                </i>
+                                
+                                <i id="save_btn" status="saved" onclick="codeDraft()" class="material-icons">
+                                    save
+                                    </i>
+                                <p class="p">Ctrl + S to save your code</p>
+                                
+
                             </div>
-                            <div class="right_section"></div>
+                            <div class="right_section">
+                                <div class="float_right">
+                                    <i id='light_mode_icon' class="material-icons ld">
+                                        wb_sunny
+                                    </i>
+                                    <div class="pretty p-switch p-fill">
+                                        <input id="mode" type="checkbox" />
+                                        <div class="state">
+                                            <label></label>
+                                        </div>
+                                    </div>
+                                    <i id='dark_mode_icon' class="material-icons ld">
+                                        nights_stay
+                                    </i>
+                            </div>
+                            </div>
                         </div>
                         <div class="editor_wrapper" id="ew">
                             <div class='code-editor' onscroll="editor.resize()" id='codeeditor'></div>
@@ -126,27 +136,27 @@
                     <div id="bottom_section" class="challenge-response fs-container ">
                         <div class="bottom_header_controller">
                             <div class="left_section">
-                                <div data="testcases" class="nav_btns">
+                                <div id="testcases_pane" data="testcases_card" class="nav_btns">
                                     <div>
                                         <span class="navs">Testcases</span>
                                     </div>
                                 </div>
-                                <div data="custom_input" class="nav_btns">
+                                <div id="custominput_pane" data="custom_input_card" class="nav_btns">
                                     <div>Custom Input</div>
                                 </div>
-                                <div data="output" class="nav_btns">
+                                <div  id="output_pane" data="output_card" class="nav_btns">
                                     <div>Output</div>
                                 </div>
                             </div>
                             <div class="right_section">
                                 <div>
-                                    <button class="run_button" type="button"><span class="span_button"><i id="run_icon"
+                                    <button onclick="runCode()" class="run_button" type="button"><span class="span_button"><i id="run_icon"
                                                 class="material-icons">
                                                 play_arrow
                                             </i></span>Run</button>
                                 </div>
                                 <div>
-                                    <button class="submit_button" type="button">Submit</button>
+                                    <button onclick="submitCode()" class="submit_button" type="button">Submit</button>
                                 </div>
                                 <div>
                                     <button id="console_collapse" style="transition:0.3s;" type="button"><i id="up_down"
@@ -156,10 +166,30 @@
                             </div>
                         </div>
                         <div class="output-area-wrap ">
-                            <div data="output" id="output_card" style="display:none;" class="response_cards"></div>
-                            <div data="testcases" id="testcases_card" style="display:none;" class="response_cards">
+                            <div data="output" id="output_card" " class="response_cards">
+                                <div id="main_output">
+                                    <h4 status ="" id="status_message">Click on run to see the output</h4>
+                                    <b id="type_msg"></b>
+                                    <pre status="" id="output_result_pre"></pre>
+                                </div>
                             </div>
-                            <div data="custom_input" id="custom_inputcard" style="display:none;" class="response_cards">
+                            <div id="loader" class="response_cards">
+                                <div class="lds-roller">
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                    <div></div>
+                                </div>
+                            </div>
+                            <div data="testcases" id="testcases_card" " class="response_cards">
+                                TestCases
+                            </div>
+                            <div data="custom_input" id="custom_input_card" " class="response_cards">
+                                Custom input
+                                <textarea id="input"></textarea>
                             </div>
 
                         </div>
@@ -170,7 +200,9 @@
         <script src="https://unpkg.com/split.js/dist/split.min.js "></script>
         <script>
         </script>
-        
+        <script >
+            var csrf_token = '{{ csrf_token }}';
+        </script>
         <script src="{% static 'challenge/scripts/testpage.js' %} "></script>
         <script src="{% static 'challenge/scripts/notifications.js' %} " type=" text/javascript "></script>
 

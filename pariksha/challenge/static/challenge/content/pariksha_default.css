@@ -261,9 +261,10 @@ button {
 }
 
 .response_cards {
-    width: 100%;
-    height: 100%;
-    display: none;
+    min-width: calc(100% - 4rem);
+    width: fit-content;
+    height: fit-content;
+    padding: 2rem;
 }
 
 button#console_collapse {
@@ -773,4 +774,207 @@ li.ql_item {
 }
 button.change_q {
     cursor: pointer;
+}
+i#save_btn[status="saved"] {
+    color: #adadad;
+    cursor: not-allowed;
+}
+i#save_btn{
+    cursor: pointer;
+}
+p.p {
+    font-family: monospace;
+    color: #969696;
+}
+
+i#save_btn {
+    margin: auto 1rem;
+}
+button#finish_button {
+    cursor: help;
+}
+button.run_button:disabled {
+    color: gray;
+    cursor: not-allowed;
+}
+button.submit_button:hover {
+    background: #ffffffe0;
+    color: gray;
+}
+button.run_button:hover:disabled {
+    background: #f3f3f300;
+    color: #909090;
+}
+button.submit_button:hover:disabled {
+    background: #f3f3f300;
+    color: #909090;
+}
+.output-area-wrap {
+    position: relative;
+    overflow: auto;
+}
+
+pre#output_result_pre {
+    background: white;
+    padding: 1rem;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px #00000024;
+}
+h4#status_message[status='success'] {
+    color: rgb(0, 168, 0);
+}
+.output-area-wrap {
+    position: relative;
+    overflow: auto;
+}
+div#output_card {
+    padding: 0rem 2rem;
+}
+h4#status_message[status="Error"] {
+    color: #bd0000;
+}
+.output-area-wrap {
+    background: #d6d6d638;
+}
+pre#output_result_pre[status="Error"] {
+    color: #656565;
+    font-weight: 600;
+    font-family: monospace;
+}
+h4#status_message {
+    transition: 0.3s;
+}
+
+pre#output_result_pre {
+    transition: 0.2s;
+}
+h4#status_message[status="rterror"] {
+    color: #e45f00;
+}
+
+
+.lds-roller {
+    display: inline-block;
+    position: relative;
+    width: 80px;
+    height: 80px;
+  }
+  .lds-roller div {
+    animation: lds-roller 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    transform-origin: 40px 40px;
+  }
+  .lds-roller div:after {
+    content: " ";
+    display: block;
+    position: absolute;
+    width: 7px;
+    height: 7px;
+    border-radius: 50%;
+    background: rgb(151, 151, 151);
+    margin: -4px 0 0 -4px;
+  }
+  .lds-roller div:nth-child(1) {
+    animation-delay: -0.036s;
+  }
+  .lds-roller div:nth-child(1):after {
+    top: 63px;
+    left: 63px;
+  }
+  .lds-roller div:nth-child(2) {
+    animation-delay: -0.072s;
+  }
+  .lds-roller div:nth-child(2):after {
+    top: 68px;
+    left: 56px;
+  }
+  .lds-roller div:nth-child(3) {
+    animation-delay: -0.108s;
+  }
+  .lds-roller div:nth-child(3):after {
+    top: 71px;
+    left: 48px;
+  }
+  .lds-roller div:nth-child(4) {
+    animation-delay: -0.144s;
+  }
+  .lds-roller div:nth-child(4):after {
+    top: 72px;
+    left: 40px;
+  }
+  .lds-roller div:nth-child(5) {
+    animation-delay: -0.18s;
+  }
+  .lds-roller div:nth-child(5):after {
+    top: 71px;
+    left: 32px;
+  }
+  .lds-roller div:nth-child(6) {
+    animation-delay: -0.216s;
+  }
+  .lds-roller div:nth-child(6):after {
+    top: 68px;
+    left: 24px;
+  }
+  .lds-roller div:nth-child(7) {
+    animation-delay: -0.252s;
+  }
+  .lds-roller div:nth-child(7):after {
+    top: 63px;
+    left: 17px;
+  }
+  .lds-roller div:nth-child(8) {
+    animation-delay: -0.288s;
+  }
+  .lds-roller div:nth-child(8):after {
+    top: 56px;
+    left: 12px;
+  }
+  .lds-roller {
+    margin: auto;
+    display: block;
+    /* position: relative; */
+}
+div#loader {
+    height: calc(100% - 4rem);
+    flex-direction: row;
+    position: relative;
+}
+.lds-roller {
+    /* width: 300px; */
+    /* height: 300px; */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+  @keyframes lds-roller {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+  code {
+    background: #eaeaeac4 !important;
+    color: #656565e0 !important;
+}
+.lds-roller div:after {
+    background: #2196F3;
+}
+i#save_btn::selection {
+    background: #f0f8ff00;
+}
+textarea#input {
+    position: relative;
+    display: block;
+    margin: 1rem 0rem;
+    height: 8rem;
+    width: calc(100% - 2rem);
+    margin-bottom: 0rem;
+    padding: .5rem 1rem;
+    line-height: 1rem;
+    font-size: 15px;
+    border-radius: 5px;
+    color: #000000e6;
 }

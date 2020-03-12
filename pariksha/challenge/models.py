@@ -49,7 +49,7 @@ class Question(models.Model):
     default_csharp_code = models.TextField(default=default_code['csharp'],max_length=1000000)
     default_java_code = models.TextField(default=default_code['java'],max_length=1000000)
     default_python_code = models.TextField(default=default_code['python'],max_length=1000000)
-    
+
 
     def __str__(self):
         return f'{self.Title}'
@@ -59,8 +59,8 @@ class Question(models.Model):
 class challenge_questions(models.Model):
     class Meta:
         unique_together = [['challenge','question'],]
-    challenge = models.ForeignKey(Challenge,on_delete=models.SET_NULL,null=True)
-    question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
+    challenge = models.ForeignKey(Challenge,on_delete=models.CASCADE,null=True)
+    question  = models.ForeignKey(Question,on_delete=models.CASCADE,null=True)
 
 class Candidate(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
@@ -91,6 +91,8 @@ class Question_Testcase(models.Model):
     description = models.TextField(null=True)
 
 class Candidate_codes(models.Model):
+    class Meta:
+        unique_together = [['candidate','question'],]
     default_code={
         'java': "//NOTE: Don't change class name\npublic class MyClass {\n    public static void main(String args[]) {\n      System.out.println(\"\" );\n    }\n}\n",
         'python':"if __name__ == '__main__':\n",

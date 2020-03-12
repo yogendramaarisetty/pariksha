@@ -1,4 +1,5 @@
-import subprocess,os 
+#Windows specific api
+import subprocess,os ,time
 from subprocess import run, PIPE,STDOUT,Popen
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 compile_command = {}
@@ -13,7 +14,7 @@ def compile_run(language,code,custom_input,request,candidate):
     'C' : f'{file_name}.c',
     'C++': f'{file_name}.cpp',
     'Java': 'MyClass.java',
-    'Python': f'{file_name}.python',
+    'Python': f'{file_name}.py',
     'C#':f'{file_name}.cs',
     }
     code_file_path = {
@@ -27,14 +28,14 @@ def compile_run(language,code,custom_input,request,candidate):
     'C' : f'gcc {file_name_ext[language]}',
     'C++': f'g++ {file_name_ext[language]}',
     'Java': 'javac MyClass.java',
-    'Python': f'python3 {file_name_ext[language]}',
+    'Python': f'py {file_name_ext[language]}',
     'C#':f'mcs {file_name_ext[language]}',
     }
     run_command = {
-    'C' : './a.out',
-    'C++': './a.out',
+    'C' : 'a',
+    'C++': 'a',
     'Java': 'java MyClass',
-    'Python': f'python3 {file_name_ext[language]}',
+    'Python': f'py {file_name_ext[language]}',
     'C#': f'mcs {file_name_ext[language]}',
     }
     #write file
@@ -50,22 +51,30 @@ def compile_run(language,code,custom_input,request,candidate):
     code_file.flush()
     code_lines = code.split("\n")
     for line in code_lines:
+        line += "\n"
         code_file.write(line)
     code_file.close()
     print("********\n",compile_command[language],"\n****\n",run_command[language],"\n******")
     compile_code = subprocess.Popen(compile_command[language],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
     compile_errors = compile_code.stderr.readlines()
+    start_time= 0
+    end_time = 0
     if len(compile_errors)==0:
-        run_code = subprocess.run(run_command[language], stdout=PIPE,input=custom_input, stderr=subprocess.PIPE,encoding='ascii',shell=True,timeout=2)
+        try:
+            start_time = time.time()
+            run_code = subprocess.run(run_command[language], stdout=PIPE,input=custom_input, stderr=subprocess.PIPE,encoding='ascii',shell=False, timeout=5)
+            end_time = time.time()
+            print('Total time taken is ',end_time-start_time)
+        except:
+            return {'status': 'Timelimit exception','message':'your program exceeded the time limit'}    
+        
         runtime_errors = run_code.stderr
         output = run_code.stdout
         if runtime_errors!="":
-            return "Run Time Errors:\n"+runtime_errors
-        elif output == "":
-            return "Your code didn't print anything"
-        return output
+            return { 'status': "Run Time Errors", 'error':runtime_errors}
+        return {'status':"Successfully compiled" , 'output' : output}
     else:
-        errors="Compilation Errors:\n"
+        errors=""
         for e in compile_errors:
             errors+=e.decode("utf-8")
-        return errors 
+        return {'status':"Compilation Errors", 'error':errors } 

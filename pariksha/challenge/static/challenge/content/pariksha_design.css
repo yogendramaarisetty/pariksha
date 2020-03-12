@@ -616,3 +616,6 @@ div#question_bank_container {
     padding: 2rem;
     width: fit-content;
 }
+div#page_contents {
+    padding-top: 6rem;
+}

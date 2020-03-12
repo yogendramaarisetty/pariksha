@@ -259,3 +259,38 @@ button#finish_button:hover {
     background: #d67600e8;
     font-weight: 100;
 }
+i#save_btn {
+    color: #d6eafb;
+}
+i#save_btn[status='saved'] {
+    color: #d6eafb69;
+}
+.ace-monokai .ace_comment {
+    color: #0eaf21a6;
+}
+pre#output_result_pre {
+    background: #ffffff08;
+    padding: 1rem;
+    color: #f0f8ffd1;
+    border-radius: 10px;
+    box-shadow: 1px 1px 4px #00000024;
+}
+b#type_msg {
+    color: #b1b1b1;
+}
+pre#output_result_pre[status="Error"] {
+    color: #bfb4b4;
+    font-weight: 600;
+    font-family: monospace;
+}
+h4#status_message {
+    color: #989898;
+}
+pre {
+    background: #eaeaea2b !important;
+    color: #d4d4d4e0 !important;
+}
+code {
+    background: #eaeaea2b !important;
+    color: #d4d4d4e0 !important;
+}

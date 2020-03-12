@@ -1,3 +1,4 @@
+import os
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm
@@ -349,6 +350,7 @@ def candidate_form(request,challenge_id):
                                 )
     else:
         c = candidate.filter(test_name = test).first()
+        messages.acknowledge(request, f'Resume')
         return redirect('test_instruction',pk=challenge_id,c_id=c.id)
 
 
@@ -364,9 +366,11 @@ def testpage(request,challenge_id,c_id):
         if t.question!= None:
             question_ids.add(t.question.pk)
     questions = Question.objects.filter(pk__in = question_ids)
-    print(questions)
+    for question in questions:
+        create_candidate_codes(candidate,question)
+    
+
     if candidate.completed_status is False:
-       
         candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
         c= candidate.count
         candidate.count = c+1
@@ -376,20 +380,15 @@ def testpage(request,challenge_id,c_id):
             duration = challenge.Test_Duration
             candidate.start_time=datetime.now()
             candidate.end_time=datetime.now()+timedelta(minutes=duration+330)
-            
             candidate.save()
-            for q in contest_questions:
-                questions.add(q.question)
-                candidate_question_code = Candidate_codes(question=q.question,candidate=candidate)
-                candidate_question_code.c_code = q.default_c_code
-                candidate_question_code.cpp_code = q.default_cpp_code
-                candidate_question_code.csharp_code = q.default_csharp_code
-                candidate_question_code.java_code = q.default_java_code
-                candidate_question_code.python_code = q.default_python_code
-                candidate_question_code.save()
         
         if request.is_ajax() and request.method == "POST" :
             code_output=""
+            if request.POST.get('msg')=='fetch_current_question_codes':
+                question = Question.objects.get(pk=int(request.POST.get('current_question_id')))
+                current_question_codes = candidate_codes_obj.filter(question=question).first()
+                return question_codes(current_question_codes,question)
+
             if request.POST.get('code_draft')=='yes':
                 q_id = request.POST.get('q_id')
                 question = Question.objects.get(pk=q_id)
@@ -424,8 +423,7 @@ def testpage(request,challenge_id,c_id):
                 candidate.save() 
             if request.POST.get('compile_run') == 'yes':
                 code_output = save_run(request,candidate_codes_obj)
-                res={'msg':code_output}
-                return HttpResponse(json.dumps(res), content_type="application/json")
+                return HttpResponse(json.dumps(code_output), content_type="application/json")
             
             if request.POST.get('submit_code')=='yes':
                 print("code submission request")
@@ -435,17 +433,20 @@ def testpage(request,challenge_id,c_id):
                 code = request.POST.get('code')
                 candidate_question_code = candidate_codes_obj.filter(question=question).first()
                 save_codes(candidate_question_code,code,language,question)
-                print(question)
-                testcase = testcases.objects.filter(question=question).first()
-                print(testcase)
-                return validate_testcases(code,testcase,candidate_question_code,language,request,candidate)
+                testcases = Question_Testcase.objects.filter(question=question)
+                return validate_testcases(code,testcases,candidate_question_code,language,request,candidate)
         return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,})
     else:
         return redirect('completed_testpage')
 
 def submittedpage(request,challenge_id,c_id):
     return render(request,'challenge/test_submitted_successfully.html')
-    
+
+def create_candidate_codes(candidate,question):
+    try:
+        Candidate_codes.objects.create(candidate=candidate,question = question)
+    except:
+        pass
 def save_run(request,candidate_codes_obj):
     q_id = request.POST.get('q_id')
     question = Question.objects.get(pk=q_id)
@@ -484,75 +485,36 @@ def question_codes(candidate_question_code,question):
         'csharp':candidate_question_code.csharp_code,
         'cpp':candidate_question_code.cpp_code,
         'c':candidate_question_code.c_code,
-        'sample_input': question.sample_inputs,
     }
     # print(codes)
     return HttpResponse(json.dumps(codes), content_type="application/json")
 
-def validate_testcases(code,testcase,candidate_question_code,language,request,candidate):
+def validate_testcases(code,testcases,candidate_question_code,language,request,candidate):
     candidate_question_code.submitted_code = code
     candidate_question_code.save()
-    tc_input1 = testcase.input1.replace("\r\n","\n")
-    tc_input2 = testcase.input2.replace("\r\n","\n")
-    tc_input3 = testcase.input3.replace("\r\n","\n")
-    tc_input4 = testcase.input4.replace("\r\n","\n")
-    tc_input5 = testcase.input5.replace("\r\n","\n")
-    output1 = compile_run(language,code,tc_input1,request,candidate)
-    output2 = compile_run(language,code,tc_input2,request,candidate)
-    output3 = compile_run(language,code,tc_input3,request,candidate)
-    output4 = compile_run(language,code,tc_input4,request,candidate)
-    output5 = compile_run(language,code,tc_input5,request,candidate)
-    output1 =output1.replace("\n","")
-    output2 =output2.replace("\n","")
-    output3 =output3.replace("\n","")
-    output4 =output4.replace("\n","")
-    output5 =output5.replace("\n","")
-    output1 =output1.strip()
-    output2 =output2.strip()
-    output3 =output3.strip()
-    output4 =output4.strip()
-    output5 =output5.strip()
-    tc_output1 = testcase.output1
-    tc_output1 = tc_output1.replace("\r\n","")
-    tc_output2 = testcase.output2
-    tc_output2 = tc_output2.replace("\r\n","")
-    tc_output3 = testcase.output3
-    tc_output3 = tc_output3.replace("\r\n","")
-    tc_output4 = testcase.output4
-    tc_output4 = tc_output4.replace("\r\n","")
-    tc_output5 = testcase.output5
-    tc_output5 = tc_output5.replace("\r\n","")
-    passed_icon = "<img class='status-icon' src=\"/static/img/icon-yes.svg\" alt=\"Passed\">"
-    failed_icon = "<img class='status-icon' src=\"/static/img/icon-no.svg\" alt=\"Failed\">"
-    testcase_result={'tcdescription1':'your code failed for basic testcases','tcstatus1':'Failed '+failed_icon,'tcscore1':0,
-                     'tcdescription2':'your code failed for medium testcases','tcstatus2':'Failed '+failed_icon,'tcscore2':0,
-                     'tcdescription3':'your code failed for large testcases','tcstatus3':'Failed '+failed_icon,'tcscore3':0,
-                     'tcdescription4':'your code failed for exceptional cases','tcstatus4':'Failed '+failed_icon,'tcscore4':0,
-                     'tcdescription5':'your code failed hidden cases','tcstatus5':'Failed '+failed_icon,'tcscore5':0}
-    output1 =output1.strip()
-    print(tc_output1.encode('UTF-8'),"____",output1.encode('UTF-8'),tc_output1==output1)
-    if(output1==tc_output1):
-        testcase_result['tcdescription1']='your code passed for basic testcases'
-        testcase_result['tcstatus1']='Passed '+passed_icon
-        testcase_result['tcscore1']=10
-    if(output2==tc_output2):
-        testcase_result['tcdescription2']='your code passed for medium testcases'
-        testcase_result['tcstatus2']='Passed '+passed_icon
-        testcase_result['tcscore2']=10
-    if(output3==tc_output3):
-        testcase_result['tcdescription3']='your code passed for large testcases'
-        testcase_result['tcstatus3']='Passed '+passed_icon
-        testcase_result['tcscore3']=20
-    if(output4==tc_output4):
-        testcase_result['tcdescription4']='your code passed for exceptional cases'
-        testcase_result['tcstatus4']='Passed '+passed_icon
-        testcase_result['tcscore4']=20
-    if(output5==tc_output5):
-        testcase_result['tcdescription5']='your code passed for hidden cases'
-        testcase_result['tcstatus5']='Passed '+passed_icon
-        testcase_result['tcscore5']=40
+    score = 0
+    tc_status_list = {}
+    index=0
+    
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    for tc in testcases:
+        tc_input = tc.testcase.Tinput.replace("\r\n","\n")
+        tc_output = tc.testcase.Toutput.replace("\r\n","")
+        tc_output+="\n"
+        output = compile_run(language,code,tc_input,request,candidate)
+        output = output['output']
+        os.chdir(BASE_DIR)
+        expout = open("expected"+str(index)+".txt",'w')
+        myout = open("myout"+str(index)+".txt",'w')
+        expout.write(tc_output)
+        myout.write(output)
+        tcjson = {'description':tc.description,'score':"0",'status':'Failed'}
+        if(tc_output == output):
+            score += tc.score
+            tcjson = {'description':tc.description,'score':tc.score,'status':'Passed'}
+        tc_status_list[index] = tcjson
+        index+=1
 
-    score = testcase_result['tcscore1']+testcase_result['tcscore2']+testcase_result['tcscore3']+testcase_result['tcscore4']+testcase_result['tcscore5']
     if candidate_question_code.score < score:
         candidate_question_code.score = score
         candidate_question_code.save()
@@ -563,4 +525,4 @@ def validate_testcases(code,testcase,candidate_question_code,language,request,ca
     candidate.total_score = total_score
     candidate.save()
     
-    return HttpResponse(json.dumps(testcase_result),content_type="application/json")
+    return HttpResponse(json.dumps(tc_status_list),content_type="application/json")
