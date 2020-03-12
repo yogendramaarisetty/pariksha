@@ -51,7 +51,7 @@
                             <td>{{ test.Test_Duration }} mins</td>
                             <td>{{test.College}}</td>
                             {% if test.Active%}
-                            <td><button class="start_active">Start</button></td>
+                            <td><a href="{% url 'candidate_form' challenge_id=test.id  %}"><button class="start_active">Start</button></a></td>
                             {% else %}
                             <td><button class="start_disable" disabled>Expired</button></td>
                             {% endif %}

@@ -1,45 +1,68 @@
-{% extends "challenge/base.html" %}
-{% block content %}
-{% if user.is_authenticated %}
-{% load crispy_forms_tags %}
-{% load static %}
-<br>
-<div class="col-lg-3 col-md-6">
+ {% extends "challenge/base.html" %} {% block content %} {% load crispy_forms_tags %}{% load static %} {% if messages %} {% for message in messages %}
+<div class="alert-{{message.tags}}">
+    {{message}}
 </div>
-<img class="form-brand-details" src="{% static 'img/arrow_icon.svg' %}" />
-<div id="candidateform" class="card bg-light mb-3" style="margin:auto;">
-    <div class="card-header">
-        <div id="formheader" class="logo2">
+{% endfor %} {% endif %}
+<br>
+<style>
+.signin-image {
+    background-image: url("{% static 'img/signin.jpg'%}");
+    border-radius: inherit;
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    
+    border-top-left-radius: 0px;
+    border-bottom-left-radius: 0px;
+    width: 50%;
+}
+</style>
 
-          
+<section class="signup">
+    <div class="signcontainer">
+        <div class="signup-content">
+            <div class="signup-form">
+                <h2 class="form-title">Enter your details</h2>
+                <form method="POST" class="register-form" id="register-form">
+                    {% csrf_token %}
+                    <div class="form-group">
+                        <label for="fullname"><i class="zmdi zmdi-account material-icons-name"></i></label>
+                        {{form.fullname}}
+                    </div>
+                    <div class="form-group">
+                        <label for="pass"><i class="material-icons">
+perm_identity
+</i></label>
+                        {{form.rollnumber}}
+                    </div>
+                    <div class="form-group">
+                        <label for="pass"><i class="material-icons">
+phone
+</i></label>
+                        {{form.mobile_number}}
+                    </div>
+                    <div class="form-group">
+                        <label for="pass"><i class="material-icons">
+storefront
+</i></label>
+                        {{form.college}}
+                    </div>
+                    {% if form.errors  %}
+                        {% for error in form.errors %}
+                        <p class="form_error"><strong>{{ error }}</strong></p>
+                        {% endfor %}
+                    {% endif %}
+                    <div class="form-group form-button">
+                        <input type="submit" name="next" id="nexy=t" class="form-submit" value="Next">
+                    </div>
+                </form>
+            </div>
+            
         </div>
-        <div class="form-title">
-            <h5>Enter the following details</h5>
+        <div class="signin-image">
         </div>
     </div>
-    <div class="card-body">
-        <form style="max-width: fit-content;min-width: 350px;margin: auto;" method='POST'>
-            {% csrf_token %}
-            <fieldset>
-                {{form.fullname | as_crispy_field}}
-                {{form.rollnumber | as_crispy_field}}
-                {{form.college | as_crispy_field}}
-                {{form.branch | as_crispy_field}}
-                {{form.graduation_year | as_crispy_field}}
-                {{form.mobile_number | as_crispy_field}}
-                {{ form.resume |as_crispy_field  }}
+</section>
 
-            </fieldset>
-            <br>
-            <div class="form-group">
-                <button type="submit" class="btn btn-primary">Submit and Proceed 
-                    <img class="form-brand-details" src="{% static 'img/arrow_icon.svg' %}" />
-                   
-                </button> 
-            </div> 
-        </form> 
-    </div>
-  
-</div> 
-{% endif %} 
-{% endblock %}
+
+{% endblock content %}

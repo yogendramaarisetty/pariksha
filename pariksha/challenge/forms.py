@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 class UserRegisterForm(UserCreationForm) :
     email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Email Address','id':'email'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password','id':'pass'}), label ="Password",)
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Full Name','id':'name'}))
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Full Name','id':'name'}),label ="Username",)
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Re-Enter Password','id':'re_pass'}))  
     class Meta:
         model = User
@@ -25,20 +25,17 @@ class UserRegisterForm(UserCreationForm) :
             raise forms.ValidationError(u'User with this Email Id already Registered')
         return email
 class CandidateDetailsForm(forms.ModelForm):
-    fullname = forms.CharField(label="Full Name",help_text="Please enter yor fullname as per your govt. Id or college Id")
-    rollnumber = forms.CharField(required=False,label="Roll Number",help_text='Enter you College rollnumber')
-    college = forms.CharField(label="College",help_text='Enter College/University Name')
-    branch = forms.CharField(label="Branch",help_text='Enter your current branch CSE/ECE/MECH/...etc')
-    graduation_year = forms.CharField(label="Graduation year",help_text='passed/passing out year')
-    mobile_number = forms.CharField(label="Mobile Number",help_text='Enter Contact number')
-    resume = forms.FileField(required=False,help_text="upload your updated resume")
+    fullname = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Full Name'}),label="Full Name",help_text="Please enter yor fullname as per your govt. Id or college Id")
+    rollnumber = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Roll Number'}),required=False,label="Roll Number",help_text='Enter you College rollnumber')
+    mobile_number = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Mobile Number'}),label="Mobile Number",help_text='Enter Contact number')
+    college = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'College'}),required=False)
     class Meta:
         model = Candidate
         help_texts = {
            'fullname':'Please enter yor fullname as per your govt. Id or college Id',
            'resume':'upload your updated resume'  
         }
-        fields = ['fullname','rollnumber','college','branch','graduation_year','mobile_number']
+        fields = ['fullname','rollnumber','mobile_number','college']
 
 class QuestionCreateForm(forms.ModelForm):
     Description = forms.CharField(widget=forms.Textarea(attrs={'class': 'content','id':'q_description_editor'}))

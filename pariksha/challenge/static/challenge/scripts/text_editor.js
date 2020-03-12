@@ -8,7 +8,7 @@ $('#q_description_editor').richText({
     leftAlign: true,
     centerAlign: true,
     rightAlign: true,
-  
+    IsReadOnly:true,
     // lists
     ol: true,
     ul: true,

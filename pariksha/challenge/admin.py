@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User,Group
-from . models import Challenge,Question,Candidate,Testcase,Candidate_codes,challenge_questions
+from . models import Challenge,Question,Candidate,Testcase,Candidate_codes,challenge_questions,Question_Testcase
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
@@ -74,8 +74,6 @@ class CandidateAdmin(admin.ModelAdmin):
         'rollnumber',
         'test_name',
         'college',
-        'branch',
-        'graduation_year',
         'mobile_number',
         'total_score',
         'completed_status',
@@ -85,18 +83,14 @@ class CandidateAdmin(admin.ModelAdmin):
         (None, {
             "fields": (
                   'user',
+                  'test_name',
                   'fullname',
                   'rollnumber',
                   'college',
-                  'branch',
-                  'graduation_year',
                   'mobile_number',
-                  'test_name',
                   'total_score',
-                  'resume',
                   'start_time',
                   'end_time',
-                  'count',
                   'completed_status',
                   'suspicious_count',
             ),
@@ -113,3 +107,4 @@ class Candidate_codesAdmin(admin.ModelAdmin):
 
 admin.site.register(Candidate,CandidateAdmin)
 admin.site.register(Candidate_codes,Candidate_codesAdmin)
+admin.site.register(Question_Testcase)

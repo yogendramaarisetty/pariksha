@@ -14,13 +14,11 @@ urlpatterns = [
     
     
     path('register/',views.pariksha_register,name='register'),
-    path(r'^account_activation_sent/$',views.account_activation_sent,name='account_activation_sent'),
-    path(r'^activate/(?P<uidb64>[0-9A-Za-z_\-]+)/(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$',views.activate,name='activate'),
     path('loggedout/',auth_views.LogoutView.as_view(template_name="challenge/home.html"),name="logout"),
     path('tests_available/',views.challenges,name='tests'),
-    url(r'^challenge/testpage/(?P<challenge_id>\d+)/(?P<c_id>\d+)/$',views.testpage,name='testpage'),
-    url(r'^challenge/testpage/(?P<challenge_id>\d+)/(?P<c_id>\d+)/submitted$',views.submittedpage,name='submittedpage'),
-    url(r'^challenge/testpage/completedTest$',views.completed_testpage,name='completed_testpage'),
+    url(r'^contest/testpage/(?P<challenge_id>\d+)/(?P<c_id>\d+)/$',views.testpage,name='testpage'),
+    url(r'^contest/testpage/(?P<challenge_id>\d+)/(?P<c_id>\d+)/submitted$',views.submittedpage,name='submittedpage'),
+    url(r'^contest/testpage/completedTest$',views.completed_testpage,name='completed_testpage'),
     url(r'^candidate_form/testInstruction/(?P<pk>\d+)/(?P<c_id>\d+)/$', views.test_instruction, name='test_instruction'),
     url(r'^candidate_form/(?P<challenge_id>\d+)/$', views.candidate_form, name='candidate_form'),
    url(r'^contest_management/$', views.manage_contests , name='manage_contests'),

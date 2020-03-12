@@ -20,3 +20,10 @@ pre.ace_editor.ace-tm {
     box-shadow: 1px 1px 3px #0000006b;
     /* padding: 2rem; */
 }
+.label_field_wrapper {
+    display: flex;
+}
+
+.label_field_wrapper.des_wrap {
+    display: block;
+}

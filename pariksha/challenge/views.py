@@ -275,10 +275,22 @@ def create_question_form(request):
                 else:
                     return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
             elif request.POST.get('question_testcase') == "yes":
-                testcase_list = data.getlist('list[]')
+                inputs = data.getlist('inputs[]')
+                outputs = data.getlist('outputs[]')
+                scores = data.getlist('scores[]')
+                description = data.getlist('description[]')
+                count = data.get('count')
                 question_id = data.get('question_id')
-                print('CURRENT_CONTEST_ID = ',question_id)
-                res = {'msg':'Successflly got list'}
+                question = Question.objects.get(pk = int(question_id))
+                
+                for i in range(int(count)):
+                    tc = Testcase.objects.create(Tinput=inputs[i],Toutput=outputs[i])
+                    tc.save()
+                    q_tc = Question_Testcase.objects.create(testcase=tc, question = question, score = scores[i], description = description[i])
+                    q_tc.save()
+                    print(inputs[i], outputs[i], scores[i], description[i])
+                res = {'msg':'Successflly saved testcases'} 
+                messages.success(request, f'Question( Title : {question.Title},id : {question.id}) Added Successfully')
                 return HttpResponse(json.dumps(res), content_type="application/json")
         else:
             return HttpResponse(json.dumps(form.errors), content_type="application/json")      
@@ -315,7 +327,8 @@ def completed_testpage(request):
 def test_instruction(request,pk,c_id):
     challenge = Challenge.objects.get(pk=pk)
     candidate = Candidate.objects.get(pk=c_id)
-    return render(request,'challenge/test_instruction.html',{'challenge':challenge,'candidate':candidate})
+    count = challenge_questions.objects.filter(challenge = challenge ).count()
+    return render(request,'challenge/test_instruction.html',{'challenge':challenge,'candidate':candidate,'question_count':count})
 
 def candidate_form(request,challenge_id):
     test = Challenge.objects.get(pk=challenge_id)
@@ -339,42 +352,19 @@ def candidate_form(request,challenge_id):
         return redirect('test_instruction',pk=challenge_id,c_id=c.id)
 
 
-def account_activation_sent(request):
-    return render(request, 'challenge/account_activation_sent.html')
 
-def activate(request, uidb64, token):
-    try:
-        uid = force_text(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-
-    if user is not None and account_activation_token.check_token(user, token):
-        user.is_active = True
-        user.profile.email_confirmed = True
-        user.save()
-        login(request, user)
-        return redirect('tests')
-    else:
-        return render(request, 'challenge/account_activation_invalid.html')
-#SMTP for senting email
-def send_email(subject, msg, user):
-    to="167r1a05m4@gmail.com"
-    try:
-        server = smtplib.SMTP('smtp.gmail.com:587')
-        server.ehlo()
-        server.starttls()
-        message = 'Subject: {}\n\n{}'.format(subject, msg)
-        server.quit()
-        print("Success: Email sent!")
-    except:
-        print("Email failed to send.")
 
 def testpage(request,challenge_id,c_id):
     challenge = Challenge.objects.get(pk=challenge_id)
     candidate = Candidate.objects.get(pk=c_id)
-    questions = Question.objects.filter(challenge=challenge)
+    contest_questions = challenge_questions.objects.filter(challenge=challenge)
     candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
+    question_ids = set()
+    for t in contest_questions:
+        if t.question!= None:
+            question_ids.add(t.question.pk)
+    questions = Question.objects.filter(pk__in = question_ids)
+    print(questions)
     if candidate.completed_status is False:
        
         candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
@@ -388,8 +378,9 @@ def testpage(request,challenge_id,c_id):
             candidate.end_time=datetime.now()+timedelta(minutes=duration+330)
             
             candidate.save()
-            for q in questions:
-                candidate_question_code = Candidate_codes(question=q,candidate=candidate)
+            for q in contest_questions:
+                questions.add(q.question)
+                candidate_question_code = Candidate_codes(question=q.question,candidate=candidate)
                 candidate_question_code.c_code = q.default_c_code
                 candidate_question_code.cpp_code = q.default_cpp_code
                 candidate_question_code.csharp_code = q.default_csharp_code

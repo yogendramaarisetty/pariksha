@@ -64,20 +64,15 @@ class challenge_questions(models.Model):
 
 class Candidate(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
+    test_name = models.ForeignKey(Challenge,on_delete=models.CASCADE)
     fullname = models.CharField(default="",max_length=24)
     rollnumber = models.CharField(default="",max_length=20)
     college = models.CharField(default="",max_length=50)
-    graduation_year = models.IntegerField(default=0)
-    branch = models.CharField(default=0,max_length=50)
     mobile_number = models.CharField(max_length=100)
-    test_name = models.ForeignKey(Challenge,on_delete=models.CASCADE)
-    status = models.BooleanField(default=False)
-    submitted_code = models.TextField(max_length=10000)
     total_score = models.IntegerField(default=0)
-    count= models.IntegerField(default=0)
+    count = models.IntegerField(default=0)
     start_time = models.DateTimeField(blank=True,null=True,auto_now=False, auto_now_add=False)
     end_time = models.DateTimeField(blank=True,null=True,auto_now=False, auto_now_add=False)
-    resume = models.FileField(default='default.pdf',upload_to='resumes',null=True)
     completed_status = models.BooleanField(default=False)
     suspicious_count = models.IntegerField(default=0)
     def __str__(self):
@@ -92,6 +87,8 @@ class Question_Testcase(models.Model):
         unique_together = [['testcase','question'],]
     testcase = models.ForeignKey(Testcase,on_delete=models.SET_NULL,null=True)
     question  = models.ForeignKey(Question,on_delete=models.SET_NULL,null=True)
+    score = models.IntegerField(default=0)
+    description = models.TextField(null=True)
 
 class Candidate_codes(models.Model):
     default_code={

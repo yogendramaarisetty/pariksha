@@ -251,3 +251,11 @@ button.change_q:hover {
 div#testpage_header {
     background: #333333;
 }
+button#finish_button {
+    border-color: #af6200;
+}
+
+button#finish_button:hover {
+    background: #d67600e8;
+    font-weight: 100;
+}

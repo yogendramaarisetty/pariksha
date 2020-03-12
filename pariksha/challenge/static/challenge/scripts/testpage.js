@@ -80,7 +80,29 @@ $(window).load(function() {
 
 $(document).ready(function() {
     // executes when HTML-Document is loaded and DOM is ready
+    $('.question_content_wrapper').hide();
 });
+$('.ql_item').click(function(){
+    $('#q_list').hide();
+    fetchCandidateCodes(this.id);
+    $('.question_content_wrapper').hide();
+    var id = this.id;
+    id = "question_"+id+"_id";
+    question_desc = document.getElementById(id);
+    question_desc.style.display = 'block';
+});
+
+function fetchCandidateCodes(id){
+
+
+
+}
+
+function viewQuestionList(){
+    $('.question_content_wrapper').hide();
+    $('#q_list').show();
+}
+
 var draggerV = $(".gutter-vertical")[0];
 draggerV.addEventListener("click", function(event) {
     editor.resize();

@@ -1,5 +1,19 @@
 {% extends "challenge/base.html" %} {% block content %} {% if user.is_authenticated %}
-<section class="available_tests" data-tab="emoji">
+  {% for q in questions %}
+ 
+ 
+ <div class="q_popup_view" id="popup_{{q.id}}">
+  <div class="question_content">
+    <div class="popup_{{q.id}}_close close_icon"><i  class="material-icons close">
+    close
+    </i></div>
+    <h1>{{q.Title}}</h1>
+    <br>
+    {{q.Description | safe}}
+  </div>
+  </div>
+  {% endfor %}
+<section id="page" class="available_tests" data-tab="emoji">
     <div class="table_content_wrapper">
         <div class="table_head_content_wrapper">
             <h4 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">{{ question_count }} Questions available</h4>
@@ -42,7 +56,7 @@
                             <td>{{ q.Title }}</td>
                             <td>{{ q.Slug }}</td>
                             <td>{{ q.Type }} mins</td>
-                            <td><button type="button" data-contestid="{{q.id}}" class="primary_buttons" style="margin-right:1rem;">View</button></td>
+                            <td><button type="button"  data-qid="{{q.id}}" class="primary_buttons view" style="margin-right:1rem;">View</button></td>
 
                             <td><a href="#"><button  class="positive_button">Edit Question</button></a></td>
                             <td><button type="button" data-qid="{{q.id}}" class="delete_buttons" style="margin-right:1rem;">Delete</button></td>
@@ -59,7 +73,50 @@
 <!-- DivTable.com -->
 
 <div>
+ <script>
+
+  </script>
     <script type="text/javascript">
+    
+{% if messages %}
+var success_message = "";
+ {% for message in messages %}
+    
+success_message+="{{message}}";
+{% endfor %} 
+   toastr["success"](success_message);
+    toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-top-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+};
+{% endif %}
+
+
+ {% for q in questions %}
+ $('#popup_{{q.id}}').popup();
+ {% endfor %}
+
+    $('.view').on('click',function() {
+      
+      var q_id = '#popup_';
+      q_id += this.getAttribute('data-qid');
+
+      $(q_id).popup('show');
+    });
+
         $('.delete_buttons').on('click', function() {
             var q_id = $(this).attr('data-qid');
             $.confirm({
@@ -169,6 +226,8 @@
 
         }
     </script>
+  
+
 
     {% else %}
     <div class="row mt-3">

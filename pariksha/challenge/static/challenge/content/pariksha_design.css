@@ -479,3 +479,140 @@ button#save_btn_q:disabled:hover {
 button#save_btn_q:hover {
     background: #3F51B5;
 }
+.question_content {
+    width: 60rem;
+    min-width: 55rem;
+    margin: auto;
+    height: 90vh;
+    padding: 3rem;
+    overflow: auto;
+    background: white;
+    margin-top: 1rem;
+    margin-bottom: 2rem;
+    border-radius: 11px;
+}
+/* .close_icon {
+    width: fit-content;
+    margin-left: auto;
+    cursor: pointer;
+    background: white;
+    height: fit-content;
+    width: 70%;
+    position: absolute;
+    margin-top: 1rem;
+    border-top-left-radius: 10px;
+    margin-left: 4%;
+    border-top-right-radius: 10px;
+    min-width: 55rem;
+    padding: 0.5rem;
+} */
+.close_icon {
+    position: absolute;
+    right: 2%;
+    top: 3%;
+    cursor: pointer;
+}
+.richText {
+    box-shadow: 0px 1px 2px #0000007a;
+}
+textarea {
+    font-size: 14px;
+    padding: 6px;
+    border-radius: 9px;
+}
+.footer_form_button.floater_right {
+    position: relative;
+    margin-top: 4rem;
+    right: -8rem;
+  }
+  div.ioWrap  {
+    padding-top: 1rem;
+    
+}
+i#clse-icon {
+    position: relative;
+    margin-left: auto;
+    margin-bottom: auto;
+    top: -39px;
+    right: -29px;
+    cursor: pointer;
+}
+div.ioWrap {
+    padding: 2rem;
+    /* box-shadow: inset 1px -1px 6px #00000054; */
+    border-radius: .5rem;
+    font-size: 14px;
+    height: auto;
+    display: block;
+    border: 1px solid;
+    border-color: #c7c7c7;
+    margin: 15px 0px;
+}
+.ioWrap textarea {
+    margin: 0 10px;
+}
+
+input.tc_input {
+    border: none;
+    border-radius: 5px;
+    border: 1px solid;
+    border-color: #0000004f;
+    padding: 1px 7px;
+    line-height: 2rem;
+    font-size: large;
+}
+.existing_question_bank_list {
+    overflow: hidden;
+}
+
+div#question_bank_container {
+    height: fit-content;
+    max-height: calc(100% - 4rem);
+}
+.label_field_wrapper {
+    display: flex;
+}
+
+.label_field_wrapper.des_wrap {
+    display: block;
+}
+#page_contents {
+    padding: 4rem 2rem;
+}
+.lrwrapper {
+    height: 100%;
+    align-items: center;
+    position: relative;
+}
+
+.left_section_ins {
+    width: 55%;
+    align-items: center;
+    background: white;
+    height: 100%;
+    padding: 2rem;
+}
+.lrwrapper {
+    margin-top: 1rem;
+    box-shadow: 1px 1px 9px #00000029;
+}
+.duration_q_wrap {
+    display: flex;
+    height: fit-content;
+    position: relative;
+    top: 10rem;
+}
+
+.duration {
+    margin: 0px 37px;
+}
+.lrwrapper {}
+
+.lrwrapper {
+    display: flex;
+}
+
+.right_section_ins {
+    padding: 2rem;
+    width: fit-content;
+}

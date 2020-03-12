@@ -1035,11 +1035,12 @@ button[saved_status="saved"] {
 .qfooter_form_button {
   position: relative;
   margin-top: auto;
-  width: fit-content;
+  width: 90%;
   height: fit-content;
-  margin-left: auto;
+  /* margin-left: auto; */
   padding-right: 1rem;
   /* padding-bottom: 1rem; */
+  margin: auto;
 }
 
 .selected_question_list_container {
@@ -1114,4 +1115,51 @@ button.delete_buttons {
 button.delete_buttons:hover {
   background: #b83127;
   color: white;
+}
+textarea#tc_input {
+  height: 35%;
+}
+
+textarea#tc_output {
+  height: 35%;
+}
+
+
+
+
+div#iotawrap{
+  display: flex;
+}
+h4 {
+  height: fit-content;
+  margin: 0;
+  width: fit-content;
+}
+div#testcases_wrapper {
+  margin: 20px 0px;
+}
+.table_content_wrapper {
+  max-height: 33rem;
+}
+
+.list_element_wrapper {
+  height: 21rem;
+}
+
+table#myTable {
+  height: -2rem;
+}
+.table_head_content_wrapper {}
+
+.table_content_wrapper {
+    padding-top: .5rem;
+}
+
+.table_head_content_wrapper {
+    padding: .4rem;
+    height: fit-content;
+}
+
+h4.p-customize_emoji_wrapper__count.large_bottom_margin.inline_block.black {
+    margin-bottom: 0px !important;
 }

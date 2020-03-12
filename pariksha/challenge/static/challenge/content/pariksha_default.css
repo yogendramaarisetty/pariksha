@@ -702,3 +702,75 @@ button:disabled {
 div#testpage_header {
     background: #fdfdfd;
 }
+div#testpage_header {
+    position: relative;
+}
+div#testpage_header {
+    position: relative;
+}
+
+button#finish_button {
+    border: 2px solid #ff8d00;
+    color: #ff8100;
+    letter-spacing: 1px;
+    width: fit-content;
+    height: fit-content;
+    line-height: 2rem;
+    font-weight: 600;
+    transition: 0.3s;
+}
+
+button#finish_button:hover {
+    background: #ff8100;
+    color: white;
+}
+ul.question_change_list {
+}
+
+li.ql_item {
+    list-style: decimal;
+}
+
+li.ql_item {
+    line-height: 2rem;
+    padding: .5rem;
+    text-overflow: ellipsis;
+}
+
+ul.question_change_list {
+    width: calc(100% - 2rem);
+    margin: auto;
+    padding: 1rem;
+}
+
+li.ql_item::after {}
+
+ul.question_change_list {
+    /* padding: inherit; */
+}
+
+li.ql_item:after {
+    width: 86%;
+    content: "";
+    position: absolute;
+    /* border: solid; */
+    height: 1px;
+    background: #cececec4;
+    left: 21px;
+    margin-top: 40px;
+}
+
+li.ql_item:hover {
+    /* background: #d3e6f3; */
+    color: #457ed4;
+    font-weight: 800;
+}
+
+
+li.ql_item {
+    cursor: pointer;
+    width: calc(100% - 2rem);
+}
+button.change_q {
+    cursor: pointer;
+}
