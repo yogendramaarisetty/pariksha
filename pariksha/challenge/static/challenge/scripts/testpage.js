@@ -5,7 +5,7 @@
 //splitjs*************
 Split(['#left_pane', '#right_pane'], {
     gutterSize: 7,
-    sizes: [30, 70],
+    sizes: [40, 60],
     minSize: [200, 600]
 });
 
@@ -106,7 +106,21 @@ function createEditor(){
             codeDraft();
         }
     })
-    
+    editor.commands.addCommand({
+        name: 'run',
+        bindKey: {win: "Ctrl-L", mac: "Command-Option-F"},
+        exec: function(editor) {
+            runCode();
+        }
+    })
+    editor.addEventListener("keydown", function(event) {
+        event.preventDefault();
+        switch (event.which) {
+          case 120:
+            runCode();
+            break;
+        }
+      })
 editor.getSession().on('change', function() {
     // setTimeout(500);
     lang = document.getElementById("languages").value;
@@ -307,6 +321,9 @@ draggerV.addEventListener("click", function(event) {
 });
 
 function runCode() {
+    if(!$('.run_button')[0].disabled){
+    $('#output_pane').click();
+    $('#time_elapsed')[0].innerHTML = "";
     $('#output_card').hide();
     $('#loader').show();
     $('.run_button')[0].disabled = true;
@@ -333,14 +350,17 @@ function runCode() {
                 $('.run_button')[0].disabled = false;
                 $('.submit_button')[0].disabled = false;
                 $('#save_btn')[0].setAttribute('status','saved');
-                if(json.status == "Successfully compiled"){
-                    renderSuccessOutput(json.output);
+                if(json.status == "Successfully ran"){
+                    renderSuccessOutput(json.output,json.Timetaken);
                 }
                 else if(json.status == "Compilation Errors"){
                     renderErrorMsg(json.error);
                 }
                 else if (json.status == "Run Time Errors"){
-                    renderRuntimeError(json.error);
+                    renderRuntimeError(json.error,json.Timetaken);
+                }
+                else if(json.status == "Timelimit exception"){
+                    renderTLE(json.error,json.Timetaken);
                 }
                 // $('#output_card').show();   
             $('#loader').hide();
@@ -357,9 +377,17 @@ function runCode() {
     } else {
         $('#output').html("Don't submit empty code");
     }
+    
+    }
 }
 function submitCode(){
+    if(!$('.submit_button')[0].disabled){
+        $('#testcases_pane').click();
     $('#testcase-table').show();
+    $('#output_card').hide();
+    $('#loader').show();
+    $('.run_button')[0].disabled = true;
+    $('.submit_button')[0].disabled = true;
    if (editor.getValue() != "") {
          $.ajax({
              type: 'POST',
@@ -376,41 +404,129 @@ function submitCode(){
              },
  
              success: function(json) {
+                $('#testcases_pane').click();
+                $('.run_button')[0].disabled = false;
+                $('.submit_button')[0].disabled = false;
+                $('#save_btn')[0].setAttribute('status','saved');
+                 if(json.status == "Compilation Errors"){
+                    $('#output_pane').click();
+                    renderErrorMsg(json.error);
+                }
+                else{
+                    
+                    $('#tc_body')[0].innerHTML = "";
+                    var result = json;
+                    var numberOfTestCases = Object.keys(result).length;
+                    for(var i =0;i<numberOfTestCases;i++){
+                        var testCase = result[i];
+                        addRow(testCase,i+1);
+                    }
+                }
                  
              },
              
          }).done(function() {
+     $('#loader').hide();
          });
      } else {
      }
- 
+    }
  }
+
+function addRow(json,num){
+    var tc_body = $('#tc_body')[0];
+    var row = document.createElement('tr');
+    var time_val = ""+json['Time_taken'];
+    time_val = time_val.substring(0,6);
+    row.className = "tc_record";
+    var testCaseNumber = document.createElement('td');
+    var description = document.createElement('td');
+    var status = document.createElement('td');
+    var time = document.createElement('td');
+    var status_icon = document.createElement('td');
+    var score = document.createElement('td');
+    testCaseNumber.innerText = "Testcase "+num;
+    description.innerText = json['description'];
+    status.innerText = json['status'];
+    time.innerText = time_val;
+    status.setAttribute('status',json['status']);
+    status_icon.setAttribute('status',json['status']);
+    score.innerText = json['score'];
  
-function renderSuccessOutput(output){
-    $('#status_message')[0].innerText = "Successfully compiled";
+    if(json['status'] == "Timelimit exception"){
+        status_icon.innerHTML = "<div icon='status_icon' status='Timelimit exception'></div>";
+    }
+    else if(json['status'] == "Run Time Errors"){
+        status_icon.innerHTML = "<div icon='status_icon' status='Run Time Errors'></div>";
+    }
+    else if(json['status'] == "Passed"){
+        status_icon.innerHTML = "<div icon='status_icon' status='Passed'></div>";
+    }
+    else if(json['status'] == "Failed"){
+        status_icon.innerHTML = "<div icon='status_icon' status='Failed'></div>";
+    }
+    row.appendChild(testCaseNumber);
+    row.appendChild(description);
+    row.appendChild(status);
+    row.appendChild(status_icon);
+    row.appendChild(time);
+    row.appendChild(score);
+    tc_body.appendChild(row);
+}
+ 
+function renderSuccessOutput(output, time){
+    $('#status_message')[0].innerHTML = "";
+    $('#status_message')[0].innerText = "Successfully ran";
     $('#status_message')[0].setAttribute('status','success');
     $('#output_result_pre')[0].innerText = output;
     $('#output_result_pre')[0].setAttribute('status','success');
     $('#type_msg')[0].innerText = 'Output';
+     
+    var time_elapsed = document.createElement('div');
+    time_elapsed.id = "timetaken";
+    var s = "" +time+"";
+     s= s.substring(0, 6)
+    time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
+    $('#time_elapsed')[0].appendChild(time_elapsed);
 }
 function renderErrorMsg(error){
+    $('#status_message')[0].innerHTML = "";
     $('#status_message')[0].innerText = "Compilation Error";
     $('#status_message')[0].setAttribute('status','Error');
     $('#output_result_pre')[0].innerText = error;
     $('#output_result_pre')[0].setAttribute('status','Error');
 }
 
-function renderRuntimeError(error){
+function renderRuntimeError(error, time){
+    $('#status_message')[0].innerHTML = "";
     $('#status_message')[0].innerText = "Runtime Error";
     $('#status_message')[0].setAttribute('status','rterror');
     $('#output_result_pre')[0].innerText = error;
     $('#output_result_pre')[0].setAttribute('status','rtrror');
+    var time_elapsed = document.createElement('div');
+    time_elapsed.id = "timetaken";
+    var s = "" +time+"";
+     s= s.substring(0, 6)
+    time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
+    $('#time_elapsed')[0].appendChild(time_elapsed);
+}
+function renderTLE(msg, time){
+    $('#status_message')[0].innerHTML = "<i id=\"tleico\"class=\"material-icons\">timer_off</i> <b> TLE (Time Limit Exception)</b>";
+    $('#status_message')[0].setAttribute('status','tle');
+    $('#output_result_pre')[0].innerText = msg;
+    $('#output_result_pre')[0].setAttribute('status','tle');
+    var time_elapsed = document.createElement('div');
+    time_elapsed.id = "timetaken";
+    var s = "" +time+"";
+     s= s.substring(0, 6)
+    time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
+    $('#time_elapsed')[0].appendChild(time_elapsed);
+
 }
 
 
 $(".nav_btns").click(function() {
     $('.response_cards').hide();
-    console.log(this.getAttribute('data'));
     document.getElementById(this.getAttribute('data')).style.display="block";
     if (current_active != this) {
         this.className = "nav_btns_active";

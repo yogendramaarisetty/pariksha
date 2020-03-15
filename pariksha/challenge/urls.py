@@ -30,7 +30,7 @@ urlpatterns = [
     
     path('create_Contest/',views.create_contest_form,name="create_contest"),
     url(r'^modify/(?P<contest_id>\d+)/contest$', views.contest_edit_form, name='contest_edit_form'),
-    
+    url(r'^modify/(?P<question_id>\d+)/question$', views.question_edit_form, name='question_edit_form'),
     # path('question_bank/<q_id>/view/',views.question_view(),name="question_edit"),
     path(r'challenge/testpage/(?P<challenge_id>\d+)/(?P<u_id>\d+)/compile_run/',views.compile_run,name='compile_run'),
     path('admin_management/',views.admin_management,name='admin_manage'),

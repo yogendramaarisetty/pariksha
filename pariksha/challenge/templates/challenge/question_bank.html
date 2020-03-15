@@ -42,7 +42,7 @@
                         <tr>
                             <th>Question id</th>
                             <th>Question Name</th>
-                            <th>Slug</th>
+                            <th>Level</th>
                             <th>Type</th>
                             <th>View</th>
                             <th>Edit</th>
@@ -54,11 +54,11 @@
                         <tr id="{{q.id}}">
                             <td>{{ q.id }}</td>
                             <td>{{ q.Title }}</td>
-                            <td>{{ q.Slug }}</td>
+                            <td>{{ q.Level }}</td>
                             <td>{{ q.Type }} mins</td>
                             <td><button type="button"  data-qid="{{q.id}}" class="primary_buttons view" style="margin-right:1rem;">View</button></td>
 
-                            <td><a href="#"><button  class="positive_button">Edit Question</button></a></td>
+                            <td><a href="{% url 'question_edit_form' question_id=q.id %}"><button  class="positive_button">Edit Question</button></a></td>
                             <td><button type="button" data-qid="{{q.id}}" class="delete_buttons" style="margin-right:1rem;">Delete</button></td>
 
                         </tr>

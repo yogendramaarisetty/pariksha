@@ -3,7 +3,12 @@
 
 <head>
     {% load static %}
-    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>{{challenge.Title}} - Pariksha</title>
+    
+    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Poppins|Raleway|Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
@@ -37,6 +42,18 @@
         cursor: ew-resize;
         background-color: #fafafa;
     }
+    div[status="Passed"]{
+    background-image: url({% static 'img/check.svg' %});
+}
+div[status="Run Time Errors"]{
+    background-image: url({% static 'img/alert.svg' %});
+}
+div[status="Timelimit exception"]{
+    background-image: url({% static 'img/clock.svg' %});
+}
+div[status="Failed"]{
+    background-image: url({% static 'img/close.svg' %});
+}
 </style>
 <style>
     .pretty.p-switch .state:before {
@@ -149,6 +166,7 @@
                                 </div>
                             </div>
                             <div class="right_section">
+                                <p class="p">Ctrl + L to Run your code</p>
                                 <div>
                                     <button onclick="runCode()" class="run_button" type="button"><span class="span_button"><i id="run_icon"
                                                 class="material-icons">
@@ -169,6 +187,7 @@
                             <div data="output" id="output_card" " class="response_cards">
                                 <div id="main_output">
                                     <h4 status ="" id="status_message">Click on run to see the output</h4>
+                                    <div id="time_elapsed"></div>
                                     <b id="type_msg"></b>
                                     <pre status="" id="output_result_pre"></pre>
                                 </div>
@@ -185,7 +204,25 @@
                                 </div>
                             </div>
                             <div data="testcases" id="testcases_card" " class="response_cards">
-                                TestCases
+                               
+                                <div class="testcase_table_wrapper">
+                                <table class="tc_table">
+                                    <thead>
+                                    <tr>
+
+                                        <th>Sno</th>
+                                        <th>Description</th>
+                                        <th>Status</th>
+                                        <th></th>
+                                        <th>Time (Sec)</th>
+                                        <th>Score</th>
+                                    </tr>
+                                </thead>
+                                    <tbody id="tc_body">
+                                      
+                                    </tbody>
+                                </table>
+                            </div>
                             </div>
                             <div data="custom_input" id="custom_input_card" " class="response_cards">
                                 Custom input

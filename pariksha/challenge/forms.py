@@ -41,7 +41,7 @@ class QuestionCreateForm(forms.ModelForm):
     Description = forms.CharField(widget=forms.Textarea(attrs={'class': 'content','id':'q_description_editor'}))
     class Meta:
         model = Question
-        fields = ['Slug','Title','Type','Description','default_c_code',
+        fields = ['Level','Title','Type','Description','default_c_code',
         'default_cpp_code',
         'default_csharp_code',
         'default_java_code',

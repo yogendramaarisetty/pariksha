@@ -1,26 +1,375 @@
-<!-- @format -->
+{% extends "challenge/base.html" %} {% block content %} {% load crispy_forms_tags %} {% load static %}
+<style>
+    .pretty.p-switch .state:before {
+        height: 1rem;
+    }
+</style>
+{% if user.is_authenticated %}
+<div id = "page" class="model_form_outer_wrapper">
+    <div class="header_wrapper">
+        <div class="model_form_title">
+            <h1>Create {{model_name}}</h1>
+            <p class="Description_para">Provide the question details below</p>
+            <p class="Description_para italic">And Add all the testcases for this Question</p>
+        </div>
+        <div class="header_description"></div>
+    </div>
+       
+    <form method="POST" id="form">
+        {% csrf_token %}
+        <div class="model_form_main_wrapper">
+            <section class="model_form_section">
 
-{% extends "challenge/base.html" %} {% load static %} {% block content %} {% if messages %} {% for message in messages %}
-<div class="alert-{{message.tags}}">
-  {{message}}
-</div>
-{% endfor %} {% endif %}
+                <div class="label_field_wrapper">
+                    <label for="{{form.Title.name}}">Title</label> {{form.Title}}
+                </div>
+                <p id="question_title_error" class="form_error"><strong></strong></p>
 
-{% load crispy_forms_tags %}
 
-    <form class="question_form" method="post" action="#" novalidate="novalidate">
-      {% csrf_token %} {{form|crispy }}
-      <button type="submit" class="btn btn-primary">
-        Save Changes
-        <img
-          class="form-brand-details"
-          src="{% static 'img/arrow_icon.svg' %}"
-        />
-      </button>
+                <div class="label_field_wrapper">
+                    <label for="{{form.Level.name}}">Level</label> {{form.Level}}
+                </div>
+                <p id="question_slug_error" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper">
+                    <label for="{{form.Type.name}}">Type</label> {{form.Type}}
+                </div>
+                <p id="question_type_error" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper des_wrap">
+                    <label for="{{form.Description.name}}">Description</label> {{form.Description}}
+                </div>
+                <p id="question_description_error" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper des_wrap">
+                    <label for="{{form.default_c_code.name}}">Default C code</label> {{form.default_c_code}}
+                </div>
+                <p id="default_c_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper des_wrap">
+                    <label for="{{form.default_cpp_code.name}}">Default C++ code</label> {{form.default_cpp_code}}
+                </div>
+                <p id="default_cpp_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper des_wrap">
+                    <label for="{{form.default_java_code.name}}">Default Java code</label> {{form.default_java_code}}
+                </div>
+                <p id="default_java_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper des_wrap">
+                    <label for="{{form.default_csharp_code.name}}">Default C# code</label> {{form.default_csharp_code}}
+                </div>
+                <p id="default_csharp_code" class="form_error"><strong></strong></p>
+
+                <div class="label_field_wrapper des_wrap">
+                    <label for="{{form.default_python_code.name}}">Default Python code</label> {{form.default_python_code}}
+                </div>
+                {% if form.default_python_code.errors %} {% for error in form.default_python_code.errors %}
+                <p class="form_error"><strong>{{ error|escape }}</strong></p>
+                {% endfor %} {% endif %}
+                <p id="default_python_code" class="form_error"><strong></strong></p>
+
+
+
+                <div class="footer_form_button floater_right">
+                    <button id="save_btn" class="positive_button" onclick="formAsyncSave()" type="button">
+                        Next
+                    </button>
+                </div>
+            </section>
+        </div>
     </form>
+   
+    <div class="qfooter_form_button">
+    <div id="testcases_wrapper">
+   
+  {% for qt in question_testcases %}
+  <div id="io_wrap_{{forloop.counter}}" testcaseid="{{qt.id}}" class="ioWrap">
+          <h4 for='input_"+counter+"'>Testcase {{forloop.counter}}
+          </h4><br><div id='iotawrap'>
+            <textarea name='input_{{forloop.counter}}' placeholder = 'Input' style='height: 10rem;'> {{qt.testcase.Tinput}}</textarea>
+            <textarea placeholder='Output' name='output_{{forloop.counter}}' style='height: 10rem;'>{{qt.testcase.Toutput}}</textarea>
+          </div>
+          <div class='label_field_wrapper2'>
+          <label for='Score'>Score</label> 
+          <input  class='tc_input' type='number' value = "{{qt.score}}" name='Score' maxlength='120' required='' >
+            </div>
+            <div class='label_field_wrapper2'>
+            <label for='desc'>Description</label> 
+            <input type='text' class='tc_input' value="{{qt.description}}" name='desc' maxlength='120' required='' > 
+            </div>
+     </div>
+    {% endfor %}
+    </div>
+        <button type="button" id="testcase_btn" onclick="AddTestcase()" class="positive_button">Add Testcases</button>
+     <button id="save_btn" class="positive_button" onclick="TestCasesAsyncSave()" type="button">
+                        Save
+                    </button>
+   </div>
+   
+</div>
+
+{% endif %} 
+
 
 <script src="{% static 'challenge/scripts/jquery.popupoverlay.js' %}"></script>
 <script src="{% static 'challenge/scripts/jquery.richtext.js' %}"></script>
 <script src="{% static 'challenge/scripts/text_editor.js' %}"></script>
+<link rel="stylesheet" type="text/css" href="{% static 'challenge/content/question_model.css' %}" />
 
+<script src="{% static 'challenge/scripts/question_creation.js' %}"></script>
+<script>
+var question_title,question_slug, question_type, question_description, q_default_c_code, q_default_cpp_code, q_default_csharp_code, q_default_java_code, q_default_python_code;
+
+window.onload = function () {
+    toastr["success"]("My name is Inigo Montoya. You killed my father. Prepare to die!");
+    toastr.options = {
+  "closeButton": false,
+  "debug": false,
+  "newestOnTop": false,
+  "progressBar": false,
+  "positionClass": "toast-top-right",
+  "preventDuplicates": false,
+  "onclick": null,
+  "showDuration": "300",
+  "hideDuration": "1000",
+  "timeOut": "5000",
+  "extendedTimeOut": "1000",
+  "showEasing": "swing",
+  "hideEasing": "linear",
+  "showMethod": "fadeIn",
+  "hideMethod": "fadeOut"
+};
+           
+          
+
+        };
+$('#popup_io').popup();
+ title_error = document.getElementById('question_title_error');
+ slug_error =  document.getElementById('question_slug_error');
+ type_error =  document.getElementById('question_type_error');
+ description_error =  document.getElementById('question_description_error');
+ c_code_error =  document.getElementById('default_c_code');
+ cpp_code_error =  document.getElementById('default_cpp_code');
+ csharp_code_error =  document.getElementById('default_csharp_code');
+ java_code_error =  document.getElementById('default_java_code');
+ python_code_error =  document.getElementById('default_python_code');
+
+ function AddTestcase(){
+    // $('#popup_io').popup('show');
+     var testcases = document.getElementById('testcases_wrapper'); 
+     var counter = testcases.childElementCount;
+         counter++;
+     var tc_element = "<h4 for='input_"+counter+"'>Testcase "+counter+"</h4><i  id='clse-icon' dmainid ='io_wrap_"+counter+"'onclick='removeTC(this)' class='material-icons close'>close</i><br><div id='iotawrap'><textarea name='input_"+counter+"' placeholder = 'Input' style='height: 10rem;'></textarea><textarea placeholder='Output' name='output_"+counter+"' style='height: 10rem;'></textarea></div><div class='label_field_wrapper2'> <label for='Score'>Score</label> <input  class='tc_input' type='number' name='Score' maxlength='120' required='' > </div><div class='label_field_wrapper2'> <label for='desc'>Description</label> <input type='text' class='tc_input' name='desc' maxlength='120' required='' > </div>"
+   var div = document.createElement('div');
+   div.id = 'io_wrap_'+counter;
+div.className ='ioWrap';
+   div.innerHTML = tc_element;
+   testcases.appendChild(div);
+
+  }
+  function removeTC(ele){
+     elem = document.getElementById(ele.getAttribute('dmainid'));
+     elem.parentNode.removeChild(elem);
+      
+  }
+  var current_question_id ;
+ function formAsyncSave() {
+ question_title = document.getElementById('id_Title');
+ question_slug = document.getElementById('id_Level');
+ question_type = document.getElementById('id_Type');
+ question_description = document.getElementById('q_description_editor');
+ q_default_c_code= document.getElementById('id_default_c_code');
+ q_default_cpp_code = document.getElementById('id_default_cpp_code');
+ q_default_csharp_code = document.getElementById('id_default_csharp_code');
+ q_default_java_code =document.getElementById('id_default_java_code') ;
+ q_default_python_code = document.getElementById('id_default_python_code');
+            $('#save_btn_loader').show();
+            var save_button = document.getElementById('save_btn');
+            save_button.innerText = 'Saving...';
+            var ajaxMins = new Date().getMinutes();
+            var ajaxSecs = new Date().getSeconds();
+            var ajaxMS = new Date().getMilliseconds();
+            $.ajax({
+
+                type: 'POST',
+                url: '',
+                dataType: 'json',
+                cache: false,
+                async: true,
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    question: 'yes',
+                    Title: question_title.value,
+                    Level: question_slug.value,
+                    Type: question_type.value,
+                    Description:question_description.value,
+                    default_c_code:c_editor.getValue(),
+                    default_cpp_code:cpp_editor.getValue(),
+                    default_csharp_code:csharp_editor.getValue(),
+                    default_java_code:java_editor.getValue(),
+                    default_python_code:python_editor.getValue(),
+                
+                },
+                success: function (json) {
+                    if (json.errors == 'yes') {
+                        slug_error.innerText = '';
+                        title_error.innerText = '';
+                        type_error.innerText = '';
+                        description_error.innerText = '';
+                        c_code_error.innerText = '';
+                        cpp_code_error.innerText = '';
+                        csharp_code_error.innerText = '';
+                        java_code_error.innerText = '';
+                        python_code_error.innerText = '';
+
+                        error_obj = json.form_errors;
+                        var msg_err_map = {
+                            'Slug': slug_error,
+                            'Title': title_error,
+                            'Type' : type_error,
+                            'Description': description_error,
+                            'default_c_code': c_code_error,
+                            'default_cpp_code': cpp_code_error,
+                            'default_csharp_code': csharp_code_error,
+                            'default_java_code': java_code_error,
+                            'default_python_code': python_code_error,
+                        }
+                        jQuery.each(error_obj, function (i, val) {
+                            msg_err_map[i].innerText = val;
+                        });
+                        $("html, body").animate({ scrollTop: 0 }, "slow");
+                        save_button.setAttribute('saved_status', 'unsaved');
+
+                        save_button.textContent = "Save";
+                        $('#save_btn_loader').hide();
+                    }
+                    else {
+                     
+                        title_error.innerText = '';
+                        slug_error.innerText = '';
+                        type_error.innerText = '';
+                        description_error.innerText = '';
+                        default_c_code.innerText = '';
+                        default_cpp_code.innerText = '';
+                        default_csharp_code.innerText = '';
+                        default_java_code.innerText = '';
+                        default_python_code.innerText = '';
+
+                        question_title.disabled = true;
+                        question_slug.disabled = true;
+                        question_description.disabled = true;
+                        question_type.disabled = true;
+                        $('.richText-editor')[0].setAttribute('contenteditable',"false");
+                        python_editor.setOptions({
+                            readOnly: true,
+                            highlightActiveLine: false,
+                            highlightGutterLine: false
+                        })
+                        python_editor.renderer.$cursorLayer.element.style.opacity=0
+                        csharp_editor.setOptions({
+                            readOnly: true,
+                            highlightActiveLine: false,
+                            highlightGutterLine: false
+                        })
+                        csharp_editor.renderer.$cursorLayer.element.style.opacity=0
+                        java_editor.setOptions({
+                            readOnly: true,
+                            highlightActiveLine: false,
+                            highlightGutterLine: false
+                        })
+                        java_editor.renderer.$cursorLayer.element.style.opacity=0
+                        c_editor.setOptions({
+                            readOnly: true,
+                            highlightActiveLine: false,
+                            highlightGutterLine: false
+                        })
+                        c_editor.renderer.$cursorLayer.element.style.opacity=0
+                        cpp_editor.setOptions({
+                            readOnly: true,
+                            highlightActiveLine: false,
+                            highlightGutterLine: false
+                        })
+                        cpp_editor.renderer.$cursorLayer.element.style.opacity=0
+                        current_question_id = json.question_id;
+                        save_button.textContent = "Saved";
+                        save_button.disabled = true;
+                        edit_contest_url = "/pariksha/modify/"+current_question_id+"/contest";
+                        var edit_button_link1 = document.getElementById('question_edit_link');
+                        edit_button_link1.style.display = "initial";
+                        edit_button_link1.href = "{% url 'contest_edit_form' contest_id=12345 %}".replace(/12345/, current_question_id.toString());
+                 
+                        
+            $('.qfooter_form_button')[0].style.display = 'block';
+                    }
+
+                },
+
+                statusCode: {
+                    500: function () {
+                    }
+                },
+            }).done(function () {
+                $('#save_btn_loader').hide();
+            });
+
+        }
+
+        function TestCasesAsyncSave(){
+    var tc_wrapper = document.getElementById('testcases_wrapper');;
+    var count = tc_wrapper.childElementCount;
+    var etc_id = [];
+    var testcase = [];
+    var inputs = [];
+    var outputs = [];
+    var scores = [];
+    var description = [];
+    for(i=1;i<=count;i++){
+        var selectr ='#io_wrap_'+i;
+        if(i<={{existing_tc_count}}){
+          var curr_id = $(selectr)[0].getAttribute('testcaseid');
+          etc_id.push(curr_id);
+        }
+       
+            var io =$(selectr).find('textarea').each(function(){
+        });
+        inputs.push(io[0].value);
+        outputs.push( io[1].value);
+        var sd =$(selectr).find('input').each(function(){
+        });
+        scores.push(sd[0].value);
+        description.push(sd[1].value);
+        
+    }
+    $.ajax({
+
+                type: 'POST',
+                url: '',
+                dataType: 'json',
+                cache: false,
+                async: true,
+                data: {
+                    csrfmiddlewaretoken: "{{ csrf_token }}",
+                    question_testcase: 'yes',
+                    etc_id_list: etc_id,
+                    inputs : inputs,
+                    outputs : outputs,
+                    scores : scores,
+                    description : description,
+                    count: count,
+                    question_id : current_question_id,
+                },
+                success: function (json) {
+                   window.location.href = "{% url 'question_bank' %}";
+
+                },
+
+                statusCode: {
+                    500: function () {
+                    }
+                },
+            }).done(function () {
+            });
+}
+</script>
 {% endblock content %}

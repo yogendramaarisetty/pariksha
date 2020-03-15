@@ -51,28 +51,47 @@ def compile_run(language,code,custom_input,request,candidate):
     code_file.flush()
     code_lines = code.split("\n")
     for line in code_lines:
-        line += "\n"
+        if language == "Python":
+            line += "\n"
         code_file.write(line)
     code_file.close()
-    print("********\n",compile_command[language],"\n****\n",run_command[language],"\n******")
-    compile_code = subprocess.Popen(compile_command[language],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
-    compile_errors = compile_code.stderr.readlines()
     start_time= 0
     end_time = 0
-    if len(compile_errors)==0:
+    # print("********\n",compile_command[language],"\n****\n",run_command[language],"\n******")
+    if language == "Python":
         try:
             start_time = time.time()
             run_code = subprocess.run(run_command[language], stdout=PIPE,input=custom_input, stderr=subprocess.PIPE,encoding='ascii',shell=False, timeout=5)
             end_time = time.time()
-            print('Total time taken is ',end_time-start_time)
+            # print('Total time taken is ',end_time-start_time)
         except:
-            return {'status': 'Timelimit exception','message':'your program exceeded the time limit'}    
+            end_time = time.time()
+            return {'status': 'Timelimit exception','message':'your program exceeded the time limit','Timetaken':end_time - start_time}    
         
         runtime_errors = run_code.stderr
         output = run_code.stdout
         if runtime_errors!="":
             return { 'status': "Run Time Errors", 'error':runtime_errors}
-        return {'status':"Successfully compiled" , 'output' : output}
+        return {'status':"Successfully ran" , 'output' : output,'Timetaken':end_time-start_time}
+    
+    compile_code = subprocess.Popen(compile_command[language],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
+    compile_errors = compile_code.stderr.readlines()
+    
+    if len(compile_errors)==0:
+        try:
+            start_time = time.time()
+            run_code = subprocess.run(run_command[language], stdout=PIPE,input=custom_input, stderr=subprocess.PIPE,encoding='ascii',shell=False, timeout=5)
+            end_time = time.time()
+            # print('Total time taken is ',end_time-start_time)
+        except:
+            end_time = time.time()
+            return {'status': 'Timelimit exception','error':'your program exceeded the time limit','Timetaken':end_time-start_time}    
+        
+        runtime_errors = run_code.stderr
+        output = run_code.stdout
+        if runtime_errors!="":
+            return { 'status': "Run Time Errors", 'error':runtime_errors,'Timetaken':end_time-start_time}
+        return {'status':"Successfully ran" , 'output' : output,'Timetaken':end_time-start_time}
     else:
         errors=""
         for e in compile_errors:

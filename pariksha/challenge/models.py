@@ -33,7 +33,7 @@ class Challenge(models.Model):
         return f'{self.Active}'
 
 class Question(models.Model):
-    Slug = models.SlugField()
+    Level = models.CharField(max_length=120,default="easy")
     Title = models.CharField(max_length=120)
     Type= models.CharField(max_length=120)
     Description = models.TextField()

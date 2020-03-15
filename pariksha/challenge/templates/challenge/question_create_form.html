@@ -26,7 +26,7 @@
 
 
                 <div class="label_field_wrapper">
-                    <label for="{{form.Slug.name}}">Slug</label> {{form.Slug}}
+                    <label for="{{form.Level.name}}">Level</label> {{form.Level}}
                 </div>
                 <p id="question_slug_error" class="form_error"><strong></strong></p>
 
@@ -164,7 +164,7 @@ div.className ='ioWrap';
   var current_question_id ;
  function formAsyncSave() {
  question_title = document.getElementById('id_Title');
- question_slug = document.getElementById('id_Slug');
+ question_slug = document.getElementById('id_Level');
  question_type = document.getElementById('id_Type');
  question_description = document.getElementById('q_description_editor');
  q_default_c_code= document.getElementById('id_default_c_code');
@@ -189,7 +189,7 @@ div.className ='ioWrap';
                     csrfmiddlewaretoken: "{{ csrf_token }}",
                     question: 'yes',
                     Title: question_title.value,
-                    Slug: question_slug.value,
+                    Level: question_slug.value,
                     Type: question_type.value,
                     Description:question_description.value,
                     default_c_code:c_editor.getValue(),

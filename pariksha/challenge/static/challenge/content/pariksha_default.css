@@ -978,3 +978,125 @@ textarea#input {
     border-radius: 5px;
     color: #000000e6;
 }
+div#timetaken {
+    padding: 7px 0px;
+    font-size: 14px;
+    color: #986200;
+}
+
+i#time_icon {
+    position: absolute;
+    left: 2.1rem;
+    color: #d08600;
+    font-size: 22px;
+}
+
+div#time_elapsed {
+    width: fit-content;
+    margin-left: 2rem;
+}
+
+h4#status_message {
+    margin-bottom: .1rem;
+}
+
+.testcase_table_wrapper th {
+    font-size: 14px;
+    background: white;
+    padding: 10px;
+    border-bottom: 1px solid;
+    border-color: #2196F3;
+    border-width: 2px;
+    background: #f0f4f7;
+}
+
+.testcase_table_wrapper tr {
+    padding-top: 1rem;
+    padding-bottom: 1rem;
+    border-bottom: solid;
+    height: 4rem;
+    border-width: 1px;
+    border-color: #d0d0d0;
+}
+
+.testcase_table_wrapper table {
+    border-collapse: collapse;
+    margin: auto;
+    width: 100%;
+}
+
+.testcase_table_wrapper td {
+    font-size: .9rem;
+    color: #4e4f58;
+    font-weight: 700;
+    padding: 10px;
+    text-align: center;
+}
+i#time_icon {
+    position: absolute;
+    left: 2.1rem;
+    color: #966101;
+    font-size: 22px;
+}
+div#pariksha-logo {
+    margin-top: 3px;
+}
+h4#status_message[status='tle'] {
+    color: #ff7600;
+    left: 23px;
+    position: relative;
+}
+
+i#tleico {
+    position: absolute;
+    left: -23px;
+    font-size: 20px;
+}
+.testcase_table_wrapper tr {
+    padding-top: 0rem;
+    padding-bottom: 0rem;
+    border-bottom: solid;
+    height: 3rem;
+    border-width: 1px;
+    border-color: #d0d0d0;
+}
+tr.tc_record {
+    background: white;
+}
+.testcase_table_wrapper th {
+    font-size: 14px;
+    background: white;
+    padding: 10px;
+    border-bottom: 1px solid;
+    border-color: #2196F3;
+    border-width: 2px;
+    background: #dedede;
+    color: #292929;
+}
+div#timetaken {
+    padding: 7px 0px;
+    font-size: 14px;
+    color: #868686e6;
+}
+i#time_icon {
+    position: absolute;
+    left: 2.6rem;
+    color: #868686e6;
+    font-size: 21px;
+}
+.output-area-wrap {
+    background: #c3c3c338;
+}
+.testcase_table_wrapper td {
+    font-weight: 400;
+}
+td[status="Passed"] {
+    color: green;
+}
+div[icon="status_icon"]{
+    width: 15px;
+    height: 15px;
+    background-repeat: unset;
+    cursor: auto;
+    background-size: cover;
+}

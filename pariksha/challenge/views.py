@@ -44,7 +44,7 @@ def pariksha_register(request):
             user = User.objects.all().filter(username=rollnumber).first()
             form.is_active = False
             current_site = get_current_site(request)
-            print(current_site)
+            # print(current_site)
             subject = 'Activate Your your test'          
             messages.success(request, f'Your test registration Link is sent to {email}.')
             return redirect('login')
@@ -101,7 +101,7 @@ def home(request):
 
 def challenges(request):
     test_count = Challenge.objects.all().count()
-    print('\n\n\n\n',test_count,'\n\n\n')
+    # print('\n\n\n\n',test_count,'\n\n\n')
     context ={
         'challenges':Challenge.objects.all(),
         'test_count': test_count
@@ -113,7 +113,7 @@ def challenges(request):
 def create_contest_form(request):
     if request.method == "POST":
         form = ContestCreationForm(request.POST)
-        print('form is post',request.POST)
+        # print('form is post',request.POST)
         data = request.POST
         contest = Challenge()
         current_contest_id = None
@@ -128,7 +128,7 @@ def create_contest_form(request):
                 Active = request.POST.get('Active')
                 # College = request.POST.get('College')
                 if form.is_valid():
-                    print(Active)
+                    # print(Active)
                     activation_bool = True
                     if(Active == 'true'):
                         activation_bool = True
@@ -146,7 +146,7 @@ def create_contest_form(request):
             elif request.POST.get('challenge_question') == "yes":
                 question_list = data.getlist('list[]')
                 contest_id = data.get('contest_id')
-                print('CURRENT_CONTEST_ID = ',contest_id) 
+                # print('CURRENT_CONTEST_ID = ',contest_id) 
                 for i in question_list:
                     q = Question.objects.all().get(pk = int(i))
                     c = Challenge.objects.all().get(pk = contest_id)
@@ -177,7 +177,7 @@ def manage_contests(request):
             }
             return HttpResponse(json.dumps(res), content_type="application/json")
     test_count = Challenge.objects.all().count()
-    print('\n\n\n\n',test_count,'\n\n\n')
+    # print('\n\n\n\n',test_count,'\n\n\n')
     context ={
         'challenges':Challenge.objects.all(),
         'test_count': test_count
@@ -194,7 +194,7 @@ def contest_edit_form(request, contest_id):
             if request.POST.get('contest')=='yes':
                 Active = request.POST.get('Active')
                 if form.is_valid():
-                        print(Active)
+                        # print(Active)
                         activation_bool = True
                         if(Active == 'true'):
                             activation_bool = True
@@ -212,7 +212,7 @@ def contest_edit_form(request, contest_id):
                 new_question_list = data.getlist('new_question_list[]')
                 removed_question_list = data.getlist('removed_question_list[]')
                 contest_id = contest.id
-                print('CURRENT_CONTEST_ID = ',contest_id) 
+                # print('CURRENT_CONTEST_ID = ',contest_id) 
                 for i in removed_question_list:
                     c_q = challenge_questions.objects.all().get(pk=int(i))
                     c_q.delete()
@@ -271,7 +271,7 @@ def create_question_form(request):
                             'msg':'Question Saved successfully',
                             'question_id': question.pk
                             }
-                    print('question form saved successfully')
+                    # print('question form saved successfully')
                     return HttpResponse(json.dumps(res), content_type="application/json")
                 else:
                     return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
@@ -289,7 +289,7 @@ def create_question_form(request):
                     tc.save()
                     q_tc = Question_Testcase.objects.create(testcase=tc, question = question, score = scores[i], description = description[i])
                     q_tc.save()
-                    print(inputs[i], outputs[i], scores[i], description[i])
+                    # print(inputs[i], outputs[i], scores[i], description[i])
                 res = {'msg':'Successflly saved testcases'} 
                 messages.success(request, f'Question( Title : {question.Title},id : {question.id}) Added Successfully')
                 return HttpResponse(json.dumps(res), content_type="application/json")
@@ -299,6 +299,66 @@ def create_question_form(request):
         form = QuestionCreateForm()
     return render(request, 'challenge/question_create_form.html',{'form':form,'model_name':'Question'})
 
+@user_passes_test(lambda u: u.is_superuser)
+def question_edit_form(request, question_id):
+    question = Question.objects.all().get(pk = question_id)
+    question_testcases = Question_Testcase.objects.filter(question = question)
+    existing_tc_count = question_testcases.count()
+    if request.method == "POST":
+        data = request.POST
+        form = QuestionCreateForm(request.POST,instance = question)
+        if request.is_ajax():
+            if request.POST.get('question')=='yes':
+                if form.is_valid():
+                    form.save()
+                    question = form.save(commit=False)
+                    res = {'saved':'yes',
+                            'msg':'Question Updated successfully',
+                            'question_id': question.pk
+                            }
+                    # print('question form saved successfully')
+                    return HttpResponse(json.dumps(res), content_type="application/json")
+                else:
+                    return HttpResponse(json.dumps({'errors':'yes','form_errors':form.errors}), content_type="application/json")
+            elif request.POST.get('question_testcase') == "yes":
+                etcids = data.getlist('etc_id_list[]')
+                inputs = data.getlist('inputs[]')
+                outputs = data.getlist('outputs[]')
+                scores = data.getlist('scores[]')
+                description = data.getlist('description[]')
+                count = data.get('count')
+                question_id = data.get('question_id')
+                print(len(etcids),etcids)
+                for e in range(0,len(etcids)):
+                    curr_etc = Question_Testcase.objects.get(pk = int(etcids[e]))
+                    tio = curr_etc.testcase
+                    tio.Tinput=inputs[e]
+                    tio.Toutput=outputs[e]
+                    tio.save()
+                    curr_etc.testcase=tio
+                    curr_etc.score = scores[e]
+                    curr_etc.description = description[e]
+                    curr_etc.save()
+
+
+                for i in range(existing_tc_count,int(count)):
+                    tc = Testcase.objects.create(Tinput=inputs[i],Toutput=outputs[i])
+                    tc.save()
+                    q_tc = Question_Testcase.objects.create(testcase=tc, question = question, score = scores[i], description = description[i])
+                    q_tc.save()
+                    # print(inputs[i], outputs[i], scores[i], description[i])
+                #Existing_cases
+                # for j in range(1,question_testcases.count()+1):
+
+                res = {'msg':'Successflly saved testcases'} 
+                messages.success(request, f'Question( Title : {question.Title},id : {question.id}) Added Successfully')
+                return HttpResponse(json.dumps(res), content_type="application/json")
+        else:
+            return HttpResponse(json.dumps(form.errors), content_type="application/json")      
+    else:
+        form = QuestionCreateForm(instance= question)
+        print(question_testcases)
+    return render(request, 'challenge/question_edit_form.html',{'form':form,'model_name':'Question','question_testcases':question_testcases,'existing_tc_count':question_testcases.count()})
 
 
 
@@ -334,7 +394,7 @@ def test_instruction(request,pk,c_id):
 def candidate_form(request,challenge_id):
     test = Challenge.objects.get(pk=challenge_id)
     candidate = Candidate.objects.filter(user=request.user)
-    print(candidate)
+    # print(candidate)
     if candidate.filter(test_name= test).first() is None:
         if request.method == "POST":
             form= CandidateDetailsForm(request.POST,request.FILES)
@@ -406,8 +466,8 @@ def testpage(request,challenge_id,c_id):
                     total_score+=i.score
                 candidate.total_score = total_score
                 candidate.save()
-                print(candidate,candidate.total_score)
-                print('submission request Total Score:',total_score)
+                # print(candidate,candidate.total_score)
+                # print('submission request Total Score:',total_score)
                 return redirect('submittedpage',challenge_id=challenge_id,c_id=c_id)
             if request.POST.get('question') == 'yes':
                 
@@ -426,7 +486,7 @@ def testpage(request,challenge_id,c_id):
                 return HttpResponse(json.dumps(code_output), content_type="application/json")
             
             if request.POST.get('submit_code')=='yes':
-                print("code submission request")
+                # print("code submission request")
                 q_id = request.POST.get('q_id')
                 question = Question.objects.get(pk=q_id)
                 language = request.POST.get('language')
@@ -457,11 +517,11 @@ def save_run(request,candidate_codes_obj):
     candidate_question_code = candidate_codes_obj.filter(question=question).first()
     save_codes(candidate_question_code,code,language,question)
     code_output = compile_run(language,code,custom_input,request,candidate)
-    print("***compile_run",code_output)
+    # print("***compile_run",code_output)
     return code_output
   
 def save_codes(candidate_question_code,code,language,question):
-    print("saving question")
+    # print("saving question")
     if language == "Python":
         candidate_question_code.python_code=code
         candidate_question_code.save()
@@ -502,16 +562,25 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         tc_output = tc.testcase.Toutput.replace("\r\n","")
         tc_output+="\n"
         output = compile_run(language,code,tc_input,request,candidate)
-        output = output['output']
-        os.chdir(BASE_DIR)
-        expout = open("expected"+str(index)+".txt",'w')
-        myout = open("myout"+str(index)+".txt",'w')
-        expout.write(tc_output)
-        myout.write(output)
-        tcjson = {'description':tc.description,'score':"0",'status':'Failed'}
-        if(tc_output == output):
-            score += tc.score
-            tcjson = {'description':tc.description,'score':tc.score,'status':'Passed'}
+        if(output['status'] == "Compilation Errors"):
+            return HttpResponse(json.dumps(output),content_type="application/json")
+        # output = output['output']
+        # os.chdir(BASE_DIR)
+        # expout = open("expected"+str(index)+".txt",'w')
+        # myout = open("myout"+str(index)+".txt",'w')
+        # expout.write(tc_output)
+        # myout.write(output)
+        tcjson = {}
+        if output['status'] == "Run Time Errors" :
+            tcjson = {'description':tc.description,'score':0,'status' : "Run Time Errors", "error" : output['error'],'Time_taken':output['Timetaken']}
+        elif output['status'] == "Timelimit exception":
+            tcjson = {'description':tc.description,'score':0,'status' : "Timelimit exception", "error" : output['error'],'Time_taken': output['Timetaken']}
+        elif output['status'] == "Successfully ran":
+            if(tc_output == output['output']):
+                score += tc.score
+                tcjson = {'description':tc.description,'score':tc.score,'status':'Passed','Time_taken':output['Timetaken']}
+            else:
+                tcjson = {'description':tc.description,'score':0,'status':'Failed','Time_taken':output['Timetaken']}
         tc_status_list[index] = tcjson
         index+=1
 

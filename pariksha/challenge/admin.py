@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User,Group
-from . models import Challenge,Question,Candidate,Testcase,Candidate_codes,challenge_questions,Question_Testcase
+from . models import Challenge,Question,Candidate,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
@@ -36,9 +36,9 @@ admin.site.register(Challenge,ChallengeAdmin)
 
 
 class QuestionAdmin(admin.ModelAdmin):
-    list_display=('Title','Slug','Type','combine_title_slug')
+    list_display=('Title','Level','Type','combine_title_slug')
     list_display_links = ('Title',
-                        'Slug')
+                        'Level')
     list_filter = ('Title', 'Type',
     )
     fieldsets = (
@@ -108,3 +108,4 @@ class Candidate_codesAdmin(admin.ModelAdmin):
 admin.site.register(Candidate,CandidateAdmin)
 admin.site.register(Candidate_codes,Candidate_codesAdmin)
 admin.site.register(Question_Testcase)
+admin.site.register(Testcase)
