@@ -1100,3 +1100,41 @@ div[icon="status_icon"]{
     cursor: auto;
     background-size: cover;
 }
+div#timer {
+    width: fit-content;
+    align-items: center;
+    height: auto;
+    font-size: large;
+}
+
+.testcase_table_wrapper th {
+    font-size: 13px;
+}
+
+.testcase_table_wrapper td {
+    font-size: 13px;
+    font-weight: 500;
+}
+.jconfirm-holder {
+    width: 30%;
+    margin: auto;
+}
+button.btn.btn-default:first-child {
+    background: #bb0000 !important;
+    color: #fbfbfb !important;
+}
+div#candidate_name {
+    margin: 0px 58px;
+    font-weight: 700;
+    font-variant: petite-caps;
+    font-size: large;
+    letter-spacing: .3px;
+    margin-left: 2px;
+}
+i#candidate {
+    font-size: 20px;
+    position: absolute;
+    left: -20px;
+    top: 16px;
+    color: #616161d9;
+}

@@ -111,3 +111,9 @@ class Candidate_codes(models.Model):
     score = models.IntegerField(default=0)
     def __str__(self):
         return f'{self.candidate.fullname}  {self.question.Title}'
+
+class Test_Feedback(models.Model):
+    Candidate = models.OneToOneField(Candidate, on_delete=models.CASCADE)
+    rating = models.IntegerField(default=0,max_length=5)
+    description = models.TextField(default="")
+

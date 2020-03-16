@@ -1,0 +1,1 @@
+//NOTE: Don't change class namepublic class MyClass {    public static void main(String args[]) {      System.out.println("" );    }}

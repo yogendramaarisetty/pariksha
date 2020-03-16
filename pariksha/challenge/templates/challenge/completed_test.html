@@ -1,5 +1,67 @@
 {% extends "challenge/base.html" %}
 {% block content %}
 {% load static %}
-<h1>You completed test successfully</h1>
+<div id="completed_test_wrap" class="feedback card">
+<h1>Your test is submitted successfully</h1>
+<div>
+<p>Thank you for taking the test on Pariksha. We will reach you shortly</p>
+</div><br>
+<div id="ct_content">
+{% if form %}
+<form method="POST" class="feedback-form" id="feedback-form">
+    <h4><b>Rate your experience</b></h4>
+    {% csrf_token %}
+    <div class="rating">
+        <input type="radio" id="star5" class="ratingstar" name="rating" value="5" /><label for="star5"></label>
+        <input type="radio" id="star4" class="ratingstar" name="rating" value="4" /><label for="star4"></label>
+        <input type="radio" id="star3" class="ratingstar" name="rating" value="3" /><label for="star3"></label>
+        <input type="radio" id="star2" class="ratingstar" name="rating" value="2" /><label for="star2"></label>
+        <input type="radio" id="star1" class="ratingstar" name="rating" value="1" /><label for="star1"></label>
+    </div>
+    <div class="label_field_wrapper1">
+        {{form.description}}
+    </div>
+    <button type="button" class="positive_button" onclick="sendFeedback()">Submit Feedback</button>
+</form>
+{% else %}
+<h3 class="response_msg">We already recieved you feedabck</h3>
+{% endif %}
+</div><br>
+<p><strong>Contact Support: ymaarisetty@planful.com </strong></p>
+<div
+</div>
+<script>
+{% if form %}
+    var ratingValue = 0;
+    $('.ratingstar').on('click', function() {
+    ratingValue = this.value;
+});
+    function sendFeedback(){
+        $.ajax({
+            type: 'POST',
+            url: '',
+            dataType: 'json',
+            cache: false,
+            async: true,
+            data: {
+                csrfmiddlewaretoken: "{{ csrf_token }}",
+                rating: ratingValue,
+                description: $('#id_description')[0].value,
+
+            },
+            success: function (json) {
+                var elem = document.querySelector('.feedback-form');
+                elem.parentNode.removeChild(elem);
+                var message = document.createElement('h3');
+                message.className = "response_msg";
+                message.innerText = json.message;
+                
+                $('#ct_content')[0].appendChild(message);
+            },
+                
+            }).done(function() {
+            });
+        }
+{% endif %}
+</script>
 {% endblock %}

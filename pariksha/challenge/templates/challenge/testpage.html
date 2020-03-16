@@ -14,7 +14,8 @@
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pretty-checkbox@3.0/dist/pretty-checkbox.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
-    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
+ 
     <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_ace_editor.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_default.css' %}" />
     <link title="darkmode" rel="stylesheet" type="text/css" href="{% static 'challenge/content/darkmode.css' %}" disabled />
@@ -31,6 +32,8 @@
 
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+  
 </head>
 <style>
     .gutter {
@@ -66,8 +69,17 @@ div[status="Failed"]{
         <div id="pariksha-logo" class="inline_block">
             <img src="{% static 'img/planful_pariksha.svg' %}" alt="Pariksha.com">
         </div>
-        <div id="timer"></div>
+        <div id="timer">
+            
+        </div>
+      
         <div  class="right_section">
+            <i id="candidate" class="material-icons">
+                person
+                </i>
+            <div id="candidate_name">
+            {{candidate.fullname}}
+            </div>
             <button id="finish_button" type="button">Finish test</button>
         </div>
     </div>
@@ -239,7 +251,10 @@ div[status="Failed"]{
         </script>
         <script >
             var csrf_token = '{{ csrf_token }}';
+            var end_time= "{{candidate.end_time|date:"M d, Y H:i:s"}}";
+            var submission_page_url = "{% url 'completed_testpage' challenge_id=challenge.id c_id=candidate.id  %}";
         </script>
+         <script src="{% static 'challenge/scripts/testtimer.js' %} "></script>
         <script src="{% static 'challenge/scripts/testpage.js' %} "></script>
         <script src="{% static 'challenge/scripts/notifications.js' %} " type=" text/javascript "></script>
 

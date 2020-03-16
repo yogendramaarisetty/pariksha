@@ -8,9 +8,9 @@
 <div id = "page" class="model_form_outer_wrapper">
     <div class="header_wrapper">
         <div class="model_form_title">
-            <h1>Create {{model_name}}</h1>
-            <p class="Description_para">Provide the question details below</p>
-            <p class="Description_para italic">And Add all the testcases for this Question</p>
+            <h1>Edit {{model_name}} (id: {{question.id}})</h1>
+            <p class="Description_para">Update the details below</p>
+            <p class="Description_para italic">and edit add testcases</p>
         </div>
         <div class="header_description"></div>
     </div>
@@ -87,7 +87,7 @@
   <div id="io_wrap_{{forloop.counter}}" testcaseid="{{qt.id}}" class="ioWrap">
           <h4 for='input_"+counter+"'>Testcase {{forloop.counter}}
           </h4><br><div id='iotawrap'>
-            <textarea name='input_{{forloop.counter}}' placeholder = 'Input' style='height: 10rem;'> {{qt.testcase.Tinput}}</textarea>
+            <textarea name='input_{{forloop.counter}}' placeholder = 'Input' style='height: 10rem;'>{{qt.testcase.Tinput}}</textarea>
             <textarea placeholder='Output' name='output_{{forloop.counter}}' style='height: 10rem;'>{{qt.testcase.Toutput}}</textarea>
           </div>
           <div class='label_field_wrapper2'>
@@ -122,7 +122,7 @@
 var question_title,question_slug, question_type, question_description, q_default_c_code, q_default_cpp_code, q_default_csharp_code, q_default_java_code, q_default_python_code;
 
 window.onload = function () {
-    toastr["success"]("My name is Inigo Montoya. You killed my father. Prepare to die!");
+  /*  toastr["success"]("My name is Inigo Montoya. You killed my father. Prepare to die!");
     toastr.options = {
   "closeButton": false,
   "debug": false,
@@ -140,7 +140,7 @@ window.onload = function () {
   "showMethod": "fadeIn",
   "hideMethod": "fadeOut"
 };
-           
+       */    
           
 
         };

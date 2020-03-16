@@ -333,3 +333,14 @@ textarea#input {
     background: #e2e2e200;
     color: #ffffffd1;
 }
+div#timer {
+    color: aliceblue;
+}
+div#candidate_name {
+    color: #f0f8ffc7;
+    font-weight: 100;
+}
+
+i#candidate {
+    color: #f0f8ffc7;
+}

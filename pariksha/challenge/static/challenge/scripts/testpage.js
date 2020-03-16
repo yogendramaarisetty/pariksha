@@ -43,7 +43,12 @@ $(document).ready(function() {
     $('.left_section').hide();
     $('.response_cards').hide();
 });
+var initial_output_state = document.getElementById('output_card');
+//###########################################################################
+//window load
 $(window).load(function() {
+  
+
     // executes when complete page is fully loaded, including all frames, objects and images
     $('#loader').hide();
     $('.question_content_wrapper').hide();
@@ -216,18 +221,58 @@ function codeDraft(){
           });
         }
   }
-  
+ 
+$('#finish_button').on('click', function() {
+  $.confirm({
+    title: 'Finish Test',
+    content: 'Are you sure you want to Finish the Test?',
+    buttons: {
+        Finish: function() {
+            submitTest();
+        },
+        cancel: function() {
+        },
+    }
+});
+});
 
-
+function submitTest(){
+    $.ajax({
+              type: 'POST',
+              url: '',
+              dataType: 'json',
+              cache: false,
+              async: true,
+              data: {
+                  csrfmiddlewaretoken: csrf_token,
+                  submit_test:'yes',
+              },
+              success: function(json) {
+                window.location.href =submission_page_url;
+              },
+          }).done(function() {
+          });
+  }
 
 $('.ql_item').click(function(){
+    
     $('#q_list').hide();
     editor = createEditor();
     
     $('.left_section').show();
-    fetchCandidateCodes(this.id);
+    if(active_question_id != this.id){
+        fetchCandidateCodes(this.id);
+        active_question_id = this.id;
+    }
+    $('#status_message')[0].setAttribute('status','');
+    $('#status_message')[0].innerHTML= "";
 
-    active_question_id = this.id;
+        $('#status_message')[0].innerText= "Click on run to see the output";
+        $('#input')[0].innerText="";
+        $('#type_msg')[0].innerHTML = "";
+        $('#tc_body')[0].innerHTML = "";
+        $('#time_elapsed')[0].innerHTML = "";
+        $('#output_result_pre')[0].innerHTML = "";
     $('.question_content_wrapper').hide();
     var id = this.id;
     id = "question_"+id+"_id";
@@ -250,7 +295,7 @@ var ace_modes = {
   
 
 function fetchCandidateCodes(id){
-
+   
     $.ajax({
         type: 'POST',
         url: '',
@@ -271,13 +316,24 @@ function fetchCandidateCodes(id){
             cpp_code=json.cpp;
             // document.getElementById("input").value = json.sample_input;
             update_editor_mode_and_code();
-            
+
+            $('#status_message')[0].innerHTML = initial_output_state.innerHTML;
+            $('#input')[0].innerText="";
+            $('#output_result_pre').innerText="";
+            $('#type_msg').innerHTML = "";
+            $('#tc_body').innerHTML = "";
         },
         error: function ( xhr, status, error) {
             // console.log( " xhr.responseText: " + xhr.responseText + " //status: " + status + " //Error: "+error );
   
           }
     }).done(function() {
+        $('#status_message')[0].innerHTML= "";
+        $('#status_message')[0].innerText= "Click on run to see the output";
+        $('#input')[0].innerText="";
+        $('#type_msg').innerHTML = "";
+        $('#tc_body').innerHTML = "";
+        $('#time_elapsed').innerHTML = "";
     });
 
 }
@@ -383,7 +439,7 @@ function runCode() {
 function submitCode(){
     if(!$('.submit_button')[0].disabled){
         $('#testcases_pane').click();
-    $('#testcase-table').show();
+    $('#testcases_card').hide();
     $('#output_card').hide();
     $('#loader').show();
     $('.run_button')[0].disabled = true;
@@ -411,16 +467,19 @@ function submitCode(){
                  if(json.status == "Compilation Errors"){
                     $('#output_pane').click();
                     renderErrorMsg(json.error);
+                    
                 }
                 else{
                     
                     $('#tc_body')[0].innerHTML = "";
                     var result = json;
                     var numberOfTestCases = Object.keys(result).length;
+                    $('#testcases_card').show();
                     for(var i =0;i<numberOfTestCases;i++){
                         var testCase = result[i];
                         addRow(testCase,i+1);
                     }
+                    $('#testcase-table').show();
                 }
                  
              },
@@ -523,6 +582,7 @@ function renderTLE(msg, time){
     $('#time_elapsed')[0].appendChild(time_elapsed);
 
 }
+
 
 
 $(".nav_btns").click(function() {

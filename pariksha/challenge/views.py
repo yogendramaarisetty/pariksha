@@ -1,8 +1,8 @@
 import os
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
-from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm
-from .models import Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase
+from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm, Test_Feedback_Form
+from .models import Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase, Test_Feedback
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -351,7 +351,7 @@ def question_edit_form(request, question_id):
                 # for j in range(1,question_testcases.count()+1):
 
                 res = {'msg':'Successflly saved testcases'} 
-                messages.success(request, f'Question( Title : {question.Title},id : {question.id}) Added Successfully')
+                messages.success(request, f'Question( Title : {question.Title},id : {question.id}) Updated Successfully')
                 return HttpResponse(json.dumps(res), content_type="application/json")
         else:
             return HttpResponse(json.dumps(form.errors), content_type="application/json")      
@@ -383,8 +383,28 @@ def question_edit_form(request, question_id):
 
 
 
-def completed_testpage(request):
-    return render(request,'challenge/completed_test.html')
+def completed_testpage(request,challenge_id,c_id):
+    candidate = Candidate.objects.get(pk = c_id)
+    if request.is_ajax() and request.method == "POST" :
+        form= Test_Feedback_Form(request.POST)
+        if form.is_valid():
+            form.instance.Candidate = candidate
+            try:
+                form.save()
+                res={'message': f'Thank you {candidate.fullname} ! We recieved your feedback.'}
+            except:
+                res={'message': f'Hey {candidate.fullname} ! We already recieved your feedback.'}
+            
+            return HttpResponse(json.dumps(res), content_type="application/json")     
+    else:
+        feedback = Test_Feedback.objects.filter(Candidate = candidate).first()
+        if feedback == None: 
+            form= Test_Feedback_Form()
+            return render(request,'challenge/completed_test.html',
+                                {'form':form}
+                                )
+        else:
+            return render(request,'challenge/completed_test.html')
 def test_instruction(request,pk,c_id):
     challenge = Challenge.objects.get(pk=pk)
     candidate = Candidate.objects.get(pk=c_id)
@@ -458,18 +478,20 @@ def testpage(request,challenge_id,c_id):
                 save_codes(candidate_question_code,code,language,question)
                 res={'msg':'successfully saved'}
                 return HttpResponse(json.dumps(res), content_type="application/json")
-            if request.POST.get('submit_test')=='yes':
+            elif request.POST.get('submit_test')=='yes':
                 candidate.completed_status = True
                 candidate.save()
                 total_score=0
                 for i in candidate_codes_obj:
                     total_score+=i.score
-                candidate.total_score = total_score
+                if candidate.total_score<total_score:
+                    candidate.total_score = total_score
                 candidate.save()
                 # print(candidate,candidate.total_score)
                 # print('submission request Total Score:',total_score)
-                return redirect('submittedpage',challenge_id=challenge_id,c_id=c_id)
-            if request.POST.get('question') == 'yes':
+                res={'msg':'successfully saved'}
+                return HttpResponse(json.dumps(res), content_type="application/json")
+            elif request.POST.get('question') == 'yes':
                 
                 q_id = request.POST.get('q_id')
                 question = Question.objects.get(pk=q_id)
@@ -478,14 +500,14 @@ def testpage(request,challenge_id,c_id):
                     if i.question.id is question.id:
                         candidate_question_code = i
                 return question_codes(candidate_question_code,question)
-            if request.POST.get('full_screen') == 'yes':
+            elif request.POST.get('full_screen') == 'yes':
                 candidate.suspicious_count+=1
                 candidate.save() 
-            if request.POST.get('compile_run') == 'yes':
+            elif request.POST.get('compile_run') == 'yes':
                 code_output = save_run(request,candidate_codes_obj)
                 return HttpResponse(json.dumps(code_output), content_type="application/json")
             
-            if request.POST.get('submit_code')=='yes':
+            elif request.POST.get('submit_code')=='yes':
                 # print("code submission request")
                 q_id = request.POST.get('q_id')
                 question = Question.objects.get(pk=q_id)
@@ -495,9 +517,9 @@ def testpage(request,challenge_id,c_id):
                 save_codes(candidate_question_code,code,language,question)
                 testcases = Question_Testcase.objects.filter(question=question)
                 return validate_testcases(code,testcases,candidate_question_code,language,request,candidate)
-        return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,})
+        return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
     else:
-        return redirect('completed_testpage')
+        return redirect('completed_testpage',challenge_id = challenge.id,c_id=candidate.id)
 
 def submittedpage(request,challenge_id,c_id):
     return render(request,'challenge/test_submitted_successfully.html')
@@ -550,8 +572,6 @@ def question_codes(candidate_question_code,question):
     return HttpResponse(json.dumps(codes), content_type="application/json")
 
 def validate_testcases(code,testcases,candidate_question_code,language,request,candidate):
-    candidate_question_code.submitted_code = code
-    candidate_question_code.save()
     score = 0
     tc_status_list = {}
     index=0
@@ -585,13 +605,15 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         index+=1
 
     if candidate_question_code.score < score:
+        candidate_question_code.submitted_code = code
         candidate_question_code.score = score
         candidate_question_code.save()
     candidate_code_marks  =Candidate_codes.objects.filter(candidate = candidate)
     total_score = 0
     for i in candidate_code_marks:
         total_score+=i.score
-    candidate.total_score = total_score
+    if candidate.total_score < total_score:
+        candidate.total_score = total_score
     candidate.save()
     
     return HttpResponse(json.dumps(tc_status_list),content_type="application/json")

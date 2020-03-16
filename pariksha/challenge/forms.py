@@ -1,14 +1,14 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Candidate,Question,Challenge
+from .models import Candidate,Question,Challenge,Test_Feedback
 from django.core.validators import RegexValidator
 from django.contrib.auth.forms import AuthenticationForm
 from django.core.exceptions import ValidationError
 class UserRegisterForm(UserCreationForm) :
     email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Email Address','id':'email'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password','id':'pass'}), label ="Password",)
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Full Name','id':'name'}),label ="Username",)
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username','id':'name'}),label ="Username",)
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Re-Enter Password','id':'re_pass'}))  
     class Meta:
         model = User
@@ -67,3 +67,11 @@ class UserLoginForm(AuthenticationForm):
             'id': 'pass',
         }
 ))
+
+class Test_Feedback_Form(forms.ModelForm):
+    description = forms.CharField(widget=forms.Textarea(attrs={'placeholder': 'Feedback: yor feedback will help us improve your experience'}))
+    class Meta:
+        model = Test_Feedback
+        fields = ('rating','description')
+
+

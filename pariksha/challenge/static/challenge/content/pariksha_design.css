@@ -619,3 +619,36 @@ div#question_bank_container {
 div#page_contents {
     padding-top: 6rem;
 }
+.state.p-success::before {
+    height: 1rem !important;
+    width: 2rem !important;
+}
+.feedback.card {
+    padding: 10px;
+    text-align: center;
+    align-items: center;
+    padding-top: 30px;
+}
+.rating label {
+    float: right;
+    position: relative;
+    width: 40px;
+    height: 40px;
+    cursor: pointer;
+  }
+  .rating label:not(:first-of-type) {
+    padding-right: 2px;
+  }
+  .rating label:before {
+    content: "\2605";
+    font-size: 42px;
+    color: #CCCCCC;
+    line-height: 1;
+  }
+  .rating input {
+    display: none;
+  }
+  .rating input:checked ~ label:before, .rating:not(:checked) > label:hover:before, .rating:not(:checked) > label:hover ~ label:before {
+    color: #F9DF4A;
+  }
+  
