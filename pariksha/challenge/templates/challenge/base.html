@@ -52,6 +52,22 @@
   {%block head%}
     {% endblock head %}
 </head>
+<style>
+.demo_ide_icon{
+    background-image: url({% static 'img/code.svg' %});
+    background-repeat: unset;
+    cursor: auto;
+    background-size: cover;
+}
+
+.demo_ide_icon {
+    width: 19px;
+    height: 19px;
+    position: absolute;
+    left: 27rem;
+    top: 1.5rem;
+}
+</style>
 <body>
     <header id="header_nav" class="pariksha-top-header-light">
            
@@ -75,6 +91,10 @@
                     <a href="" onclick="return false;" >
                         <i></i>
                         <span class="block label">Results</span>
+                    </a>
+                    <a href="{% url 'demo_ide' %}" >
+                        <div class="demo_ide_icon"></div>
+                        <span class="block label">Demo IDE</span>
                     </a>
                 </div>
     

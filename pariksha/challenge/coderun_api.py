@@ -49,11 +49,12 @@ def compile_run(language,code,custom_input,request,candidate):
     os.chdir(path)
     code_file = open(file_name_ext[language],'w')
     code_file.flush()
-    code_lines = code.split("\n")
-    for line in code_lines:
-        if language == "Python":
-            line += "\n"
-        code_file.write(line)
+    code_file.write(code)
+    # code_lines = code.split("\n")
+    # for line in code_lines:
+    #     if language == "Python":
+    #         line += "\n"
+    #     code_file.write(line)
     code_file.close()
     start_time= 0
     end_time = 0

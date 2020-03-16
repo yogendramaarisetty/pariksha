@@ -1,5 +1,8 @@
-
 // ace editor*******************************
+
+//ace_editor##############################3
+
+//splitjs*************
 Split(['#left_pane', '#right_pane'], {
     gutterSize: 7,
     sizes: [40, 60],
@@ -27,17 +30,9 @@ zIndex                  : 2147483647                        // Integer
 // Hide it after 3 seconds
 setTimeout(function(){
     $.LoadingOverlay("hide");
-    
-    $('.ql_item')[0].click();
-}, 2500);
-//ace_editor##############################3
+}, 3000);
 
-//splitjs*************
-Split(['#left_pane', '#right_pane'], {
-    gutterSize: 7,
-    sizes: [40, 60],
-    minSize: [200, 600]
-});
+
 
 var sizes = localStorage.getItem('split-sizes')
 
@@ -58,19 +53,15 @@ var splitV = Split(['#top_section', '#bottom_section'], {
     },
 });
 //splitjs###################
-
+$('#loader').hide();
 var lang = "Java";
 var editor;
-
-var active_question_id = "";
+var active_question_id = q_id;
 // cosole buttons*******************************
 var current_active = "";
 $(document).ready(function() {
     // executes when HTML-Document is loaded and DOM is ready
     $('#loader').hide();
-    $('.question_content_wrapper').hide();
-    
-    $('.left_section').hide();
     $('.response_cards').hide();
 });
 var initial_output_state = document.getElementById('output_card');
@@ -80,10 +71,7 @@ $(window).load(function() {
   
 
     // executes when complete page is fully loaded, including all frames, objects and images
-    $('#loader').hide();
-    $('.question_content_wrapper').hide();
-    
-    $('.left_section').hide();
+ 
     $('.response_cards').hide();
     $(".nav_btns")[2].click();
     var sizes = splitV.getSizes();
@@ -92,7 +80,8 @@ $(window).load(function() {
         icon = icon[0];
         icon.innerText = "keyboard_arrow_up";
     }
-   
+    editor = createEditor();
+    fetchCandidateCodes(q_id);
 });
 
 function createEditor(){
@@ -283,72 +272,7 @@ function submitTest(){
           });
   }
 
-  function InvokeLoader(){
-    if($('link[title=darkmode]')[0].disabled ==  false){
-        $("#top_section").LoadingOverlay("show",{
-            image       : "",
-            fontawesome : "fas fa-cog fa-spin",                              // String/Boolean
-        fontawesomeAnimation    : ""  ,                              // String/Boolean
-        fontawesomeAutoResize   : true               ,               // Boolean
-        fontawesomeResizeFactor : 1                   ,              // Float
-        fontawesomeColor        : "#0084ec"            ,             // String/Boolean
-        fontawesomeOrder        : 2  ,
-        background  : "#242d38cc",
-        size                    : 30   ,                             // Float/String/Boolean
-        minSize                 : 20    ,                            // Integer/String
-        maxSize                 : 50    , 
-        });
-        
-    }
-    else{
-        $("#top_section").LoadingOverlay("show",{
-            image       : "",
-            fontawesome : "fas fa-cog fa-spin",                              // String/Boolean
-        fontawesomeAnimation    : ""  ,                              // String/Boolean
-        fontawesomeAutoResize   : true               ,               // Boolean
-        fontawesomeResizeFactor : 1                   ,              // Float
-        fontawesomeColor        : "#0084ec"            ,             // String/Boolean
-        fontawesomeOrder        : 2  ,
-        background  : "#ffffffc2",
-        
-        size                    : 30   ,                             // Float/String/Boolean
-        minSize                 : 20    ,                            // Integer/String
-        maxSize                 : 50    , 
-        });
 
-    }
-
-  }
-
-$('.ql_item').click(function(){
-   InvokeLoader();
-    $('#q_list').hide();
-    editor = createEditor();
-    
-    $('.left_section').show();
-    if(active_question_id != this.id){
-        fetchCandidateCodes(this.id);
-        active_question_id = this.id;
-    }
-    $('#status_message')[0].setAttribute('status','');
-    $('#status_message')[0].innerHTML= "";
-
-        $('#status_message')[0].innerText= "Click on run to see the output";
-        $('#input')[0].innerText="";
-        $('#type_msg')[0].innerHTML = "";
-        $('#tc_body')[0].innerHTML = "";
-        $('#time_elapsed')[0].innerHTML = "";
-        $('#output_result_pre')[0].innerHTML = "";
-    $('.question_content_wrapper').hide();
-    var id = this.id;
-    id = "question_"+id+"_id";
-    question_desc = document.getElementById(id);
-    question_desc.style.display = 'block';
-
-    setTimeout(function(){
-        $("#top_section").LoadingOverlay("hide");
-    }, 900);
-});
 
 var java_code;
 var c_code;
@@ -366,9 +290,6 @@ var ace_modes = {
 
 function fetchCandidateCodes(id){
    
-    $(".run_button").attr("disabled", true);
-  $(".submit_button").attr("disabled", true);
-
     $.ajax({
         type: 'POST',
         url: '',
@@ -401,10 +322,6 @@ function fetchCandidateCodes(id){
   
           }
     }).done(function() {
-        
-    $(".run_button").attr("disabled", false);
-  $(".submit_button").attr("disabled", false);
-
         $('#status_message')[0].innerHTML= "";
         $('#status_message')[0].innerText= "Click on run to see the output";
         $('#input')[0].innerText="";
@@ -416,9 +333,7 @@ function fetchCandidateCodes(id){
 }
 
 function selectLang(){
-    InvokeLoader()
     update_editor_mode_and_code();
-    $("#top_section").LoadingOverlay("hide");
 }
 
 function update_editor_mode_and_code(){
@@ -456,14 +371,13 @@ draggerV.addEventListener("click", function(event) {
 });
 
 function runCode() {
-    $(".run_button").attr("disabled", true);
-  $(".submit_button").attr("disabled", true);
-
-    if($(".run_button").attr("disabled") == "disabled"){
+    if(!$('.run_button')[0].disabled){
     $('#output_pane').click();
     $('#time_elapsed')[0].innerHTML = "";
     $('#output_card').hide();
     $('#loader').show();
+    $('.run_button')[0].disabled = true;
+    $('.submit_button')[0].disabled = true;
     if (editor.getValue() != "") {
         lang = document.getElementById("languages").value;
         updateVariables(lang);
@@ -483,10 +397,8 @@ function runCode() {
             },
             success: function(json) {
                 $('#output_pane').click();
-                
-                $(".run_button").attr("disabled", false);
-  $(".submit_button").attr("disabled", false);
-
+                $('.run_button')[0].disabled = false;
+                $('.submit_button')[0].disabled = false;
                 $('#save_btn')[0].setAttribute('status','saved');
                 if(json.status == "Successfully ran"){
                     renderSuccessOutput(json.output,json.Timetaken);
@@ -502,20 +414,15 @@ function runCode() {
                 }
                 // $('#output_card').show();   
             $('#loader').hide();
-            
-    $(".run_button").attr("disabled", false);
-  $(".submit_button").attr("disabled", false);
-
             },
             
             error: function ( xhr, status, error) {
+                // console.log( " xhr.responseText: " + xhr.responseText + " //status: " + status + " //Error: "+error );
+                
             $('#loader').hide();
               }
         }).done(function() {
-            
-    $(".run_button").attr("disabled", false);
-  $(".submit_button").attr("disabled", false);
-
+            $('#loader').hide();
         });
     } else {
         $('#output').html("Don't submit empty code");
@@ -524,15 +431,13 @@ function runCode() {
     }
 }
 function submitCode(){
-    
-    $(".run_button").attr("disabled", true);
-  $(".submit_button").attr("disabled", true);
-
-    if($('.submit_button').attr('disabled') == "disabled") {
+    if(!$('.submit_button')[0].disabled){
         $('#testcases_pane').click();
     $('#testcases_card').hide();
     $('#output_card').hide();
     $('#loader').show();
+    $('.run_button')[0].disabled = true;
+    $('.submit_button')[0].disabled = true;
    if (editor.getValue() != "") {
          $.ajax({
              type: 'POST',
@@ -570,15 +475,8 @@ function submitCode(){
                     }
                     $('#testcase-table').show();
                 }
-                
-             $(".run_button").attr("disabled", false);
-  $(".submit_button").attr("disabled", false);
-
                  
              },
-             error: function ( xhr, status, error) {
-                $('#loader').hide();
-                  },
              
          }).done(function() {
      $('#loader').hide();
@@ -712,7 +610,6 @@ $('#console_collapse').click(function() {
 
 
 })
-
 
 // cosole buttons#########################3333
 $('#mode').change(function() {

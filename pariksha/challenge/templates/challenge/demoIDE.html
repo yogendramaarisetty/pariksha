@@ -6,9 +6,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>{{challenge.Title}} - Pariksha</title>
+    <title>Demo Pariksha</title>
     
-    <link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
+<link rel="shortcut icon" type="image/png" href="{% static 'img/favicon.ico' %}" />
     <link href="https://fonts.googleapis.com/css?family=Montserrat|Open+Sans|Poppins|Raleway|Roboto+Mono&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato&display=swap" rel="stylesheet">
@@ -16,11 +16,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.css">
  
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_ace_editor.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_default.css' %}" />
     <link title="darkmode" rel="stylesheet" type="text/css" href="{% static 'challenge/content/darkmode.css' %}" disabled />
 
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.2/css/all.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js" integrity="sha256-C7DTYRJLG+B/VEzHGeoPMw699nsTQYPAXHKXZb+q04E=" crossorigin="anonymous"></script>
     <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -34,7 +34,7 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
     
 </head>
 <style>
@@ -59,9 +59,6 @@ div[status="Timelimit exception"]{
 div[status="Failed"]{
     background-image: url({% static 'img/close.svg' %});
 }
-div[status="Failed"]{
-    background-image: url({% static 'img/close.svg' %});
-}
 </style>
 <style>
     .pretty.p-switch .state:before {
@@ -74,8 +71,12 @@ div[status="Failed"]{
         <div id="pariksha-logo" class="inline_block">
             <img src="{% static 'img/planful_pariksha.svg' %}" alt="Pariksha.com">
         </div>
-        <div id="timer">
-            
+        <div id="home_btn">
+            <a href="{% url 'home' %}"><i class="material-icons">
+home
+</i>
+        <span class="top_nav_btn">Home</span>
+            </a>
         </div>
       
         <div  class="right_section">
@@ -83,32 +84,15 @@ div[status="Failed"]{
                 person
                 </i>
             <div id="candidate_name">
-            {{candidate.fullname}}
+            {{request.username}}
             </div>
-            <button id="finish_button" type="button">Finish test</button>
         </div>
     </div>
     <div class="contents-wrapper">
         <div class="fs-pains-container">
             <div id="left_pane" class="fs-left-pane split">
                 <div class="left-pane-content-wrapper">
-                    <div id="q_list" class="question__list_wrapper">
-                        <div class="header_section_title">
-                            <h2>Questions</h2>
-                        </div>
-                        <div class="leftpanel_header">
-                            <div class="table_main_content_wrapper" id="table_wrapper">
-                                <div class="list_element_wrapper">
-                                    <ul class="question_change_list">
-                                        
-                        {% for q in questions %}
-                                        <li id= "{{q.id}}"class="ql_item">{{q.Title}}</li>
-                        {% endfor %}
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                     </div>
+                   
                      {% for q in questions %}
                     <div id="question_{{q.id}}_id" class="question_content_wrapper">
                         <div class="question_title">{{q.Title}}</div>
@@ -120,11 +104,7 @@ div[status="Failed"]{
                    
                     
                 </div>
-                <div class="top_controller_bar">
-                    <div class="right_section">
-                        <button type="button" onclick="viewQuestionList()" class="change_q">Change Question</button>
-                    </div>
-                </div>
+               
 
             </div>
                 <div id="right_pane" class="fs-right-pane split">
@@ -256,11 +236,9 @@ div[status="Failed"]{
         </script>
         <script >
             var csrf_token = '{{ csrf_token }}';
-            var end_time= "{{candidate.end_time|date:"M d, Y H:i:s"}}";
-            var submission_page_url = "{% url 'completed_testpage' challenge_id=challenge.id c_id=candidate.id  %}";
+            var q_id = '{{question.id}}';
         </script>
-         <script src="{% static 'challenge/scripts/testtimer.js' %} "></script>
-        <script src="{% static 'challenge/scripts/testpage.js' %} "></script>
+        <script src="{% static 'challenge/scripts/demo_ide.js' %} "></script>
         <script src="{% static 'challenge/scripts/notifications.js' %} " type=" text/javascript "></script>
 
 </body>

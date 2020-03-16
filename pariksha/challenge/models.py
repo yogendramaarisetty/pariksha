@@ -62,6 +62,23 @@ class challenge_questions(models.Model):
     challenge = models.ForeignKey(Challenge,on_delete=models.CASCADE,null=True)
     question  = models.ForeignKey(Question,on_delete=models.CASCADE,null=True)
 
+class demoCodes(models.Model):
+    user =   models.OneToOneField(User,on_delete=models.CASCADE)
+    default_code={
+        'java': "//NOTE: Don't change class name\npublic class MyClass {\n    public static void main(String args[]) {\n      System.out.println(\"\" );\n    }\n}\n",
+        'python':"if __name__ == '__main__':\n",
+        'csharp':"//Note don't change the class name \nusing System;\n\nclass Program\n{\n    static void Main() {\n        Console.Write(\"\");\n    }\n}\n",
+        'cpp':"#include <iostream>\n\nusing namespace std;\n\nint main() {\n    \n    cout<<\"\";\n}\n",
+        'c':"#include<stdio.h>\n\nint main() {\n    \n    printf(\"\");\n    \n}\n",
+            }
+    c_code = models.TextField(default=default_code['c'],max_length=1000000)
+    cpp_code = models.TextField(default=default_code['cpp'],max_length=1000000)
+    csharp_code = models.TextField(default=default_code['csharp'],max_length=1000000)
+    java_code = models.TextField(default=default_code['java'],max_length=1000000)
+    python_code = models.TextField(default=default_code['python'],max_length=1000000)
+    submitted_code = models.TextField(default="NA",max_length=1000000)
+    score = models.IntegerField(default=0)  
+
 class Candidate(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
     test_name = models.ForeignKey(Challenge,on_delete=models.CASCADE)

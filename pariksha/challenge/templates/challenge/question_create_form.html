@@ -285,7 +285,7 @@ div.className ='ioWrap';
                         edit_contest_url = "/pariksha/modify/"+current_question_id+"/contest";
                         var edit_button_link1 = document.getElementById('question_edit_link');
                         edit_button_link1.style.display = "initial";
-                        edit_button_link1.href = "{% url 'contest_edit_form' contest_id=12345 %}".replace(/12345/, current_question_id.toString());
+                        edit_button_link1.href = "{% url 'question_edit_form' question_id=12345 %}".replace(/12345/, current_question_id.toString());
                  
                         
             $('.qfooter_form_button')[0].style.display = 'block';

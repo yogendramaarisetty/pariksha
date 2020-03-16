@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User,Group
-from . models import Challenge,Question,Candidate,Test_Feedback,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase
+from . models import demoCodes, Challenge,Question,Candidate,Test_Feedback,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
@@ -110,4 +110,5 @@ admin.site.register(Candidate_codes,Candidate_codesAdmin)
 admin.site.register(Question_Testcase)
 admin.site.register(Testcase)
 admin.site.register(Test_Feedback)
+admin.site.register(demoCodes)
 

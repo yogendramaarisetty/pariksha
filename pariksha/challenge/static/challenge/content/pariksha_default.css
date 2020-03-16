@@ -1138,3 +1138,41 @@ i#candidate {
     top: 16px;
     color: #616161d9;
 }
+
+
+div#home_btn a {
+    text-decoration: none;
+    color: #585858;
+    font-weight: 700;
+    position: relative;
+    align-items: center;
+    width: fit-content;
+    text-align: center;
+    height: fit-content;
+    
+    display: flex;
+}
+#home_btn i.material-icons {
+    margin: 0px 3px;
+}
+div#home_btn a:hover {
+    color: #0083ec;
+    transition: 0.2s;
+}
+
+div#home_btn {
+    position: relative;
+    align-items: center;
+    text-align: center;
+    margin-left: 6rem;
+    width: fit-content;
+    height: fit-content;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+
+span.top_nav_btn {
+    text-align: center;
+    position: relative;
+    display: flex;
+}

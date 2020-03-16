@@ -344,3 +344,13 @@ div#candidate_name {
 i#candidate {
     color: #f0f8ffc7;
 }
+.ace_line {
+    color: #ffffffd9;
+}
+div#home_btn a {
+    color: #f0f8ffd6;
+    font-weight: 200;
+}
+.ace_gutter{
+    background:#272822 !important;
+}

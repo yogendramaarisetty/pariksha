@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm, Test_Feedback_Form
-from .models import Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase, Test_Feedback
+from .models import demoCodes,Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase, Test_Feedback
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -373,7 +373,42 @@ def question_edit_form(request, question_id):
 
 
 
+def demo_ide(request):
+    try:
+        demo_codes = demoCodes.objects.create(user = request.user)
+        demo_codes.save()
+    except:
+        demo_codes = demoCodes.objects.filter(user = request.user).first()
+    print(demo_codes)
+    questions = Question.objects.filter(Level="Demo Question")
+    question = questions.first()
+    print(questions)
+    if request.is_ajax() and request.method == "POST" :
+            code_output=""
+            if request.POST.get('msg')=='fetch_current_question_codes':
+                return question_codes(demo_codes,question)
 
+            if request.POST.get('code_draft')=='yes':
+                language = request.POST.get('language')
+                code = request.POST.get('code')
+                save_codes(demo_codes,code,language,question)
+                res={'msg':'successfully saved'}
+                return HttpResponse(json.dumps(res), content_type="application/json")
+            elif request.POST.get('compile_run') == 'yes':
+                language = request.POST.get('language')
+                custom_input = request.POST.get('input') 
+                code = request.POST.get('code')
+                print(repr(code))
+                save_codes(demo_codes,code,language,question)
+                code_output = compile_run(language,code,custom_input,request,request.user)
+                return HttpResponse(json.dumps(code_output), content_type="application/json")
+            elif request.POST.get('submit_code')=='yes':
+                language = request.POST.get('language')
+                code = request.POST.get('code')
+                save_codes(demo_codes,code,language,question)
+                testcases = Question_Testcase.objects.filter(question=question)
+                return validate_testcases(code,testcases,demo_codes,language,request,request.user,'demo')
+    return render(request,'challenge/demoIDE.html',{'questions':questions,'candidate_codes':demo_codes})
 
 
 
@@ -516,7 +551,7 @@ def testpage(request,challenge_id,c_id):
                 candidate_question_code = candidate_codes_obj.filter(question=question).first()
                 save_codes(candidate_question_code,code,language,question)
                 testcases = Question_Testcase.objects.filter(question=question)
-                return validate_testcases(code,testcases,candidate_question_code,language,request,candidate)
+                return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"")
         return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
     else:
         return redirect('completed_testpage',challenge_id = challenge.id,c_id=candidate.id)
@@ -571,7 +606,7 @@ def question_codes(candidate_question_code,question):
     # print(codes)
     return HttpResponse(json.dumps(codes), content_type="application/json")
 
-def validate_testcases(code,testcases,candidate_question_code,language,request,candidate):
+def validate_testcases(code,testcases,candidate_question_code,language,request,candidate,flag):
     score = 0
     tc_status_list = {}
     index=0
@@ -603,7 +638,13 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
                 tcjson = {'description':tc.description,'score':0,'status':'Failed','Time_taken':output['Timetaken']}
         tc_status_list[index] = tcjson
         index+=1
+    if flag!="demo":
+        updateCandidateScores(candidate_question_code,candidate,score)
+    
+    
+    return HttpResponse(json.dumps(tc_status_list),content_type="application/json")
 
+def updateCandidateScores(candidate_question_code,candidate,score):
     if candidate_question_code.score < score:
         candidate_question_code.submitted_code = code
         candidate_question_code.score = score
@@ -615,5 +656,3 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
     if candidate.total_score < total_score:
         candidate.total_score = total_score
     candidate.save()
-    
-    return HttpResponse(json.dumps(tc_status_list),content_type="application/json")
