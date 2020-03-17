@@ -25,7 +25,10 @@ urlpatterns = [
     path('login/',auth_views.LoginView.as_view( template_name="challenge/login.html",authentication_form=UserLoginForm),name="login"),
     path('question_bank/',views.question_bank,name="question_bank"),
     path('demoIDE/',views.demo_ide,name="demo_ide"),
-    
+    path('contact/',views.contact,name="contact"),
+    path('Results/',views.results,name="results"),
+    url(r'^contest_Results/(?P<contest_id>\d+)/$', views.contest_results, name='contest_results'),
+    url(r'^download_Results/(?P<contest_id>\d+)/$', views.download_result, name='download_result'),
     path('create_Question/',views.create_question_form,name="create_question"),
     # url(r'^modify/(?P<question_id>\d+)/question$', views.question_edit_form, name='question_edit_form'),
     

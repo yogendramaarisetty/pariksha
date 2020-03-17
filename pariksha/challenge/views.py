@@ -29,6 +29,9 @@ from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import user_passes_test
 from django.contrib.auth import login
 from .forms import UserLoginForm
+import os
+from django.conf import settings
+from django.http import HttpResponse, Http404
 
 def temp_testpage_design(request):
     return render(request, 'challenge/testpage.html')
@@ -360,10 +363,56 @@ def question_edit_form(request, question_id):
         print(question_testcases)
     return render(request, 'challenge/question_edit_form.html',{'form':form,'model_name':'Question','question_testcases':question_testcases,'existing_tc_count':question_testcases.count()})
 
+@user_passes_test(lambda u: u.is_superuser)
+def download_result(request, contest_id):
+    contest = Challenge.objects.get(pk = contest_id)
+    candidates = Candidate.objects.order_by('-total_score','suspicious_count')
+    candidates = candidates.filter(test_name = contest)
+    createResultFile(candidates,contest.Title)
+    path="results"
+    file_path = os.path.join(settings.MEDIA_ROOT, path)
+    if os.path.exists(file_path):
+        with open(file_path, 'rb') as fh:
+            response = HttpResponse(fh.read(), content_type="application/vnd.ms-excel")
+            response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+            return response
+    raise Http404
+
+def createResultFile(candidates,name):
+    
+    file_path = os.path.join(settings.STATIC_ROOT, "media")
+    print(file_path)
+    os.chdir(file_path)
+    open(name+".csv", 'w').close()
+    results = open(name+".csv",'a+')
+    header = "Full name, Roll Number , college, Mobile, suspicious rate, Total score\n"
+    
+    results.write(header)
+    candidate_rows=""
+    for candidate in candidates:
+        candidate_rows += f'{candidate.fullname},{candidate.rollnumber},{candidate.college},{candidate.mobile_number},{candidate.suspicious_count},{candidate.total_score}\n'
+    results.write(candidate_rows)
+    results.close()
+    BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    os.chdir(BASE_DIR)
+def contact(request):
+    return render(request,'challenge/contact.html')
 
 
 
+@user_passes_test(lambda u: u.is_superuser)
+def results(request):
+    contests = Challenge.objects.all()
+    return render(request,'challenge/results.html',{'challenges': contests})
 
+
+@user_passes_test(lambda u: u.is_superuser)
+def contest_results(request,contest_id):
+    contest = Challenge.objects.get(pk = contest_id)
+    candidates = Candidate.objects.order_by('-total_score','suspicious_count')
+    candidates = candidates.filter(test_name = contest)
+    createResultFile(candidates,"results")
+    return render(request, 'challenge/contest_Results.html',{'contest':contest,'candidates':candidates})
 
 
 
@@ -465,7 +514,7 @@ def candidate_form(request,challenge_id):
                                 )
     else:
         c = candidate.filter(test_name = test).first()
-        messages.acknowledge(request, f'Resume')
+        messages.success(request, f'Resume')
         return redirect('test_instruction',pk=challenge_id,c_id=c.id)
 
 
@@ -541,7 +590,9 @@ def testpage(request,challenge_id,c_id):
             elif request.POST.get('compile_run') == 'yes':
                 code_output = save_run(request,candidate_codes_obj)
                 return HttpResponse(json.dumps(code_output), content_type="application/json")
-            
+            elif request.POST.get('full_screen') == 'yes':
+                candidate.suspicious_count+=1
+                candidate.save() 
             elif request.POST.get('submit_code')=='yes':
                 # print("code submission request")
                 q_id = request.POST.get('q_id')

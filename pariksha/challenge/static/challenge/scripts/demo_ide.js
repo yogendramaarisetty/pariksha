@@ -8,15 +8,25 @@ Split(['#left_pane', '#right_pane'], {
     sizes: [40, 60],
     minSize: [200, 600]
 });
+
+var customElement = $("<span>", {
+    "css"   : {
+        "animation-duration":"5s",
+        "color":"#0084ec",
+    },
+    "class" : "cogs slow-ani",
+});
+
+customElement[0].innerHTML = "<i class=\"fas fa-cog fa-4x fa-spin\" data-fa-transform=\"down-5  right-5\"></i><i class=\"fas fa-cog fa-3x fa-spin\" data-fa-transform=\"down-17 right-3\"></i><i class=\"fas fa-cog fa-5x fa-spin\" data-fa-transform=\"left-7\"></i>"
 $.LoadingOverlay("show", {
     image       : "",
-    fontawesome : "fa fa-cog fa-spin",                              // String/Boolean
+    fontawesome : "",                              // String/Boolean
 fontawesomeAnimation    : ""  ,                              // String/Boolean
 fontawesomeAutoResize   : true               ,               // Boolean
 fontawesomeResizeFactor : 1                   ,              // Float
 fontawesomeColor        : "#0084ec"            ,             // String/Boolean
 fontawesomeOrder        : 2  ,
-
+custom : customElement,
 size                    : 50   ,                             // Float/String/Boolean
 minSize                 : 20    ,                            // Integer/String
 maxSize                 : 120    ,                           // Integer/String
@@ -30,7 +40,8 @@ zIndex                  : 2147483647                        // Integer
 // Hide it after 3 seconds
 setTimeout(function(){
     $.LoadingOverlay("hide");
-}, 3000);
+    fetchCandidateCodes(q_id);
+}, 2000);
 
 
 
@@ -81,7 +92,6 @@ $(window).load(function() {
         icon.innerText = "keyboard_arrow_up";
     }
     editor = createEditor();
-    fetchCandidateCodes(q_id);
 });
 
 function createEditor(){
@@ -272,7 +282,42 @@ function submitTest(){
           });
   }
 
+  function InvokeLoader(){
+    if($('link[title=darkmode]')[0].disabled ==  false){
+        $("#top_section").LoadingOverlay("show",{
+            image       : "",
+            fontawesome : "fas fa-cog fa-spin",                              // String/Boolean
+        fontawesomeAnimation    : ""  ,                              // String/Boolean
+        fontawesomeAutoResize   : true               ,               // Boolean
+        fontawesomeResizeFactor : 1                   ,              // Float
+        fontawesomeColor        : "#0084ec"            ,             // String/Boolean
+        fontawesomeOrder        : 2  ,
+        background  : "#242d38cc",
+        size                    : 30   ,                             // Float/String/Boolean
+        minSize                 : 20    ,                            // Integer/String
+        maxSize                 : 50    , 
+        });
+        
+    }
+    else{
+        $("#top_section").LoadingOverlay("show",{
+            image       : "",
+            fontawesome : "fas fa-cog fa-spin",                              // String/Boolean
+        fontawesomeAnimation    : ""  ,                              // String/Boolean
+        fontawesomeAutoResize   : true               ,               // Boolean
+        fontawesomeResizeFactor : 1                   ,              // Float
+        fontawesomeColor        : "#4e4e4e"            ,             // String/Boolean
+        fontawesomeOrder        : 2  ,
+        background  : "#ffffffc2",
+        
+        size                    : 30   ,                             // Float/String/Boolean
+        minSize                 : 20    ,                            // Integer/String
+        maxSize                 : 50    , 
+        });
 
+    }
+
+  }
 
 var java_code;
 var c_code;
@@ -289,7 +334,7 @@ var ace_modes = {
   
 
 function fetchCandidateCodes(id){
-   
+    InvokeLoader();
     $.ajax({
         type: 'POST',
         url: '',
@@ -316,6 +361,9 @@ function fetchCandidateCodes(id){
             $('#output_result_pre').innerText="";
             $('#type_msg').innerHTML = "";
             $('#tc_body').innerHTML = "";
+            setTimeout(function(){
+                $("#top_section").LoadingOverlay("hide");
+            }, 900);
         },
         error: function ( xhr, status, error) {
             // console.log( " xhr.responseText: " + xhr.responseText + " //status: " + status + " //Error: "+error );
@@ -371,13 +419,15 @@ draggerV.addEventListener("click", function(event) {
 });
 
 function runCode() {
-    if(!$('.run_button')[0].disabled){
+    
+    $(".run_button").attr("disabled", true);
+    $(".submit_button").attr("disabled", true);
+
+    if($(".run_button").attr("disabled") == disabled){
     $('#output_pane').click();
     $('#time_elapsed')[0].innerHTML = "";
     $('#output_card').hide();
     $('#loader').show();
-    $('.run_button')[0].disabled = true;
-    $('.submit_button')[0].disabled = true;
     if (editor.getValue() != "") {
         lang = document.getElementById("languages").value;
         updateVariables(lang);
@@ -397,8 +447,8 @@ function runCode() {
             },
             success: function(json) {
                 $('#output_pane').click();
-                $('.run_button')[0].disabled = false;
-                $('.submit_button')[0].disabled = false;
+                $(".run_button").attr("disabled", false);
+                $(".submit_button").attr("disabled", false);
                 $('#save_btn')[0].setAttribute('status','saved');
                 if(json.status == "Successfully ran"){
                     renderSuccessOutput(json.output,json.Timetaken);
@@ -431,13 +481,14 @@ function runCode() {
     }
 }
 function submitCode(){
-    if(!$('.submit_button')[0].disabled){
+    
+    $(".run_button").attr("disabled", true);
+    $(".submit_button").attr("disabled", true);
+    if($('.submit_button').attr('disabled') == "disabled"){
         $('#testcases_pane').click();
     $('#testcases_card').hide();
     $('#output_card').hide();
     $('#loader').show();
-    $('.run_button')[0].disabled = true;
-    $('.submit_button')[0].disabled = true;
    if (editor.getValue() != "") {
          $.ajax({
              type: 'POST',
@@ -455,9 +506,10 @@ function submitCode(){
  
              success: function(json) {
                 $('#testcases_pane').click();
-                $('.run_button')[0].disabled = false;
-                $('.submit_button')[0].disabled = false;
                 $('#save_btn')[0].setAttribute('status','saved');
+                
+                $(".run_button").attr("disabled", false);
+                $(".submit_button").attr("disabled", false);
                  if(json.status == "Compilation Errors"){
                     $('#output_pane').click();
                     renderErrorMsg(json.error);

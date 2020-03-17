@@ -1,0 +1,98 @@
+{% extends "challenge/base.html" %} {% block content %}
+{% if user.is_authenticated %}
+<section class="available_tests" data-tab="emoji">
+    <div class="table_content_wrapper">
+        <div class="table_head_content_wrapper">
+            <h4 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">RESULTS</h4>
+            {% if user.is_superuser %}
+            <div class="table_action_buttons">
+            </div>
+            {% else %}
+            <div class="table_action_buttons">
+                <h3 class="p-customize_emoji_wrapper__count large_bottom_margin inline_block black">Find respective contest results below</h3>
+            </div>
+            {% endif %}
+        </div>
+        <div class="search_bar_wrapper">
+            <span class="search_icon"><i id="search_icon" class="material-icons">
+                    search
+                </i></span>
+            <input type="text" id="search_box" onkeyup="myFunction()"  placeholder="Search by test name">
+        </div>
+        <div class="table_main_content_wrapper" id="table_wrapper">
+            <div class="list_element_wrapper">
+                <table id="myTable">
+                    <thead class="header_row">
+                        <tr>
+                        {% if user.is_superuser %}
+                            <th>Test id</th>
+                        {% endif %}
+                            <th>Test Name</th>
+                            <th>Status</th>
+                            <th>Duration</th>
+                            <th>College</th>
+                            <th></th>
+                        </tr>
+                    </thead>
+                    <tbody class="main_table_records">
+                    {% for test in challenges %}
+                        <tr>
+                        {% if user.is_superuser %}
+                            <td>{{ test.id }}</td>
+                            {% endif %}
+                            <td>{{ test.Title }}</td>
+                            {% if test.Active %}
+                            <td class="active">Active</td>
+                            {% else %}
+                            <td class="expired">Expired</td>
+                            {% endif %}
+                            <td>{{ test.Test_Duration }} mins</td>
+                            <td>{{test.College}}</td>
+                            <td><a href="{% url 'contest_results' contest_id=test.id  %}"><button class="start_active">Results</button></a></td>
+                           
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- DivTable.com -->
+
+<div>
+    <script>
+        function myFunction() {
+          var input, filter, table, tr, td, i, txtValue;
+          input = document.getElementById("search_box");
+          filter = input.value.toUpperCase();
+          table = document.getElementById("myTable");
+          tr = table.getElementsByTagName("tr");
+          for (i = 0; i < tr.length; i++) {
+            td = tr[i].getElementsByTagName("td")[1];
+            if (td) {
+              txtValue = td.textContent || td.innerText;
+              if (txtValue.toUpperCase().indexOf(filter) > -1) {
+                tr[i].style.display = "";
+              } else {
+                tr[i].style.display = "none";
+              }
+            }       
+          }
+          
+        }
+        </script>
+
+    {% else %}
+    <div class="row mt-3">
+
+        <div class="col-lg-4 col-md-6">
+            <div class="mb-2 alert alert-info" role="alert">
+                <h4>Please Register to take the test</h4>
+                <p>Click here to <a href="{% url 'challenge_register' %}">Register</a>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+    {% endblock content %}

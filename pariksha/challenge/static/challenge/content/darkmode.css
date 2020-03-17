@@ -354,3 +354,12 @@ div#home_btn a {
 .ace_gutter{
     background:#272822 !important;
 }
+.testcase_table_wrapper td {
+    background: #151515;
+    color: #f0f8ffb3;
+}
+.testcase_table_wrapper th {
+    background: #1a243ad4;
+    color: #f9f9f99c;
+    font-weight: 200;
+}

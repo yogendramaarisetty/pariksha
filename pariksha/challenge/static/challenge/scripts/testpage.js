@@ -1,19 +1,36 @@
 
-// ace editor*******************************
-Split(['#left_pane', '#right_pane'], {
-    gutterSize: 7,
-    sizes: [40, 60],
-    minSize: [200, 600]
+setTimeout(function(){
+    
+    fullScreenOverlay();
+    $(window).focus(function() {
+        //do something
+        $.LoadingOverlay("hide");
+    });
+    
+    $(window).blur(function() {
+       fullScreenOverlay();
+    });
+  
+}, 3000);
+
+var customElement = $("<span>", {
+    "css"   : {
+        "animation-duration":"5s",
+        "color":"#0084ec",
+    },
+    "class" : "cogs slow-ani",
 });
+
+customElement[0].innerHTML = "<i class=\"fas fa-cog fa-4x fa-spin\" data-fa-transform=\"down-5  right-5\"></i><i class=\"fas fa-cog fa-3x fa-spin\" data-fa-transform=\"down-17 right-3\"></i><i class=\"fas fa-cog fa-5x fa-spin\" data-fa-transform=\"left-7\"></i>"
 $.LoadingOverlay("show", {
     image       : "",
-    fontawesome : "fa fa-cog fa-spin",                              // String/Boolean
+    fontawesome : "",                              // String/Boolean
 fontawesomeAnimation    : ""  ,                              // String/Boolean
 fontawesomeAutoResize   : true               ,               // Boolean
 fontawesomeResizeFactor : 1                   ,              // Float
 fontawesomeColor        : "#0084ec"            ,             // String/Boolean
 fontawesomeOrder        : 2  ,
-
+custom : customElement,
 size                    : 50   ,                             // Float/String/Boolean
 minSize                 : 20    ,                            // Integer/String
 maxSize                 : 120    ,                           // Integer/String
@@ -27,10 +44,84 @@ zIndex                  : 2147483647                        // Integer
 // Hide it after 3 seconds
 setTimeout(function(){
     $.LoadingOverlay("hide");
-    
     $('.ql_item')[0].click();
 }, 2500);
+
+document.onfullscreenchange = function ( event ) { 
+    if (!document.fullscreenElement) {
+        fullScreenOverlay();
+    } else {
+        $.LoadingOverlay("hide");
+    }
+  }; 
+  $(document).on("keydown",function(ev){
+	console.log(ev.keyCode);
+	if(ev.keyCode===27||ev.keyCode===122) return false
+});
+
+function fullscreencount(){
+        $.ajax({
+            type: 'POST',
+            url: '',
+            dataType: 'json',
+            cache: false,
+            async: true,
+            data: {
+                csrfmiddlewaretoken: csrf_token,
+                full_screen: 'yes',
+              },
+        
+            success: function(json) {
+                
+            },
+            
+            statusCode: {
+            500: function() {
+        }},
+        }).done(function() {
+        });
+  }
+
+function fullScreenOverlay(){
+    var customElement2 = $("<button>", {
+        "css"   : {
+            "color":"#0084ec",
+        },
+        "class" : "full_screen_button",
+        "id":"full_screen_button"
+    });
+    customElement2[0].innerHTML = "Full Screen"
+    $.LoadingOverlay("show", {
+        image       : "",
+        fontawesome : "",                              // String/Boolean
+    fontawesomeAnimation    : ""  ,                              // String/Boolean
+    fontawesomeAutoResize   : true               ,               // Boolean
+    fontawesomeResizeFactor : 1                   ,              // Float
+    fontawesomeColor        : "#0084ec"            ,             // String/Boolean
+    fontawesomeOrder        : 2  ,
+    custom : customElement2,
+    background: "#242d38cc",
+    size                    : 50   ,                             // Float/String/Boolean
+    minSize                 : 20    ,                            // Integer/String
+    maxSize                 : 120    ,                           // Integer/String
+    // Misc
+    direction               : "column",                          // String
+    fade                    : [400, 200],                        // Array/Boolean/Integer/String
+    resizeInterval          : 50         ,                       // Integer
+    zIndex                  : 2147483647                        // Integer
+    
+    });
+    customElement2.on('click',function(){
+
+        document.documentElement.requestFullscreen();
+        $.LoadingOverlay("hide");
+    });
+    fullscreencount();
+}
+
 //ace_editor##############################3
+
+
 
 //splitjs*************
 Split(['#left_pane', '#right_pane'], {
@@ -307,7 +398,7 @@ function submitTest(){
         fontawesomeAnimation    : ""  ,                              // String/Boolean
         fontawesomeAutoResize   : true               ,               // Boolean
         fontawesomeResizeFactor : 1                   ,              // Float
-        fontawesomeColor        : "#0084ec"            ,             // String/Boolean
+        fontawesomeColor        : "#4e4e4e"            ,             // String/Boolean
         fontawesomeOrder        : 2  ,
         background  : "#ffffffc2",
         

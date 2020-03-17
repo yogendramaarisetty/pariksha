@@ -1176,3 +1176,8 @@ span.top_nav_btn {
     position: relative;
     display: flex;
 }
+button.full_screen_button {
+    background: #000000b3;
+    color: white !important;
+    cursor: pointer;
+}

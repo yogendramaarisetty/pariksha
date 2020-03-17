@@ -64,7 +64,11 @@ div[status="Failed"]{
     .pretty.p-switch .state:before {
         height: 1rem;
     }
+    .slow-ani > * {
+  animation-duration:5s;
+}
 </style>
+
 
 <body>
     <div id="testpage_header">
@@ -88,11 +92,12 @@ home
             </div>
         </div>
     </div>
+ 
     <div class="contents-wrapper">
         <div class="fs-pains-container">
             <div id="left_pane" class="fs-left-pane split">
                 <div class="left-pane-content-wrapper">
-                   
+             
                      {% for q in questions %}
                     <div id="question_{{q.id}}_id" class="question_content_wrapper">
                         <div class="question_title">{{q.Title}}</div>

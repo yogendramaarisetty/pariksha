@@ -652,3 +652,8 @@ div#page_contents {
     color: #F9DF4A;
   }
   
+  i.fas.fa-user-shield {
+    position: absolute;
+    top: 27px;
+    left: -3px;
+}

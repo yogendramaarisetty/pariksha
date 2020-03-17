@@ -49,6 +49,8 @@
     <script src="{% static 'challenge/scripts/theme-monokai.js' %}" type=" text/javascript "></script>
     <script src="{% static 'challenge/scripts/theme-xcode.js' %}" type=" text/javascript "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
+    
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
   {%block head%}
     {% endblock head %}
 </head>
@@ -58,6 +60,9 @@
     background-repeat: unset;
     cursor: auto;
     background-size: cover;
+}
+.slow-ani > * {
+  animation-duration:5s;
 }
 
 .demo_ide_icon {
@@ -88,13 +93,27 @@
                         <i></i>
                         <span class="block label">Question Bank</span>
                     </a>
-                    <a href="" onclick="return false;" >
+                    <a href="{% url 'results' %}"  >
                         <i></i>
                         <span class="block label">Results</span>
                     </a>
                     <a href="{% url 'demo_ide' %}" >
                         <div class="demo_ide_icon"></div>
                         <span class="block label">Demo IDE</span>
+                    </a>
+                </div>
+    
+            </div>
+            {% else %}
+            <div class="pariksha-admin-management-icons">
+             <div class="header_icons float_right">
+                    <a href="https://planful.com/" target="_blank">
+                        <i></i>
+                        <span class="block label">About</span>
+                    </a>
+                    <a href="{% url 'contact' %}">
+                        <i></i>
+                        <span class="block label">Contact</span>
                     </a>
                 </div>
     
@@ -106,9 +125,13 @@
                 <div class="header_icons float_right">
                     {% if user.is_authenticated %}
                     <a href="" id = "candidate_name" onclick="return false;" >
+            {% if user.is_superuser%}
+            <i class="fas fa-user-shield"></i>
+            {% else %}
                         <i class="material-icons">
                             person_outline
                             </i>
+                {% endif %}
                         <span class="candidate_name">{{user.username}}</span>
                     </a>
                     <a  href="{%url 'logout' %}" class="logout_btn" id="plans_switcher">
@@ -138,6 +161,7 @@
     
     </body>
     
+    <script src="{% static 'challenge/scripts/overlay_loader.js' %}" type=" text/javascript "></script>
 </html>
 
     
