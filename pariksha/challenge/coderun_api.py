@@ -41,6 +41,13 @@ def compile_run(language,code,custom_input,request,candidate):
         'C#': f'mcs {file_name_ext[language]}',
         }
     else:
+         file_name_ext = {
+          'C' : f'{file_name}.c',
+          'C++': f'{file_name}.cpp',
+          'Java': 'MyClass.java',
+          'Python': f'{file_name}.python',
+          'C#':f'{file_name}.cs',
+         }
          compile_command = {
          'C' : f'gcc {file_name_ext[language]}',
          'C++': f'g++ {file_name_ext[language]}',
@@ -54,13 +61,6 @@ def compile_run(language,code,custom_input,request,candidate):
          'Java': 'java MyClass',
          'Python': f'python3 {file_name_ext[language]}',
          'C#': f'mcs {file_name_ext[language]}',
-         }
-         file_name_ext = {
-          'C' : f'{file_name}.c',
-          'C++': f'{file_name}.cpp',
-          'Java': 'MyClass.java',
-          'Python': f'{file_name}.python',
-          'C#':f'{file_name}.cs',
          }
 
     #write file
