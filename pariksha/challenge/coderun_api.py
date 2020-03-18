@@ -1,5 +1,5 @@
 #Windows specific api
-import subprocess,os ,time
+import subprocess,os ,time, platform
 from subprocess import run, PIPE,STDOUT,Popen
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 compile_command = {}
@@ -10,34 +10,59 @@ code_file_path = {}
 def compile_run(language,code,custom_input,request,candidate):
     file_name = str(request.user.id)+request.user.username+str(candidate.id)
     path = os.path.join(BASE_DIR,'code_files')
-    file_name_ext = {
-    'C' : f'{file_name}.c',
-    'C++': f'{file_name}.cpp',
-    'Java': 'MyClass.java',
-    'Python': f'{file_name}.py',
-    'C#':f'{file_name}.cs',
-    }
+    
     code_file_path = {
-    'C' : 'c_codes',
-    'C++': 'cpp_codes',
-    'Java': 'java_codes',
-    'Python': 'python_codes',
-    'C#':'csharp_codes',
-    }
-    compile_command = {
-    'C' : f'gcc {file_name_ext[language]}',
-    'C++': f'g++ {file_name_ext[language]}',
-    'Java': 'javac MyClass.java',
-    'Python': f'py {file_name_ext[language]}',
-    'C#':f'mcs {file_name_ext[language]}',
-    }
-    run_command = {
-    'C' : 'a',
-    'C++': 'a',
-    'Java': 'java MyClass',
-    'Python': f'py {file_name_ext[language]}',
-    'C#': f'mcs {file_name_ext[language]}',
-    }
+        'C' : 'c_codes',
+        'C++': 'cpp_codes',
+        'Java': 'java_codes',
+        'Python': 'python_codes',
+        'C#':'csharp_codes',
+        }
+    if platform.system() == 'Windows':
+        file_name_ext = {
+        'C' : f'{file_name}.c',
+        'C++': f'{file_name}.cpp',
+        'Java': 'MyClass.java',
+        'Python': f'{file_name}.py',
+        'C#':f'{file_name}.cs',
+        }
+        compile_command = {
+        'C' : f'gcc {file_name_ext[language]}',
+        'C++': f'g++ {file_name_ext[language]}',
+        'Java': 'javac MyClass.java',
+        'Python': f'py {file_name_ext[language]}',
+        'C#':f'mcs {file_name_ext[language]}',
+        }
+        run_command = {
+        'C' : 'a',
+        'C++': 'a',
+        'Java': 'java MyClass',
+        'Python': f'py {file_name_ext[language]}',
+        'C#': f'mcs {file_name_ext[language]}',
+        }
+    elif platform.system() == 'Linux':
+         compile_command = {
+         'C' : f'gcc {file_name_ext[language]}',
+         'C++': f'g++ {file_name_ext[language]}',
+         'Java': 'javac MyClass.java',
+         'Python': f'python3 {file_name_ext[language]}',
+         'C#':f'mcs {file_name_ext[language]}',
+         } 
+         run_command = {
+         'C' : './a.out',
+         'C++': './a.out',
+         'Java': 'java MyClass',
+         'Python': f'python3 {file_name_ext[language]}',
+         'C#': f'mcs {file_name_ext[language]}',
+         }
+         file_name_ext = {
+          'C' : f'{file_name}.c',
+          'C++': f'{file_name}.cpp',
+          'Java': 'MyClass.java',
+          'Python': f'{file_name}.python',
+          'C#':f'{file_name}.cs',
+         }
+
     #write file
     path = os.path.join(path, code_file_path[language])
     os.chdir(path)
