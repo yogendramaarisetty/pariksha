@@ -423,7 +423,7 @@ function runCode() {
     $(".run_button").attr("disabled", true);
     $(".submit_button").attr("disabled", true);
 
-    if($(".run_button").attr("disabled") == disabled){
+    if($(".run_button").attr("disabled") == "disabled"){
     $('#output_pane').click();
     $('#time_elapsed')[0].innerHTML = "";
     $('#output_card').hide();
