@@ -690,12 +690,12 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         tc_status_list[index] = tcjson
         index+=1
     if flag!="demo":
-        updateCandidateScores(candidate_question_code,candidate,score)
+        updateCandidateScores(code,candidate_question_code,candidate,score)
     
     
     return HttpResponse(json.dumps(tc_status_list),content_type="application/json")
 
-def updateCandidateScores(candidate_question_code,candidate,score):
+def updateCandidateScores(code,candidate_question_code,candidate,score):
     if candidate_question_code.score < score:
         candidate_question_code.submitted_code = code
         candidate_question_code.score = score
