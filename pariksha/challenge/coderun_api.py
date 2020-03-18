@@ -40,7 +40,7 @@ def compile_run(language,code,custom_input,request,candidate):
         'Python': f'py {file_name_ext[language]}',
         'C#': f'mcs {file_name_ext[language]}',
         }
-    elif platform.system() == 'Linux':
+    else:
          compile_command = {
          'C' : f'gcc {file_name_ext[language]}',
          'C++': f'g++ {file_name_ext[language]}',
