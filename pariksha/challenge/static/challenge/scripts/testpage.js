@@ -2,7 +2,7 @@
 Split(['#left_pane', '#right_pane'], {
     gutterSize: 7,
     sizes: [36, 64],
-    minSize: [200, 600]
+    minSize: [320, 600]
 });
 setTimeout(function(){
     
@@ -646,7 +646,6 @@ function renderSampleCases(json){
         var expected_output = "<pre class='sample_pre' name=\"expected_output\" id=\"expected_output\" disabled>"+msg['Expected Output']+"</pre></div>"
         $('#sample_case_wrap')[0].innerHTML += status+st_label_input+tc_input+st_label_output+your_output+st_label_exp_output+expected_output;
     }
-    $('#output_result_pre')[0].innerText = json;
 }
 function submitCode(){
     
@@ -680,7 +679,7 @@ function submitCode(){
                 $('#save_btn')[0].setAttribute('status','saved');
                  if(json.status == "Compilation Errors"){
                     $('#output_pane').click();
-                    renderErrorMsg(json.error);
+                    renderErrorMsg(json);
                     
                 }
                 else{

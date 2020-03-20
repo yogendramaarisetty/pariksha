@@ -1327,3 +1327,6 @@ b#q_title {
 .bottom_header_controller {
     border-bottom: 1px solid #80808070;
 }
+.q_navigator {
+    width: auto;
+}
