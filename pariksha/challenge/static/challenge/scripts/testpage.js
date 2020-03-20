@@ -627,7 +627,7 @@ function runCode() {
 function renderSampleCases(json){
     $('#sample_case_wrap')[0].innerHTML="";
     $('#sample_case_wrap');
-    for(var i =0 ; i<Object.keys(json).length;i++){
+    for(var i =0 ; i<Object.keys(json).length-1;i++){
         var msg=json[i];
         var resp="";
         if(msg['status'] == 'Passed' || msg['status'] == 'Failed'){
