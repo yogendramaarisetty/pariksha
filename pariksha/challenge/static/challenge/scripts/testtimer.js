@@ -1,5 +1,4 @@
 
-$(function() {
   const status = window.navigator.onLine;
   if(status) online()
   else offline()
@@ -46,7 +45,7 @@ $(function() {
 
     toastr["warning"]("you are offline", "No Internet");
   }
-  });
+  
 window.addEventListener('offline', function(e) { 
 
  

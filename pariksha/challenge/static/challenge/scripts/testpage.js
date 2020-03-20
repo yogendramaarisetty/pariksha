@@ -202,9 +202,9 @@ function createEditor(){
     editor.renderer.setScrollMargin(10, 10);
     // enable autocompletion and snippets
     editor.setOptions({
-        enableBasicAutocompletion: true,
-        enableSnippets: true,
-        enableLiveAutocompletion: true,
+        enableBasicAutocompletion: false,
+        enableSnippets: false,
+        enableLiveAutocompletion: false,
     });
     ![
         "dragenter", "dragover", "dragend", "dragstart", "dragleave", "drop"
@@ -889,6 +889,21 @@ $('#mode').change(function() {
         set_ace_editor_mode("dark");
     } else {
         set_ace_editor_mode("light");
+    }
+});
+$('#auto_complete').change(function() {
+    if (this.checked) {
+        editor.setOptions({
+            enableBasicAutocompletion: true,
+            enableSnippets: true,
+            enableLiveAutocompletion: true,
+        });
+    } else {
+        editor.setOptions({
+            enableBasicAutocompletion: false,
+            enableSnippets: false,
+            enableLiveAutocompletion: false,
+        });
     }
 });
 
