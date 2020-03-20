@@ -543,7 +543,7 @@ def testpage(request,challenge_id,c_id):
         if candidate.count<=1:
             duration = challenge.Test_Duration
             candidate.start_time=datetime.now()
-            candidate.end_time=datetime.now()+timedelta(minutes=duration+330)
+            candidate.end_time=datetime.now()+timedelta(minutes=duration+331)
             candidate.save()
         
         if request.is_ajax() and request.method == "POST" :

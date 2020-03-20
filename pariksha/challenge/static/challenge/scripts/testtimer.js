@@ -45,7 +45,7 @@
 
     toastr["warning"]("you are offline", "No Internet");
   }
-  
+
 window.addEventListener('offline', function(e) { 
 
  
@@ -80,7 +80,7 @@ var x = setInterval(function() {
     if (distance < 0) {
         clearInterval(x);
         document.getElementById("timer").innerHTML = "EXPIRED";
-        //submitTestFinal()
+        submitTest();
         
     }
 }, 1000);
