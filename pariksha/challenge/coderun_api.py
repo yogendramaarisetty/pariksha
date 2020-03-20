@@ -46,21 +46,21 @@ def compile_run(language,code,custom_input,request,candidate):
          'C++': f'{file_name}.cpp',
          'Java': 'MyClass.java',
          'Python': f'{file_name}.python',
-         'C#':f'{file_name}',
+         'C#':f'{file_name}.cs',
         }
         compile_command = {
         'C' : f'gcc {file_name_ext[language]}',
         'C++': f'g++ {file_name_ext[language]}',
         'Java': 'javac MyClass.java',
         'Python': f'python3 {file_name_ext[language]}',
-        'C#':f'mcs {file_name_ext[language]}.cs',
+        'C#':f'mcs {file_name_ext[language]}',
         }
         run_command = {
         'C' : './a.out',
         'C++': './a.out',
         'Java': 'java MyClass',
         'Python': f'python3 {file_name_ext[language]}',
-        'C#': f'mono {file_name_ext[language]}.exe',
+        'C#': f'mono {file_name}.exe',
         }
  
    #write file
