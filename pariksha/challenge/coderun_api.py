@@ -93,13 +93,13 @@ def compile_run(language,code,custom_input,request,candidate):
            # print('Total time taken is ',end_time-start_time)
        except subprocess.TimeoutExpired:
            end_time = time.time()
-           return {'status': 'Timelimit exception','error':'your program exceeded the time limit','Timetaken':end_time-start_time}   
+           return {'status': 'Timelimit exception','error':'your program exceeded the time limit','Timetaken':end_time-start_time,'custom_input':custom_input}   
        except subprocess.CalledProcessError:
            run_code = subprocess.run(run_command[language],stderr=PIPE,stdout=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
-           return { 'status': "Run Time Errors", 'error':run_code.stdout+run_code.stderr,'Timetaken':end_time-start_time}
+           return { 'status': "Run Time Errors", 'error':run_code.stdout+run_code.stderr,'Timetaken':end_time-start_time, 'custom_input':custom_input}
        run_code = subprocess.run(run_command[language],stdout=PIPE,stderr=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
       
-       return {'status':"Successfully ran" , 'output' : run_code.stdout,'Timetaken':end_time-start_time}
+       return {'status':"Successfully ran" , 'output' : run_code.stdout,'Timetaken':end_time-start_time, 'custom_input':custom_input}
    os.chdir(path)
    compile_code = subprocess.Popen(compile_command[language],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
    compile_errors = compile_code.stderr.readlines()
@@ -112,15 +112,16 @@ def compile_run(language,code,custom_input,request,candidate):
            # print('Total time taken is ',end_time-start_time)
        except subprocess.TimeoutExpired:
            end_time = time.time()
-           return {'status': 'Timelimit exception','error':'your program exceeded the time limit','Timetaken':end_time-start_time}   
+           return {'status': 'Timelimit exception','error':'your program exceeded the time limit','Timetaken':end_time-start_time, 'custom_input':custom_input}   
        except subprocess.CalledProcessError:
+           end_time = time.time()
            run_code = subprocess.run(run_command[language],stderr=PIPE,stdout=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
-           return { 'status': "Run Time Errors", 'error':run_code.stdout+run_code.stderr,'Timetaken':end_time-start_time}
+           return { 'status': "Run Time Errors", 'error':run_code.stdout+run_code.stderr,'Timetaken':end_time-start_time, 'custom_input':custom_input}
        run_code = subprocess.run(run_command[language],stdout=PIPE,stderr=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
       
-       return {'status':"Successfully ran" , 'output' : run_code.stdout,'Timetaken':end_time-start_time}
+       return {'status':"Successfully ran" , 'output' : run_code.stdout,'Timetaken':end_time-start_time,'custom_input':custom_input}
    else:
        errors=""
        for e in compile_errors:
            errors+=e.decode("utf-8")
-       return {'status':"Compilation Errors", 'error':errors }
+       return {'status':"Compilation Errors", 'error':errors, 'custom_input':custom_input }

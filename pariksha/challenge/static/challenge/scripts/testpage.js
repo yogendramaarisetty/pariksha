@@ -158,7 +158,7 @@ var active_question_id = "";
 var current_active = "";
 $(document).ready(function() {
     // executes when HTML-Document is loaded and DOM is ready
-    $('#loader').hide();
+   $('#loader').hide();
     $('.question_content_wrapper').hide();
     
     $('.left_section').hide();
@@ -334,8 +334,8 @@ function codeDraft(){
                      $('#save_btn')[0].setAttribute('status','saved');
               },
               error: function ( xhr, status, error) {
-                // console.log( " xhr.responseText: " + xhr.responseText + " //status: " + status + " //Error: "+error );
-      
+                $('#loader').hide();
+               errorNotify(status);
               }
           }).done(function() {
           });
@@ -421,15 +421,7 @@ $('.ql_item').click(function(){
         fetchCandidateCodes(this.id);
         active_question_id = this.id;
     }
-    $('#status_message')[0].setAttribute('status','');
-    $('#status_message')[0].innerHTML= "";
-
-        $('#status_message')[0].innerText= "Click on run to see the output";
-        $('#input')[0].innerText="";
-        $('#type_msg')[0].innerHTML = "";
-        $('#tc_body')[0].innerHTML = "";
-        $('#time_elapsed')[0].innerHTML = "";
-        $('#output_result_pre')[0].innerHTML = "";
+    $('#sample_case_wrap')[0].innerHTML = "click on run to see the output"
     $('.question_content_wrapper').hide();
     var id = this.id;
     id = "question_"+id+"_id";
@@ -481,27 +473,19 @@ function fetchCandidateCodes(id){
             // document.getElementById("input").value = json.sample_input;
             update_editor_mode_and_code();
 
-            $('#status_message')[0].innerHTML = initial_output_state.innerHTML;
-            $('#input')[0].innerText="";
-            $('#output_result_pre').innerText="";
-            $('#type_msg').innerHTML = "";
-            $('#tc_body').innerHTML = "";
+           
         },
         error: function ( xhr, status, error) {
-            // console.log( " xhr.responseText: " + xhr.responseText + " //status: " + status + " //Error: "+error );
-  
+            $('#loader').hide();
+            errorNotify(status);
           }
     }).done(function() {
         
     $(".run_button").attr("disabled", false);
   $(".submit_button").attr("disabled", false);
 
-        $('#status_message')[0].innerHTML= "";
-        $('#status_message')[0].innerText= "Click on run to see the output";
-        $('#input')[0].innerText="";
-        $('#type_msg').innerHTML = "";
-        $('#tc_body').innerHTML = "";
-        $('#time_elapsed').innerHTML = "";
+        $('#sample_case_wrap')[0].innerHTML = "Click on run to see the output";
+        
     });
 
 }
@@ -551,8 +535,7 @@ function runCode() {
   $(".submit_button").attr("disabled", true);
 
     if($(".run_button").attr("disabled") == "disabled"){
-    $('#output_pane').click();
-    $('#time_elapsed')[0].innerHTML = "";
+   
     $('#output_card').hide();
     $('#loader').show();
     if (editor.getValue() != "") {
@@ -579,18 +562,20 @@ function runCode() {
   $(".submit_button").attr("disabled", false);
 
                 $('#save_btn')[0].setAttribute('status','saved');
-                if(json.status == "Successfully ran"){
-                    renderSuccessOutput(json.output,json.Timetaken);
+                
+                if(json['status'] == "Compilation Errors"){
+                    renderErrorMsg(json);
                 }
-                else if(json.status == "Compilation Errors"){
-                    renderErrorMsg(json.error);
+                else if(json['sample_cases'] == "yes"){
+                    renderSampleCases(json);
                 }
-                else if (json.status == "Run Time Errors"){
-                    renderRuntimeError(json.error,json.Timetaken);
+                else if(json == {}){
+                    var a = json;
                 }
-                else if(json.status == "Timelimit exception"){
-                    renderTLE(json.error,json.Timetaken);
+                else if(json['custom_output']['status'] == "Successfully ran" ||json['custom_output']['status'] == "Run Time Errors" || json['custom_output']['status'] == "Timelimit exception"){
+                    renderSuccessOutput(json['custom_output']);
                 }
+                
                 // $('#output_card').show();   
             $('#loader').hide();
             
@@ -600,7 +585,8 @@ function runCode() {
             },
             
             error: function ( xhr, status, error) {
-            $('#loader').hide();
+                $('#loader').hide();
+            errorNotify(status);
               }
         }).done(function() {
             
@@ -613,6 +599,30 @@ function runCode() {
     }
     
     }
+}
+function renderSampleCases(json){
+    $('#sample_case_wrap')[0].innerHTML="";
+    $('#sample_case_wrap');
+    for(var i =0 ; i<Object.keys(json).length;i++){
+        var msg=json[i];
+        var resp="";
+        if(msg['status'] == 'Passed' || msg['status'] == 'Failed'){
+            resp = msg['Your Output']['output'];
+        }
+        else if(msg['status'] == 'Timelimit exception' || msg['status'] == 'Run Time Errors'){
+            resp = msg['Your Output']['error'];
+        }
+        var card = "<div class=\"item\"></div>"
+        var status = "<h4 status=\""+msg['status']+"\">"+msg['status']+"</h4>"
+        var st_label_input = "<div class='label_input_wrap'><label class='sample_label' for=\"tc_input\">Input</label>"
+        var tc_input = "<pre  class='sample_pre' name=\"tc_input\" id=\"tc_input\" disabled>"+msg['Input']+"</pre></div>"
+        var st_label_output =  "<div class='label_input_wrap'><label class='sample_label' for=\"your_output\">Your Output</label>"
+        var your_output = "<pre class='sample_pre' name=\"your_output\" id=\"your_output\" disabled>"+resp+"</pre></div>"
+        var st_label_exp_output = "<div class='label_input_wrap'><label class='sample_label' for=\"expected_output\">Expected Output</label>"
+        var expected_output = "<pre class='sample_pre' name=\"expected_output\" id=\"expected_output\" disabled>"+msg['Expected Output']+"</pre></div>"
+        $('#sample_case_wrap')[0].innerHTML += status+st_label_input+tc_input+st_label_output+your_output+st_label_exp_output+expected_output;
+    }
+    $('#output_result_pre')[0].innerText = json;
 }
 function submitCode(){
     
@@ -669,6 +679,7 @@ function submitCode(){
              },
              error: function ( xhr, status, error) {
                 $('#loader').hide();
+                errorNotify(status);
                   },
              
          }).done(function() {
@@ -678,6 +689,45 @@ function submitCode(){
      }
     }
  }
+
+function errorNotify(status){
+    toastr.options = {
+        "closeButton": false,
+        "debug": false,
+        "newestOnTop": false,
+        "progressBar": false,
+        "positionClass": "toast-top-right",
+        "preventDuplicates": false,
+        "onclick": null,
+        "showDuration": "300",
+        "hideDuration": "1000",
+        "timeOut": "5000",
+        "extendedTimeOut": "1000",
+        "showEasing": "swing",
+        "hideEasing": "linear",
+        "showMethod": "fadeIn",
+        "hideMethod": "fadeOut"
+      }
+    toastr["error"]("Something went wrong", "Server Error");
+
+    toastr.options = {
+      "closeButton": false,
+      "debug": false,
+      "newestOnTop": false,
+      "progressBar": false,
+      "positionClass": "toast-top-right",
+      "preventDuplicates": false,
+      "onclick": null,
+      "showDuration": "300",
+      "hideDuration": "1000",
+      "timeOut": "5000",
+      "extendedTimeOut": "1000",
+      "showEasing": "swing",
+      "hideEasing": "linear",
+      "showMethod": "fadeIn",
+      "hideMethod": "fadeOut"
+    };
+}
 
 function addRow(json,num){
     var tc_body = $('#tc_body')[0];
@@ -720,55 +770,60 @@ function addRow(json,num){
     tc_body.appendChild(row);
 }
  
-function renderSuccessOutput(output, time){
-    $('#status_message')[0].innerHTML = "";
-    $('#status_message')[0].innerText = "Successfully ran";
-    $('#status_message')[0].setAttribute('status','success');
-    $('#output_result_pre')[0].innerText = output;
-    $('#output_result_pre')[0].setAttribute('status','success');
-    $('#type_msg')[0].innerText = 'Output';
-     
-    var time_elapsed = document.createElement('div');
-    time_elapsed.id = "timetaken";
-    var s = "" +time+"";
+function renderSuccessOutput(msg){
+    $('#sample_case_wrap')[0].innerHTML="";
+    var resp="";
+    if(msg['status'] == 'Passed' || msg['status'] == 'Failed'|| msg['status'] =="Successfully ran"){
+        resp = msg['output'];
+    }
+    else if(msg['status'] == 'Timelimit exception' || msg['status'] == 'Run Time Errors'){
+        resp = msg['error'];
+    }
+    var status = "<h4 status=\""+msg['status']+"\">"+msg['status']+"</h4>"
+    var st_label_input = "<div class='label_input_wrap'><label class='sample_label' for=\"tc_input\">Custom Input</label>"
+    var tc_input = "<pre  class='sample_pre' name=\"tc_input\" id=\"tc_input\" disabled>"+msg['custom_input']+"</pre></div>"
+    var st_label_output =  "<div class='label_input_wrap'><label class='sample_label' for=\"your_output\">Your Output</label>"
+    var your_output = "<pre class='sample_pre' name=\"your_output\" id=\"your_output\" disabled>"+resp+"</pre></div>"
+
+    var note="<p class='small_note'>Expected output will not be shown for Custom inputs</p><br><small>Remove Custom input to see sample testcases</small>"
+    var s = "" +msg['Timetaken']+"";
      s= s.substring(0, 6)
-    time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
-    $('#time_elapsed')[0].appendChild(time_elapsed);
+    var time_elapsed = "<div id=\"time_elapsed\"><i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds</div>" ;
+    $('#sample_case_wrap')[0].innerHTML += status+time_elapsed+st_label_input+tc_input+st_label_output+your_output+note;
 }
-function renderErrorMsg(error){
-    $('#status_message')[0].innerHTML = "";
-    $('#status_message')[0].innerText = "Compilation Error";
-    $('#status_message')[0].setAttribute('status','Error');
-    $('#output_result_pre')[0].innerText = error;
-    $('#output_result_pre')[0].setAttribute('status','Error');
+function renderErrorMsg(msg){
+    $('#sample_case_wrap')[0].innerHTML ="";
+    var status = "<h4 status=\""+msg['status']+"\">"+msg['status']+"</h4>"
+    var error_msg = "<pre  class='sample_pre err' name=\"error_msg\" id=\"tc_input\" disabled>"+msg['error']+"</pre></div>"
+    $('#sample_case_wrap')[0].innerHTML += status+error_msg;
 }
 
-function renderRuntimeError(error, time){
-    $('#status_message')[0].innerHTML = "";
-    $('#status_message')[0].innerText = "Runtime Error";
-    $('#status_message')[0].setAttribute('status','rterror');
-    $('#output_result_pre')[0].innerText = error;
-    $('#output_result_pre')[0].setAttribute('status','rtrror');
-    var time_elapsed = document.createElement('div');
-    time_elapsed.id = "timetaken";
-    var s = "" +time+"";
-     s= s.substring(0, 6)
-    time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
-    $('#time_elapsed')[0].appendChild(time_elapsed);
-}
-function renderTLE(msg, time){
-    $('#status_message')[0].innerHTML = "<i id=\"tleico\"class=\"material-icons\">timer_off</i> <b> TLE (Time Limit Exception)</b>";
-    $('#status_message')[0].setAttribute('status','tle');
-    $('#output_result_pre')[0].innerText = msg;
-    $('#output_result_pre')[0].setAttribute('status','tle');
-    var time_elapsed = document.createElement('div');
-    time_elapsed.id = "timetaken";
-    var s = "" +time+"";
-     s= s.substring(0, 6)
-    time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
-    $('#time_elapsed')[0].appendChild(time_elapsed);
+// function renderRuntimeError(error, time){
+//     $('#status_message')[0].innerHTML = "";
+//     $('#status_message')[0].innerText = "Runtime Error";
+//     $('#status_message')[0].setAttribute('status','rterror');
+//     $('#output_result_pre')[0].innerText = error;
+//     $('#output_result_pre')[0].setAttribute('status','rtrror');
+//     var time_elapsed = document.createElement('div');
+//     time_elapsed.id = "timetaken";
+//     var s = "" +time+"";
+//      s= s.substring(0, 6)
+//     time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
+//     $('#time_elapsed')[0].appendChild(time_elapsed);
+// }
+// function renderTLE(msg, time){
+//     $('#status_message')[0].innerHTML = "<i id=\"tleico\"class=\"material-icons\">timer_off</i> <b> TLE (Time Limit Exception)</b>";
+//     $('#status_message')[0].setAttribute('status','tle');
+//     $('#output_result_pre')[0].innerText = msg;
+//     $('#output_result_pre')[0].setAttribute('status','tle');
+//     var time_elapsed = document.createElement('div');
+//     time_elapsed.id = "timetaken";
+//     var s = "" +time+"";
+//      s= s.substring(0, 6)
+//     time_elapsed.innerHTML = "<i id=\"time_icon\" class=\"material-icons\">access_time</i> <b>Time Taken</b> : "+ s +" Seconds" ;
+//     $('#time_elapsed')[0].appendChild(time_elapsed);
 
-}
+// }
 
 
 

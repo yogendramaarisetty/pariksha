@@ -1181,3 +1181,84 @@ button.full_screen_button {
     color: white !important;
     cursor: pointer;
 }
+label {
+    font-weight: 700;
+}
+
+div#sample_case_wrap {
+    background: white;
+    padding: 20px;
+    border-radius: 5px;
+    box-shadow: 1px -1px 5px #0000001f;
+}
+
+
+sample_case_wrap > pre {
+    border: 1px solid !important;
+    padding: 5px;
+}
+
+div#sample_case_wrap {
+    
+    border: solid 1px #b3b3b3cf;
+}
+
+.label_input_wrap {
+    width: 100%;
+    display: flex;
+}
+
+label.sample_label {
+    width: 20%;
+    color: #6d6d6d;
+}
+
+pre.sample_pre {
+    width: 80%;
+    position: relative;
+    top: -15px;
+    background: #eaeaea91;
+    border: 1px solid #00000029;
+}
+h4[status='Passed'] {
+    font-size: large;
+    color: green;
+}
+pre.sample_pre {
+    padding: 10px;
+    border-radius: 3px;
+}
+h4[status='Passed'] {
+    margin-top: 0px;
+}
+h4[status='Failed'] {
+    margin-top: 0px;
+    font-size: large;
+    color: #b50000;
+}
+h4[status='Timelimit exception'] {
+    font-size: large;
+    color: #d68a00;
+    margin-top: 0px;
+}
+h4[status='Run Time Errors'] {
+    font-size: large;
+    color: #f17a00;
+    margin-top: 0px;
+}
+h4[status='Compilation Errors'] {
+    color: #c30000;
+    font-size: large;
+    margin-top: 0px;
+}
+pre.err {
+    width: 95%;
+    background: #fbfbfb;
+}
+div#sample_case_wrap {
+    margin-top: 22px;
+}
+div#toast-container {
+    top: 50px;
+    z-index: 99999999999999999;
+}

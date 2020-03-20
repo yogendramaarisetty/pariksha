@@ -20,7 +20,9 @@
     <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_ace_editor.css' %}" />
     <link rel="stylesheet" type="text/css" href="{% static 'challenge/content/pariksha_default.css' %}" />
     <link title="darkmode" rel="stylesheet" type="text/css" href="{% static 'challenge/content/darkmode.css' %}" disabled />
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/themes/prism.min.css" integrity="sha256-cuvic28gVvjQIo3Q4hnRpQSNB0aMw3C+kjkR0i+hrWg=" crossorigin="anonymous" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.css" integrity="sha256-He3QEBKoL/nMXlVsoM7S2C2kjFQqS5L+mgA+F8LpG+U=" crossorigin="anonymous" />
+    
     <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.7/ace.js" integrity="sha256-C7DTYRJLG+B/VEzHGeoPMw699nsTQYPAXHKXZb+q04E=" crossorigin="anonymous"></script>
     <script src="{% static 'challenge/scripts/jquery.min.js' %}"></script>
     <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
@@ -34,8 +36,11 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js"></script>
+    <!-- <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js" ></script> -->
     <script src="{% static 'challenge/scripts/overlay_loader.js' %} "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha256-yNbKY1y6h2rbVcQtf0b8lq4a+xpktyFc3pSYoGAY1qQ=" crossorigin="anonymous"></script>
+    
 </head>
 <style>
     .gutter {
@@ -121,6 +126,13 @@ div[status="Failed"]{
                     
                 </div>
                 <div class="top_controller_bar">
+                    <div class="q_navigator">
+                    <small>Prev</small>
+                    <i class="fas fa-arrow-circle-left"></i>
+                    <b id="q_title"></b>
+                    <i class="fas fa-arrow-circle-right"></i>
+                    <small>Next</small>
+                </div>
                     <div class="right_section">
                         <button type="button" onclick="viewQuestionList()" class="change_q">Change Question</button>
                     </div>
@@ -202,11 +214,9 @@ div[status="Failed"]{
                         </div>
                         <div class="output-area-wrap ">
                             <div data="output" id="output_card" " class="response_cards">
-                                <div id="main_output">
-                                    <h4 status ="" id="status_message">Click on run to see the output</h4>
-                                    <div id="time_elapsed"></div>
-                                    <b id="type_msg"></b>
-                                    <pre status="" id="output_result_pre"></pre>
+                                
+                                <div id="sample_case_wrap">
+                                   
                                 </div>
                             </div>
                             <div id="loader" class="response_cards">

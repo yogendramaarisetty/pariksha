@@ -366,3 +366,30 @@ div#home_btn a {
 div {
     color: #d2d2d2d6;
 }
+div#sample_case_wrap {
+    background: #2b2b2b;
+    border-color: #757575;
+}
+
+i#time_icon {}
+
+i#time_icon {
+    color: #9c9c9c;
+}
+
+div#time_elapsed {
+    color: #bfbfbfd9;
+}
+
+h4[status = 'Successfully ran'] {
+    color: #2196f3c7;
+}
+
+label.sample_label {
+    color: #bbbbbb;
+}
+h4[status='Failed'] {
+    margin-top: 0px;
+    font-size: large;
+    color: #d21d1df5;
+}

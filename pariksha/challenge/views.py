@@ -456,7 +456,7 @@ def demo_ide(request):
                 code = request.POST.get('code')
                 save_codes(demo_codes,code,language,question)
                 testcases = Question_Testcase.objects.filter(question=question)
-                return validate_testcases(code,testcases,demo_codes,language,request,request.user,'demo')
+                return validate_testcases(code,testcases,demo_codes,language,request,request.user,'demo','')
     return render(request,'challenge/demoIDE.html',{'questions':questions,'candidate_codes':demo_codes})
 
 
@@ -587,9 +587,23 @@ def testpage(request,challenge_id,c_id):
             elif request.POST.get('full_screen') == 'yes':
                 candidate.suspicious_count+=1
                 candidate.save() 
+                return HttpResponse(json.dumps({'full screen':"success" }), content_type="application/json")
             elif request.POST.get('compile_run') == 'yes':
-                code_output = save_run(request,candidate_codes_obj)
-                return HttpResponse(json.dumps(code_output), content_type="application/json")
+                if request.POST.get('input')!="":
+                    code_output = save_run(request,candidate_codes_obj)
+                    return HttpResponse(json.dumps({'custom_output':code_output,'Custom Input': request.POST.get('input') }), content_type="application/json")
+                elif request.POST.get('input') == "":
+                    q_id = request.POST.get('q_id')
+                    question = Question.objects.get(pk=q_id)
+                    language = request.POST.get('language')
+                    code = request.POST.get('code')
+                    candidate_question_code = candidate_codes_obj.filter(question=question).first()
+                    save_codes(candidate_question_code,code,language,question)
+                    testcases = Question_Testcase.objects.filter(question=question,description = "sample testcase")
+                    print(testcases)
+                    return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"","sample")
+                    
+
             elif request.POST.get('full_screen') == 'yes':
                 candidate.suspicious_count+=1
                 candidate.save() 
@@ -602,7 +616,7 @@ def testpage(request,challenge_id,c_id):
                 candidate_question_code = candidate_codes_obj.filter(question=question).first()
                 save_codes(candidate_question_code,code,language,question)
                 testcases = Question_Testcase.objects.filter(question=question)
-                return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"")
+                return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"",'')
         return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
     else:
         return redirect('completed_testpage',challenge_id = challenge.id,c_id=candidate.id)
@@ -657,11 +671,12 @@ def question_codes(candidate_question_code,question):
     # print(codes)
     return HttpResponse(json.dumps(codes), content_type="application/json")
 
-def validate_testcases(code,testcases,candidate_question_code,language,request,candidate,flag):
+def validate_testcases(code,testcases,candidate_question_code,language,request,candidate,demo_flag, sample_flag):
     score = 0
     tc_status_list = {}
     index=0
-    
+    sample_json = {}
+    sample_json['sample_cases'] = 'yes'
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
     for tc in testcases:
         tc_input = tc.testcase.Tinput.replace("\r\n","\n")
@@ -676,6 +691,7 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         # myout = open("myout"+str(index)+".txt",'w')
         # expout.write(tc_output)
         # myout.write(output)
+            
         tcjson = {}
         if output['status'] == "Run Time Errors" :
             tcjson = {'description':tc.description,'score':0,'status' : "Run Time Errors", "error" : output['error'],'Time_taken':output['Timetaken']}
@@ -687,12 +703,16 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
                 tcjson = {'description':tc.description,'score':tc.score,'status':'Passed','Time_taken':output['Timetaken']}
             else:
                 tcjson = {'description':tc.description,'score':0,'status':'Failed','Time_taken':output['Timetaken']}
+        print(tcjson)
+        if sample_flag == "sample":
+            sample_json[index] = {'Input':tc_input,'Your Output':output,'Expected Output': tc_output,'status':tcjson['status']}
+        
         tc_status_list[index] = tcjson
         index+=1
-    if flag!="demo":
+    if sample_flag == "sample":
+        return HttpResponse(json.dumps(sample_json),content_type="application/json")
+    if demo_flag!="demo":
         updateCandidateScores(code,candidate_question_code,candidate,score)
-    
-    
     return HttpResponse(json.dumps(tc_status_list),content_type="application/json")
 
 def updateCandidateScores(code,candidate_question_code,candidate,score):
