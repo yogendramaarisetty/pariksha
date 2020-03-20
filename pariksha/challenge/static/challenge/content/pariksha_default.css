@@ -1262,3 +1262,68 @@ div#toast-container {
     top: 50px;
     z-index: 99999999999999999;
 }
+    i.fas.fa-list {
+        margin-right: 7px;
+    }
+    
+
+.q_navigator {
+    width: 70%;
+    height: 75%;
+    align-items: center;
+    text-align: center;
+    font-size: 17px;
+    padding-top: 10px;
+    
+}
+
+
+
+b#q_title {
+    font-size: 16px;
+    max-width: 17rem !important;
+    min-width: 15rem;
+    padding: 0px 18px;
+    text-overflow: ellipsis;
+}
+
+.q_navigator {
+    display: flex;
+}
+
+.prev_q {
+    /* display: flex; */
+    width: fit-content;
+    position: relative;
+    left: 0px;
+    cursor: pointer;
+}
+
+.next_q {
+    width: fit-content;
+    position: relative;
+    right: 0px;
+    cursor: pointer;
+}
+.q_navigator {
+    width: 64%;
+    height: 75%;
+    align-items: center;
+    text-align: center;
+    font-size: 17px;
+    padding-top: 5px;
+    margin-left: 10px;
+}
+b#q_title {
+    font-size: 16px;
+    max-width: 10rem !important;
+    min-width: 8rem;
+    padding: 0px 18px;
+    text-overflow: ellipsis;
+}
+b#q_title {
+    font-size: 14px;
+}
+.bottom_header_controller {
+    border-bottom: 1px solid #80808070;
+}

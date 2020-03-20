@@ -393,3 +393,6 @@ h4[status='Failed'] {
     font-size: large;
     color: #d21d1df5;
 }
+.top_controller_bar {
+    background: #0e0e0e;
+}

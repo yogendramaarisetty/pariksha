@@ -1,4 +1,9 @@
 
+Split(['#left_pane', '#right_pane'], {
+    gutterSize: 7,
+    sizes: [36, 64],
+    minSize: [200, 600]
+});
 setTimeout(function(){
     
     fullScreenOverlay();
@@ -11,7 +16,7 @@ setTimeout(function(){
        fullScreenOverlay();
     });
   
-}, 3000);
+}, 2900);
 
 var customElement = $("<span>", {
     "css"   : {
@@ -41,10 +46,12 @@ resizeInterval          : 50         ,                       // Integer
 zIndex                  : 2147483647                        // Integer
 
 });
+var current_question_index;
 // Hide it after 3 seconds
 setTimeout(function(){
     $.LoadingOverlay("hide");
     $('.ql_item')[0].click();
+    current_question_index=0;
 }, 2500);
 
 document.onfullscreenchange = function ( event ) { 
@@ -55,7 +62,7 @@ document.onfullscreenchange = function ( event ) {
     }
   }; 
   $(document).on("keydown",function(ev){
-	console.log(ev.keyCode);
+	// console.log(ev.keyCode);
 	if(ev.keyCode===27||ev.keyCode===122) return false
 });
 
@@ -124,11 +131,7 @@ function fullScreenOverlay(){
 
 
 //splitjs*************
-Split(['#left_pane', '#right_pane'], {
-    gutterSize: 7,
-    sizes: [40, 60],
-    minSize: [200, 600]
-});
+
 
 var sizes = localStorage.getItem('split-sizes')
 
@@ -222,7 +225,9 @@ function createEditor(){
     editor.setOptions({
         fontSize: "11pt"
     });
-    editor.addEventListener('click', function(){ editor.resize(); console.log('clicked');}); 
+    editor.addEventListener('click', function(){ editor.resize(); 
+        // console.log('clicked');
+    }); 
     editor.commands.addCommand({
         name: 'save',
         bindKey: {win: "Ctrl-S", "mac": "Cmd-S"},
@@ -410,12 +415,29 @@ function submitTest(){
     }
 
   }
-
+  $('.prev_q').click(function(){
+    if(current_question_index == 0){
+        $('.ql_item')[$('.ql_item').size()-1].click();
+    }
+    else{
+    $('.ql_item')[current_question_index-1].click();
+    }
+  });
+  $('.next_q').click(function(){
+    if(current_question_index == $('.ql_item').size()-1){
+        $('.ql_item')[0].click();
+    }
+    else{
+    $('.ql_item')[current_question_index+1].click();
+    }
+  });
 $('.ql_item').click(function(){
-   InvokeLoader();
+    $('#input')[0].value = "";
+    $('#sample_case_wrap')[0].innerHTML = "Click on run to see the output";
+//   console.log("qustion item number = "+ a);
     $('#q_list').hide();
     editor = createEditor();
-    
+    InvokeLoader();
     $('.left_section').show();
     if(active_question_id != this.id){
         fetchCandidateCodes(this.id);
@@ -427,7 +449,9 @@ $('.ql_item').click(function(){
     id = "question_"+id+"_id";
     question_desc = document.getElementById(id);
     question_desc.style.display = 'block';
-
+    
+   current_question_index = parseInt( $( "li" ).index( this ));
+   $('#q_title').text(current_question_index+1 +". " +this.innerText);
     setTimeout(function(){
         $("#top_section").LoadingOverlay("hide");
     }, 900);
@@ -518,7 +542,7 @@ var draggerV = $(".gutter-vertical")[0];
 draggerV.addEventListener("click", function(event) {
     editor.resize();
     var s = splitV.getSizes();
-    console.log("dragged");
+    // console.log("dragged");
     if (s[1] < 25) {
         var icon = $('#up_down');
         icon = icon[0];
@@ -832,7 +856,7 @@ $(".nav_btns").click(function() {
     document.getElementById(this.getAttribute('data')).style.display="block";
     if (current_active != this) {
         this.className = "nav_btns_active";
-        console.log(this.getAttribute('data'));
+        // console.log(this.getAttribute('data'));
         current_active.className = "nav_btns";
         current_active = this;
     }

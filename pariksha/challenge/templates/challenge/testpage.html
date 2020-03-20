@@ -36,7 +36,7 @@
     <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-confirm/3.3.2/jquery-confirm.min.js"></script>
-    <!-- <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js" ></script> -->
+    <script src="https://cdn.jsdelivr.net/npm/gasparesganga-jquery-loading-overlay@2.1.6/dist/loadingoverlay.min.js" ></script>
     <script src="{% static 'challenge/scripts/overlay_loader.js' %} "></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.19.0/prism.min.js" integrity="sha256-YZQM6/hLBZYkb01VYf17isoQM4qpaOP+aX96hhYrWhg=" crossorigin="anonymous"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/2.1.4/toastr.min.js" integrity="sha256-yNbKY1y6h2rbVcQtf0b8lq4a+xpktyFc3pSYoGAY1qQ=" crossorigin="anonymous"></script>
@@ -126,15 +126,20 @@ div[status="Failed"]{
                     
                 </div>
                 <div class="top_controller_bar">
+                 
                     <div class="q_navigator">
+                        <div class="prev_q">
                     <small>Prev</small>
-                    <i class="fas fa-arrow-circle-left"></i>
+                    <i class="fas fa-arrow-circle-left np"></i>
+                        </div>
                     <b id="q_title"></b>
-                    <i class="fas fa-arrow-circle-right"></i>
+                    <div class="next_q">
+                    <i class="fas fa-arrow-circle-right np"></i>
                     <small>Next</small>
                 </div>
+                </div>
                     <div class="right_section">
-                        <button type="button" onclick="viewQuestionList()" class="change_q">Change Question</button>
+                        <button type="button" onclick="viewQuestionList()" class="change_q"><i class="fas fa-list"></i>Change Question</button>
                     </div>
                 </div>
 
