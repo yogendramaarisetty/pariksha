@@ -587,7 +587,7 @@ def testpage(request,challenge_id,c_id):
             elif request.POST.get('full_screen') == 'yes':
                 candidate.suspicious_count+=1
                 candidate.save() 
-                return HttpResponse(json.dumps({'full screen':"success" }), content_type="application/json")
+                return HttpResponse(json.dumps({'full screen':"success" ,'suspect_count':candidate.suspicious_count}), content_type="application/json")
             elif request.POST.get('compile_run') == 'yes':
                 if request.POST.get('input')!="":
                     code_output = save_run(request,candidate_codes_obj)
