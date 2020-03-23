@@ -627,11 +627,11 @@ def submittedpage(request,challenge_id,c_id):
 def create_candidate_codes(candidate,question):
     try:
         c=Candidate_codes.objects.create(candidate=candidate,question = question)
-        c.c_code = question.c_code
-        c.java_code = question.java_code
-        c.csharp_code = question.java_code
-        c.cpp_code = question.cpp_code
-        c.python_code = question.python_code
+        c.c_code = question.default_c_code
+        c.java_code = question.default_java_code
+        c.csharp_code = question.default_java_code
+        c.cpp_code = question.default_cpp_code
+        c.python_code = question.default_python_code
         c.save()
     except:
         pass
