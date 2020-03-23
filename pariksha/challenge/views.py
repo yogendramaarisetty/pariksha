@@ -629,7 +629,7 @@ def create_candidate_codes(candidate,question):
         c=Candidate_codes.objects.create(candidate=candidate,question = question)
         c.c_code = question.default_c_code
         c.java_code = question.default_java_code
-        c.csharp_code = question.default_java_code
+        c.csharp_code = question.default_csharp_code
         c.cpp_code = question.default_cpp_code
         c.python_code = question.default_python_code
         c.save()
