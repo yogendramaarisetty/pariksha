@@ -396,10 +396,11 @@ h4[status='Failed'] {
 .top_controller_bar {
     background: #0e0e0e;
 }
-div {
+
+.left-pane-content-wrapper div {
     color: #d2d2d2d6 !important;
 }
 
-span {
+.left-pane-content-wrapper span {
     color: #d2d2d2d6 !important;
 }
