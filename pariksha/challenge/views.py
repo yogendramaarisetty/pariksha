@@ -626,7 +626,13 @@ def submittedpage(request,challenge_id,c_id):
 
 def create_candidate_codes(candidate,question):
     try:
-        Candidate_codes.objects.create(candidate=candidate,question = question)
+        c=Candidate_codes.objects.create(candidate=candidate,question = question)
+        c.c_code = question.c_code
+        c.java_code = question.java_code
+        c.csharp_code = question.java_code
+        c.cpp_code = question.cpp_code
+        c.python_code = question.python_code
+        c.save()
     except:
         pass
 def save_run(request,candidate_codes_obj):
