@@ -71,7 +71,7 @@ def compile_run(language,code,custom_input,request,candidate):
    except:
        pass
    path = os.path.join(path, file_name)
-   print(path)
+   #print(path)
    os.chdir(path)
    code_file = open(file_name_ext[language],'w')
    code_file.flush()

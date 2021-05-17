@@ -62,7 +62,8 @@ def pariksha_register(request):
 
 @user_passes_test(lambda u: u.is_superuser)
 def question_view(request,q_id):
-    print(q_id)
+    #print(q_id)
+    pass
 
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -331,7 +332,7 @@ def question_edit_form(request, question_id):
                 description = data.getlist('description[]')
                 count = data.get('count')
                 question_id = data.get('question_id')
-                print(len(etcids),etcids)
+                #print(len(etcids),etcids)
                 for e in range(0,len(etcids)):
                     curr_etc = Question_Testcase.objects.get(pk = int(etcids[e]))
                     tio = curr_etc.testcase
@@ -360,7 +361,7 @@ def question_edit_form(request, question_id):
             return HttpResponse(json.dumps(form.errors), content_type="application/json")      
     else:
         form = QuestionCreateForm(instance= question)
-        print(question_testcases)
+        #print(question_testcases)
     return render(request, 'challenge/question_edit_form.html',{'form':form,'model_name':'Question','question_testcases':question_testcases,'existing_tc_count':question_testcases.count()})
 
 @user_passes_test(lambda u: u.is_superuser)
@@ -381,7 +382,7 @@ def download_result(request, contest_id):
 def createResultFile(candidates,name):
     
     file_path = os.path.join(settings.STATIC_ROOT, "media")
-    print(file_path)
+    #print(file_path)
     os.chdir(file_path)
     open(name+".csv", 'w').close()
     results = open(name+".csv",'a+')
@@ -428,10 +429,10 @@ def demo_ide(request):
         demo_codes.save()
     except:
         demo_codes = demoCodes.objects.filter(user = request.user).first()
-    print(demo_codes)
+    #print(demo_codes)
     questions = Question.objects.filter(Level="Demo Question")
     question = questions.first()
-    print(questions)
+    #print(questions)
     if request.is_ajax() and request.method == "POST" :
             code_output=""
             if request.POST.get('msg')=='fetch_current_question_codes':
@@ -447,7 +448,7 @@ def demo_ide(request):
                 language = request.POST.get('language')
                 custom_input = request.POST.get('input') 
                 code = request.POST.get('code')
-                print(repr(code))
+                #print(repr(code))
                 save_codes(demo_codes,code,language,question)
                 code_output = compile_run(language,code,custom_input,request,request.user)
                 return HttpResponse(json.dumps(code_output), content_type="application/json")
@@ -530,9 +531,18 @@ def testpage(request,challenge_id,c_id):
         if t.question!= None:
             question_ids.add(t.question.pk)
     questions = Question.objects.filter(pk__in = question_ids)
-    for question in questions:
-        create_candidate_codes(candidate,question)
-    
+    candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
+    if len(candidate_codes) == 0:
+        easy_questions = questions.filter(Level = "easy")
+        medium_questions = questions.filter(Level = "medium")
+        hard_questions = questions.filter(Level = "hard")
+        random_picked_questions = [easy_questions.order_by('?').first() , medium_questions.order_by('?').first() , hard_questions.order_by('?').first()]
+        for question in random_picked_questions:
+            create_candidate_codes(candidate,question)
+    candidate_question_ids = set()
+    for c in candidate_codes:
+        candidate_question_ids.add(c.question.pk)
+    candidate_questions = Question.objects.filter(pk__in = candidate_question_ids)
 
     if candidate.completed_status is False:
         candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
@@ -600,7 +610,7 @@ def testpage(request,challenge_id,c_id):
                     candidate_question_code = candidate_codes_obj.filter(question=question).first()
                     save_codes(candidate_question_code,code,language,question)
                     testcases = Question_Testcase.objects.filter(question=question,description = "sample testcase")
-                    print(testcases)
+                    #print(testcases)
                     return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"","sample")
                     
 
@@ -617,7 +627,7 @@ def testpage(request,challenge_id,c_id):
                 save_codes(candidate_question_code,code,language,question)
                 testcases = Question_Testcase.objects.filter(question=question)
                 return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"",'')
-        return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
+        return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':candidate_questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
     else:
         return redirect('completed_testpage',challenge_id = challenge.id,c_id=candidate.id)
 
@@ -709,7 +719,7 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
                 tcjson = {'description':tc.description,'score':tc.score,'status':'Passed','Time_taken':output['Timetaken']}
             else:
                 tcjson = {'description':tc.description,'score':0,'status':'Failed','Time_taken':output['Timetaken']}
-        print(tcjson)
+        #print(tcjson)
         if sample_flag == "sample":
             sample_json[index] = {'Input':tc_input,'Your Output':output,'Expected Output': tc_output,'status':tcjson['status']}
         
