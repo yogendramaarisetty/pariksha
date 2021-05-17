@@ -539,6 +539,7 @@ def testpage(request,challenge_id,c_id):
         random_picked_questions = [easy_questions.order_by('?').first() , medium_questions.order_by('?').first() , hard_questions.order_by('?').first()]
         for question in random_picked_questions:
             create_candidate_codes(candidate,question)
+    candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
     candidate_question_ids = set()
     for c in candidate_codes:
         candidate_question_ids.add(c.question.pk)

@@ -98,7 +98,9 @@ class CandidateAdmin(admin.ModelAdmin):
     )
     
 class Candidate_codesAdmin(admin.ModelAdmin):
-     list_display=(
+    list_filter = ('candidate','question')
+    search_fields = ('candidate','question')
+    list_display=(
         'candidate',
         'question',
     )
