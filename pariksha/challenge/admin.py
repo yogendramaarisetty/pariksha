@@ -10,6 +10,17 @@ class contestQuestion(admin.ModelAdmin):
         return "{}  - {} ".format(obj.challenge,obj.question)
 admin.site.register(challenge_questions, contestQuestion)
 
+class TestCasesAdmin(admin.ModelAdmin):
+    list_display=('question','testcase','description','score')
+    list_display_links = ('question',)
+    list_filter = ('question','description','score')
+    fieldsets = (
+        (None, {
+            "fields": (
+                  'question','testcase','description','score',
+            ),
+        }),
+    )
 class ChallengeAdmin(admin.ModelAdmin):
     list_display=('Title','Slug','Test_Duration','combine_title_slug','College')
     list_display_links = ('Title',
@@ -109,7 +120,7 @@ class Candidate_codesAdmin(admin.ModelAdmin):
 
 admin.site.register(Candidate,CandidateAdmin)
 admin.site.register(Candidate_codes,Candidate_codesAdmin)
-admin.site.register(Question_Testcase)
+admin.site.register(Question_Testcase, TestCasesAdmin)
 admin.site.register(Testcase)
 admin.site.register(Test_Feedback)
 admin.site.register(demoCodes)

@@ -73,6 +73,16 @@ div[status="Failed"]{
     .pretty.p-switch .state:before {
         height: 1rem;
     }
+    .noselect {
+  -webkit-touch-callout: none; /* iOS Safari */
+    -webkit-user-select: none; /* Safari */
+     -khtml-user-select: none; /* Konqueror HTML */
+       -moz-user-select: none; /* Firefox */
+        -ms-user-select: none; /* Internet Explorer/Edge */
+            user-select: none; /* Non-prefixed version, currently
+                                  supported by Chrome and Opera */
+}
+
 </style>
 
 <body>
@@ -116,7 +126,7 @@ div[status="Failed"]{
                         </div>
                      </div>
                      {% for q in questions %}
-                    <div id="question_{{q.id}}_id" class="question_content_wrapper">
+                    <div id="question_{{q.id}}_id" class="question_content_wrapper noselect">
                         <div class="question_title">{{q.Title}}</div>
                         <div class="description">
                             {{q.Description | safe }}
