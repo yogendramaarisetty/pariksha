@@ -715,7 +715,7 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         elif output['status'] == "Timelimit exception":
             tcjson = {'description':tc.description,'score':0,'status' : "Timelimit exception", "error" : output['error'],'Time_taken': output['Timetaken']}
         elif output['status'] == "Successfully ran":
-            if(tc_output == output['output']):
+            if(tc_output.strip() == output['output'].strip()):
                 score += tc.score
                 tcjson = {'description':tc.description,'score':tc.score,'status':'Passed','Time_taken':output['Timetaken']}
             else:
