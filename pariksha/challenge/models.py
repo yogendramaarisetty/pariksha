@@ -81,7 +81,7 @@ class demoCodes(models.Model):
 
 class Candidate(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    test_name = models.ForeignKey(Challenge,on_delete=models.CASCADE)
+    test_name = models.ForeignKey(Challenge,on_delete=models.DO_NOTHING)
     fullname = models.CharField(default="",max_length=24)
     rollnumber = models.CharField(default="",max_length=20)
     college = models.CharField(default="",max_length=50)
