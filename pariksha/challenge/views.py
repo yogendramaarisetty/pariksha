@@ -532,12 +532,12 @@ def testpage(request,challenge_id,c_id):
             question_ids.add(t.question.pk)
     questions = Question.objects.filter(pk__in = question_ids)
     candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
-    if len(candidate_codes) == 0:
+    if len(candidate_codes) < len(questions):
         easy_questions = questions.filter(Level = "easy")
         medium_questions = questions.filter(Level = "medium")
         hard_questions = questions.filter(Level = "hard")
         random_picked_questions = [easy_questions.order_by('?').first() , medium_questions.order_by('?').first() , hard_questions.order_by('?').first()]
-        for question in random_picked_questions:
+        for question in questions:
             create_candidate_codes(candidate,question)
     candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
     candidate_question_ids = set()
