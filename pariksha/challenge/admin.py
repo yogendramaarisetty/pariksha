@@ -78,8 +78,8 @@ class InLineSubmittedcodes(admin.TabularInline):
     extra = 0
 class CandidateAdmin(admin.ModelAdmin):
     inlines = [InLineSubmittedcodes]
-    list_filter = ('total_score','fullname')
-    search_fields = ('fullname','total_score','rollnumber')
+    list_filter = ('test_name','total_score','fullname')
+    search_fields = ('fullname','test_name','total_score','rollnumber')
     list_display=(
         'fullname',
         'rollnumber',

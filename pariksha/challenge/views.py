@@ -609,15 +609,12 @@ def testpage(request,challenge_id,c_id):
                     language = request.POST.get('language')
                     code = request.POST.get('code')
                     candidate_question_code = candidate_codes_obj.filter(question=question).first()
+                    candidate_question_code.submitted_code = code
+                    candidate_question_code.submitted_code_language = language
                     save_codes(candidate_question_code,code,language,question)
                     testcases = Question_Testcase.objects.filter(question=question,description = "sample testcase")
                     #print(testcases)
                     return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"","sample")
-                    
-
-            elif request.POST.get('full_screen') == 'yes':
-                candidate.suspicious_count+=1
-                candidate.save() 
             elif request.POST.get('submit_code')=='yes':
                 # print("code submission request")
                 q_id = request.POST.get('q_id')
@@ -727,6 +724,7 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         tc_status_list[index] = tcjson
         index+=1
     if sample_flag == "sample":
+        updateCandidateScores(code,candidate_question_code,candidate,score)
         return HttpResponse(json.dumps(sample_json),content_type="application/json")
     if demo_flag!="demo":
         updateCandidateScores(code,candidate_question_code,candidate,score)

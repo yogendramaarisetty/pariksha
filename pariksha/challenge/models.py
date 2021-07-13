@@ -81,7 +81,7 @@ class demoCodes(models.Model):
 
 class Candidate(models.Model):
     user = models.ForeignKey(User,on_delete=models.CASCADE)
-    test_name = models.ForeignKey(Challenge,on_delete=models.DO_NOTHING)
+    test_name = models.ForeignKey(Challenge,on_delete=models.CASCADE,null=True)
     fullname = models.CharField(default="",max_length=24)
     rollnumber = models.CharField(default="",max_length=20)
     college = models.CharField(default="",max_length=50)
@@ -125,6 +125,7 @@ class Candidate_codes(models.Model):
     java_code = models.TextField(default=default_code['java'],max_length=1000000)
     python_code = models.TextField(default=default_code['python'],max_length=1000000)
     submitted_code = models.TextField(default="NA",max_length=1000000)
+    submitted_code_language = models.TextField(default="NA",max_length=100)
     score = models.IntegerField(default=0)
     def __str__(self):
         return f'{self.candidate.fullname}  {self.question.Title}'

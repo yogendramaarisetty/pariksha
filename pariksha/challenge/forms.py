@@ -8,7 +8,7 @@ from django.core.exceptions import ValidationError
 class UserRegisterForm(UserCreationForm) :
     email = forms.EmailField(widget=forms.TextInput(attrs={'placeholder': 'Email Address','id':'email'}))
     password1 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Password','id':'pass'}), label ="Password",)
-    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Username','id':'name'}),label ="Username",)
+    username = forms.CharField(widget=forms.TextInput(attrs={'placeholder': 'Rollnumber','id':'name'}),label ="Rollnumber",)
     password2 = forms.CharField(widget=forms.PasswordInput(attrs={'placeholder': 'Re-Enter Password','id':'re_pass'}))  
     class Meta:
         model = User

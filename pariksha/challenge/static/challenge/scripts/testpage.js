@@ -667,71 +667,71 @@ function renderSampleCases(json){
         $('#sample_case_wrap')[0].innerHTML += status+st_label_input+tc_input+st_label_output+your_output+st_label_exp_output+expected_output;
     }
 }
-function submitCode(){
+// function submitCode(){
     
-    $(".run_button").attr("disabled", true);
-  $(".submit_button").attr("disabled", true);
+//     $(".run_button").attr("disabled", true);
+//   $(".submit_button").attr("disabled", true);
 
-    if($('.submit_button').attr('disabled') == "disabled") {
-        $('#testcases_pane').click();
-    $('#testcases_card').hide();
-    $('#output_card').hide();
-    $('#loader').show();
-   if (editor.getValue() != "") {
-         $.ajax({
-             type: 'POST',
-             url: '',
-             dataType: 'json',
-             cache: false,
-             async: true,
-             data: {
-                 csrfmiddlewaretoken: csrf_token,
-                 submit_code: 'yes',
-                 code: editor.getValue(),
-                 language: document.getElementById("languages").value,
-                 q_id: active_question_id,
-             },
+//     if($('.submit_button').attr('disabled') == "disabled") {
+//         $('#testcases_pane').click();
+//     $('#testcases_card').hide();
+//     $('#output_card').hide();
+//     $('#loader').show();
+//    if (editor.getValue() != "") {
+//          $.ajax({
+//              type: 'POST',
+//              url: '',
+//              dataType: 'json',
+//              cache: false,
+//              async: true,
+//              data: {
+//                  csrfmiddlewaretoken: csrf_token,
+//                  submit_code: 'yes',
+//                  code: editor.getValue(),
+//                  language: document.getElementById("languages").value,
+//                  q_id: active_question_id,
+//              },
  
-             success: function(json) {
-                $('#testcases_pane').click();
-                $('.run_button')[0].disabled = false;
-                $('.submit_button')[0].disabled = false;
-                $('#save_btn')[0].setAttribute('status','saved');
-                 if(json.status == "Compilation Errors"){
-                    $('#output_pane').click();
-                    renderErrorMsg(json);
+//              success: function(json) {
+//                 $('#testcases_pane').click();
+//                 $('.run_button')[0].disabled = false;
+//                 $('.submit_button')[0].disabled = false;
+//                 $('#save_btn')[0].setAttribute('status','saved');
+//                  if(json.status == "Compilation Errors"){
+//                     $('#output_pane').click();
+//                     renderErrorMsg(json);
                     
-                }
-                else{
+//                 }
+//                 else{
                     
-                    $('#tc_body')[0].innerHTML = "";
-                    var result = json;
-                    var numberOfTestCases = Object.keys(result).length;
-                    $('#testcases_card').show();
-                    for(var i =0;i<numberOfTestCases;i++){
-                        var testCase = result[i];
-                        addRow(testCase,i+1);
-                    }
-                    $('#testcase-table').show();
-                }
+//                     $('#tc_body')[0].innerHTML = "";
+//                     var result = json;
+//                     var numberOfTestCases = Object.keys(result).length;
+//                     $('#testcases_card').show();
+//                     for(var i =0;i<numberOfTestCases;i++){
+//                         var testCase = result[i];
+//                         addRow(testCase,i+1);
+//                     }
+//                     $('#testcase-table').show();
+//                 }
                 
-             $(".run_button").attr("disabled", false);
-  $(".submit_button").attr("disabled", false);
+//              $(".run_button").attr("disabled", false);
+//   $(".submit_button").attr("disabled", false);
 
                  
-             },
-             error: function ( xhr, status, error) {
-                $('#loader').hide();
-                errorNotify(status);
-                  },
+//              },
+//              error: function ( xhr, status, error) {
+//                 $('#loader').hide();
+//                 errorNotify(status);
+//                   },
              
-         }).done(function() {
-     $('#loader').hide();
-         });
-     } else {
-     }
-    }
- }
+//          }).done(function() {
+//      $('#loader').hide();
+//          });
+//      } else {
+//      }
+//     }
+//  }
 
 function errorNotify(status){
     toastr.options = {
