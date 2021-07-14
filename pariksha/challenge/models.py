@@ -135,3 +135,12 @@ class Test_Feedback(models.Model):
     rating = models.IntegerField(default=0,max_length=5)
     description = models.TextField(default="")
 
+
+class Submission(models.Model):
+    challenge = models.ForeignKey(Challenge, on_delete=models.CASCADE)
+    candidate = models.ForeignKey(Candidate, on_delete=models.CASCADE)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE)
+    code = models.TextField(default="")
+    language = models.TextField(default="")
+    testcase_status = models.TextField(default="")
+    total_score = models.IntegerField(default=0)
