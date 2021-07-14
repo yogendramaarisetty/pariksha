@@ -39,5 +39,6 @@ urlpatterns = [
     path(r'challenge/testpage/(?P<challenge_id>\d+)/(?P<u_id>\d+)/compile_run/',views.compile_run,name='compile_run'),
     path('admin_management/',views.admin_management,name='admin_manage'),
     path('testpage/',views.temp_testpage_design,name='testpage_design'),
+    path('process_submission/',views.run_all_test_submissions,name='process_submission')
 
 ]

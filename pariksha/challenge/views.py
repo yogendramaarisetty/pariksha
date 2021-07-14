@@ -2,7 +2,7 @@ import os
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
 from .forms import UserRegisterForm,CandidateDetailsForm,QuestionCreateForm,ContestCreationForm, Test_Feedback_Form
-from .models import demoCodes,Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase, Test_Feedback
+from .models import demoCodes,Candidate,Challenge,Question,Candidate_codes,Testcase,challenge_questions,Question_Testcase, Test_Feedback, Submission
 from django.contrib import messages
 from django.contrib.auth import login
 from django.contrib.auth.decorators import login_required
@@ -692,12 +692,17 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
     sample_json = {}
     sample_json['sample_cases'] = 'yes'
     BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    tcjson = {}
     for tc in testcases:
         tc_input = tc.testcase.Tinput.replace("\r\n","\n")
         tc_output = tc.testcase.Toutput.replace("\r\n","")
         tc_output+="\n"
         output = compile_run(language,code,tc_input,request,candidate)
         if(output['status'] == "Compilation Errors"):
+            if demo_flag == "submission":
+                tc_status_list[index] = {'status' : "Run Time Errors",'score':0}
+                updateCandidateScores(code,candidate_question_code,candidate,score)
+                return tc_status_list
             return HttpResponse(json.dumps(output),content_type="application/json")
         # output = output['output']
         # os.chdir(BASE_DIR)
@@ -706,7 +711,7 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         # expout.write(tc_output)
         # myout.write(output)
             
-        tcjson = {}
+        
         if output['status'] == "Run Time Errors" :
             tcjson = {'description':tc.description,'score':0,'status' : "Run Time Errors", "error" : output['error'],'Time_taken':output['Timetaken']}
         elif output['status'] == "Timelimit exception":
@@ -723,6 +728,9 @@ def validate_testcases(code,testcases,candidate_question_code,language,request,c
         
         tc_status_list[index] = tcjson
         index+=1
+    if demo_flag == "submission":
+        updateCandidateScores(code,candidate_question_code,candidate,score)
+        return tc_status_list
     if sample_flag == "sample":
         updateCandidateScores(code,candidate_question_code,candidate,score)
         return HttpResponse(json.dumps(sample_json),content_type="application/json")
@@ -742,3 +750,30 @@ def updateCandidateScores(code,candidate_question_code,candidate,score):
     if candidate.total_score < total_score:
         candidate.total_score = total_score
     candidate.save()
+
+
+@user_passes_test(lambda u: u.is_superuser)
+def run_all_test_submissions(request):
+    all_challenges = Challenge.objects.all()
+    if request.is_ajax() and request.method == "POST" :
+        challenge = Challenge.objects.get(pk=request.POST.get('c_id'))
+        candidates = Candidate.objects.filter(test_name = challenge)
+        for c in candidates:
+            candidate_codes = Candidate_codes.objects.filter(candidate = c)
+            for cc in candidate_codes:
+                question = Question.objects.get(pk=cc.question.id)
+                language = cc.submitted_code_language
+                code = cc.submitted_code
+                testcases = Question_Testcase.objects.filter(question=question)
+                s = Submission.objects.filter(candidate = c,challenge = challenge,question=question)
+                if c.completed_status is True and s.count()==0 and language!='NA' and code!='NA':
+                    validate_testcases_response = validate_testcases(code,testcases,cc,language,request,c,"submission",'')
+                    try:
+                        json_data = json.dumps(validate_testcases_response)
+                    except:
+                        print(c,validate_testcases_response)
+                    submission = Submission(candidate = c,challenge = challenge,question=question,language = language,code = code,testcase_status=json_data)
+                    submission.save()
+        return HttpResponse(json.dumps({'Message':'Successfully processed all submissions'}))
+    return render(request,'challenge/process_submission.html', {'challenges':all_challenges})
+

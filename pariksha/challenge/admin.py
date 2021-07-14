@@ -1,6 +1,6 @@
 from django.contrib import admin
 from django.contrib.auth.models import User,Group
-from . models import demoCodes, Challenge,Question,Candidate,Test_Feedback,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase
+from . models import demoCodes, Challenge,Question,Candidate,Test_Feedback,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase,Submission
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
@@ -116,7 +116,16 @@ class Candidate_codesAdmin(admin.ModelAdmin):
         'question',
     )
 
-
+class SubmissionAdmin(admin.ModelAdmin):
+    list_filter = ('challenge','candidate','question','language')
+    list_display=(
+        'challenge',
+        'candidate',
+        'question',
+        'code',
+        'language',
+        'total_score'
+    )
 
 admin.site.register(Candidate,CandidateAdmin)
 admin.site.register(Candidate_codes,Candidate_codesAdmin)
@@ -124,4 +133,5 @@ admin.site.register(Question_Testcase, TestCasesAdmin)
 admin.site.register(Testcase)
 admin.site.register(Test_Feedback)
 admin.site.register(demoCodes)
+admin.site.register(Submission,SubmissionAdmin)
 

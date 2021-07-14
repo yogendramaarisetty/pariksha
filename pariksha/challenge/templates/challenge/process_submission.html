@@ -1,0 +1,30 @@
+{% extends "challenge/base.html" %} 
+{% block content %} 
+{% load crispy_forms_tags %} {% load static %}
+
+    <select  name="challenge" id="challenge">
+        {% for c in challenges %}
+      <option  value= "{{c.id}}" >{{c.Title}}</option>
+      {% endfor %}
+    </select>
+    <button id="process" type="button" class="btn btn-success">Process Submission</button>
+    <script>
+        $("#process").click(function(){
+            $.ajax({
+            type: 'POST',
+            url: '',
+            dataType: 'json',
+            cache: false,
+            async: true,
+            data: {
+                csrfmiddlewaretoken: "{{csrf_token}}",
+                c_id : $('#challenge :selected').val()
+            },
+            success: function(json) {
+                console.log(json);
+            }
+        });
+        })
+    </script>
+  
+{% endblock %}
