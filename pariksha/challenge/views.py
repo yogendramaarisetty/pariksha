@@ -757,16 +757,18 @@ def run_all_test_submissions(request):
     all_challenges = Challenge.objects.all()
     if request.is_ajax() and request.method == "POST" :
         challenge = Challenge.objects.get(pk=request.POST.get('c_id'))
-        candidates = Candidate.objects.filter(test_name = challenge)
+        candidates = Candidate.objects.filter(test_name = challenge).filter(completed_status=True)
+        print(candidates)
+        print('Total candidates',candidates.count())
         for c in candidates:
-            candidate_codes = Candidate_codes.objects.filter(candidate = c)
+            candidate_codes = Candidate_codes.objects.filter(candidate = c).exclude(submitted_code_language = 'NA').exclude(submitted_code_language = '')
             for cc in candidate_codes:
                 question = Question.objects.get(pk=cc.question.id)
                 language = cc.submitted_code_language
                 code = cc.submitted_code
                 testcases = Question_Testcase.objects.filter(question=question)
                 s = Submission.objects.filter(candidate = c,challenge = challenge,question=question)
-                if c.completed_status is True and s.count()==0 and language!='NA' and code!='NA':
+                if s.count()==0:
                     validate_testcases_response = validate_testcases(code,testcases,cc,language,request,c,"submission",'')
                     try:
                         json_data = json.dumps(validate_testcases_response)

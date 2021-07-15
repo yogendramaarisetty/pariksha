@@ -1,4 +1,6 @@
+from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
+from import_export.admin import ExportActionMixin
 from django.contrib.auth.models import User,Group
 from . models import demoCodes, Challenge,Question,Candidate,Test_Feedback,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase,Submission
 # Register your models here.
@@ -76,7 +78,7 @@ admin.site.register(Question,QuestionAdmin)
 class InLineSubmittedcodes(admin.TabularInline):
     model = Candidate_codes
     extra = 0
-class CandidateAdmin(admin.ModelAdmin):
+class CandidateAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     inlines = [InLineSubmittedcodes]
     list_filter = ('test_name','total_score','fullname')
     search_fields = ('fullname','test_name','total_score','rollnumber')
@@ -116,7 +118,7 @@ class Candidate_codesAdmin(admin.ModelAdmin):
         'question',
     )
 
-class SubmissionAdmin(admin.ModelAdmin):
+class SubmissionAdmin(ImportExportModelAdmin,admin.ModelAdmin):
     list_filter = ('challenge','candidate','question','language')
     list_display=(
         'challenge',
