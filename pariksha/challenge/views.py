@@ -780,9 +780,9 @@ def run_all_test_submissions(request):
     return render(request,'challenge/process_submission.html', {'challenges':all_challenges})
 
 
-from .tasks import add
+from .tasks import add, go_to_sleep
 
 @user_passes_test(lambda u: u.is_superuser)
 def submit_code_task(request):
-    add.delay(19,2)
+    task = go_to_sleep.delay(5)
     return render( request,"challenge/example.html")

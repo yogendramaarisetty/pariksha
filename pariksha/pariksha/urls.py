@@ -22,5 +22,6 @@ urlpatterns = [
     path('pariksha_administration/', admin.site.urls),
     path('',views.home,name="home"),
     path('pariksha/',include('challenge.urls')),
+    path('celery-progress',include('celery_progress.urls')),
 
 ]
