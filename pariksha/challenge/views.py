@@ -757,7 +757,7 @@ def run_all_test_submissions(request):
     all_challenges = Challenge.objects.all()
     if request.is_ajax() and request.method == "POST" :
         challenge = Challenge.objects.get(pk=request.POST.get('c_id'))
-        candidates = Candidate.objects.filter(test_name = challenge).filter(completed_status=True)
+        candidates = Candidate.objects.filter(test_name = challenge).filter(completed_status=True).filter(id__gt = 527)
         print(candidates)
         print('Total candidates',candidates.count())
         for c in candidates:
@@ -779,3 +779,10 @@ def run_all_test_submissions(request):
         return HttpResponse(json.dumps({'Message':'Successfully processed all submissions'}))
     return render(request,'challenge/process_submission.html', {'challenges':all_challenges})
 
+
+from .tasks import add
+
+@user_passes_test(lambda u: u.is_superuser)
+def submit_code_task(request):
+    add.delay(19,2)
+    return render( request,"challenge/example.html")
