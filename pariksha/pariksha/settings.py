@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'django_celery_results',
 ]
 
 MIDDLEWARE = [
@@ -132,3 +133,9 @@ MEDIAL_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOGIN_REDIRECT_URL = 'tests'
+
+
+CELERY_BROKER_URL = 'redis://:p152d4c1a204259b1995d2904e9502888f3b233d39c3208166408a4dce3684c51@ec2-54-172-91-248.compute-1.amazonaws.com:25570'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
