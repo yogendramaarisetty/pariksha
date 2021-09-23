@@ -17,11 +17,12 @@ from django.contrib import admin
 from django.urls import path, include
 from challenge import views as views
 from django.contrib.auth import views as auth_views
+from django.urls import re_path, include
 
 urlpatterns = [
     path('pariksha_administration/', admin.site.urls),
     path('',views.home,name="home"),
     path('pariksha/',include('challenge.urls')),
-    path('celery-progress',include('celery_progress.urls')),
+    re_path(r'^celery-progress/', include('celery_progress.urls')),  # the endpoint is configurable
 
 ]
