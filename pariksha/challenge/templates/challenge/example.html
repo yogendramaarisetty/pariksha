@@ -5,7 +5,7 @@
   <div id="progress-bar-message">Waiting for progress to start...</div>
 
   <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
-  <script></script>
+  <script>
   // vanilla JS version
 document.addEventListener("DOMContentLoaded", function () {
   var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
