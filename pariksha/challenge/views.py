@@ -784,5 +784,5 @@ from .tasks import add, go_to_sleep
 
 @user_passes_test(lambda u: u.is_superuser)
 def submit_code_task(request):
-    task = go_to_sleep.delay(5)
-    return render( request,"challenge/example.html")
+    task = go_to_sleep.delay(1)
+    return render( request,"challenge/example.html", context={'task_id': task.task_id})

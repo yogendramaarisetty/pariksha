@@ -10,7 +10,7 @@ def add(x,y):
 @shared_task(bind=True)
 def go_to_sleep(self, duration):
     progress_recorder = ProgressRecorder(self)
-    for i in range(5):
+    for i in range(100):
         sleep(duration)
-        progress_recorder.set_progress(i+1,5, f'on iteration {i}')
+        progress_recorder.set_progress(i+1,100, f'on iteration {i}')
     return 'Sleep is done'
