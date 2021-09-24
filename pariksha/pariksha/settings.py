@@ -78,7 +78,16 @@ WSGI_APPLICATION = 'pariksha.wsgi.application'
 
 
 # Database
-
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pariksha',
+#         'USER':'postgres',
+#         'PASSWORD':'postgres',
+#         'HOST':'15.206.46.107',
+#         'PORT':'5432',
+#     }
+# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
@@ -135,7 +144,6 @@ MEDIAL_URL = '/media/'
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOGIN_REDIRECT_URL = 'tests'
 
-
-accept_content = ['json']
-task_serializer = 'json'
-result_backend = 'django-db'
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
