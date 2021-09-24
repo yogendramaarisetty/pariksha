@@ -6,7 +6,7 @@ from celery import Celery
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'pariksha.settings')
 
-app = Celery('pariksha', broker='amqp://myUser:myPass@localhost:5672')
+app = Celery('pariksha', broker='amqp://myUser:myPass@localhost:5672/my_vhost')
 
 app.config_from_object('django.conf:settings', namespace='CELERY')
 
