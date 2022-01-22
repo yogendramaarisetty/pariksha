@@ -32,7 +32,7 @@ ALLOWED_HOSTS = ['*']
 # Application definition
 
 INSTALLED_APPS = [
-    'challenge.apps.ChallengeConfig',
+    
     'widget_tweaks',
     'crispy_forms',
     'django.contrib.admin',
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'import_export',
+    'challenge',
     'django_celery_results',
     'celery_progress',
 ]
@@ -73,31 +74,36 @@ TEMPLATES = [
         },
     },
 ]
-AUTH_USER_EMAIL_UNIQUE = True
 WSGI_APPLICATION = 'pariksha.wsgi.application'
 
 
 # Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'pariksha',
-#         'USER':'postgres',
-#         'PASSWORD':'postgres',
-#         'HOST':'15.206.46.107',
-#         'PORT':'5432',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'pariksha',
         'USER':'postgres',
         'PASSWORD':'postgres',
-        'HOST':'localhost',
+        'HOST':'15.206.46.107',
         'PORT':'5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'postgres',
+#         'USER':'postgres',
+#         'PASSWORD':'yogi',
+#         'HOST':'localhost',
+#         'PORT':'5432',
+#     }
+# }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.sqlite3',
+#         'NAME': os.path.join(BASE_DIR, 'db.sqlite3')
+#     }
+# }
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
@@ -144,9 +150,7 @@ MEDIAL_URL = '/media/'
 CRISPY_TEMPLATE_PACK = "bootstrap4"
 LOGIN_REDIRECT_URL = 'tests'
 
-CELERY_BROKER_URL = 'redis://localhost:6379'
-CELERY_RESULT_BACKEND = 'redis://localhost:6379'
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIME_ZONE = 'Asia/Kolkata'
+CELERY_TIMEZONE = "Asia/Kolkata"
+CELERY_TASK_TRACK_STARTED = True
+CELERY_TASK_TIME_LIMIT = 30 * 60
+CELERY_RESULT_BACKEND = 'django-db'

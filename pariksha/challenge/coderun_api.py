@@ -97,8 +97,11 @@ def compile_run(language,code,custom_input,request,candidate):
        except subprocess.CalledProcessError:
            run_code = subprocess.run(run_command[language],stderr=PIPE,stdout=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
            return { 'status': "Run Time Errors", 'error':run_code.stdout+run_code.stderr,'Timetaken':end_time-start_time, 'custom_input':custom_input}
-       run_code = subprocess.run(run_command[language],stdout=PIPE,stderr=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
-      
+       try:
+           run_code = subprocess.run(run_command[language],stdout=PIPE,stderr=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
+       except Exception as ex:
+           print(ex)
+           return { 'status': "Run Time Errors", 'error':str(ex),'Timetaken':end_time-start_time, 'custom_input':custom_input}
        return {'status':"Successfully ran" , 'output' : run_code.stdout,'Timetaken':end_time-start_time, 'custom_input':custom_input}
    os.chdir(path)
    compile_code = subprocess.Popen(compile_command[language],stdout=subprocess.PIPE,stderr=subprocess.PIPE,shell=True)
@@ -115,13 +118,16 @@ def compile_run(language,code,custom_input,request,candidate):
            return {'status': 'Timelimit exception','error':'your program exceeded the time limit','Timetaken':end_time-start_time, 'custom_input':custom_input}   
        except subprocess.CalledProcessError:
            end_time = time.time()
-           run_code = subprocess.run(run_command[language],stderr=PIPE,stdout=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
+           run_code = subprocess.run(run_command[language],stderr=PIPE,stdout=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=10)
            return { 'status': "Run Time Errors", 'error':run_code.stdout+run_code.stderr,'Timetaken':end_time-start_time, 'custom_input':custom_input}
-       run_code = subprocess.run(run_command[language],stdout=PIPE,stderr=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=3)
-      
-       return {'status':"Successfully ran" , 'output' : run_code.stdout,'Timetaken':end_time-start_time,'custom_input':custom_input}
+       try:
+        run_code = subprocess.run(run_command[language],stdout=PIPE,stderr=PIPE,input=custom_input,encoding='ascii',shell=True, timeout=10)
+        output= run_code.stdout
+       except Exception as e:
+           output=f'Some error occured in output {str(e)}'
+       return {'status':"Successfully ran" , 'output' : output,'Timetaken':end_time-start_time,'custom_input':custom_input}
    else:
-       errors=""
+       errors = ''.join(str(e) for e in compile_errors)
        for e in compile_errors:
            errors+=e.decode("utf-8")
        return {'status':"Compilation Errors", 'error':errors, 'custom_input':custom_input }
