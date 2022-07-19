@@ -78,26 +78,26 @@ WSGI_APPLICATION = 'pariksha.wsgi.application'
 
 
 # Database
-# DATABASES = {
-#     'default': {
-#         'ENGINE': 'django.db.backends.postgresql',
-#         'NAME': 'pariksha',
-#         'USER':'postgres',
-#         'PASSWORD':'postgres',
-#         'HOST':'15.206.46.107',
-#         'PORT':'5432',
-#     }
-# }
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'pariksha',
         'USER':'postgres',
         'PASSWORD':'postgres',
-        'HOST':'localhost',
+        'HOST':'15.206.46.107',
         'PORT':'5432',
     }
 }
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': 'pariksha',
+#         'USER':'postgres',
+#         'PASSWORD':'postgres',
+#         'HOST':'localhost',
+#         'PORT':'5432',
+#     }
+# }
 # Password validation
 # https://docs.djangoproject.com/en/2.2/ref/settings/#auth-password-validators
 
