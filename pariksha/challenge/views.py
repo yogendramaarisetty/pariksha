@@ -757,7 +757,7 @@ def run_all_test_submissions(request):
     all_challenges = Challenge.objects.all()
     if request.is_ajax() and request.method == "POST" :
         challenge = Challenge.objects.get(pk=request.POST.get('c_id'))
-        candidates = Candidate.objects.filter(test_name = challenge).filter(completed_status=True).filter(end_time__day = '23')
+        candidates = Candidate.objects.filter(test_name = challenge)
         print(candidates)
         print('Total candidates',candidates.count())
         for c in candidates:
