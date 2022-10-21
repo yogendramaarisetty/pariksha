@@ -144,3 +144,25 @@ class Submission(models.Model):
     language = models.TextField(default="")
     testcase_status = models.TextField(default="")
     total_score = models.IntegerField(default=0)
+
+class FeatureFlag(models.Model):
+    name = models.SlugField()
+    value = models.BooleanField()
+    description = models.TextField()
+
+class JudgeApiKey(models.Model):
+    name = models.CharField(unique=True, max_length=100)
+    key = models.CharField(max_length=1000)
+    active = models.BooleanField(default=False)
+
+    def save(self, *args, **kwargs):
+        if self.active:
+            # select all other active items
+            qs = type(self).objects.filter(active=True)
+            # except self (if self already exists)
+            if self.pk:
+                qs = qs.exclude(pk=self.pk)
+            # and deactive them
+            qs.update(active=False)
+        super(JudgeApiKey, self).save(*args, **kwargs)
+

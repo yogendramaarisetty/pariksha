@@ -629,8 +629,10 @@ function runCode() {
             },
             
             error: function ( xhr, status, error) {
+                $(".run_button").attr("disabled", false);
                 $('#loader').hide();
-            errorNotify(status);
+                console.log(error)
+                errorNotify(status);
               }
         }).done(function() {
             

@@ -42,10 +42,8 @@
                     </thead>
                     <tbody class="main_table_records">
                     {% for test in challenges %}
+                    {% if  user.is_superuser == False and test.Active == True    %}
                         <tr>
-                        {% if user.is_superuser %}
-                            <td>{{ test.id }}</td>
-                            {% endif %}
                             <td>{{ test.Title }}</td>
                             {% if test.Active %}
                             <td class="active">Active</td>
@@ -61,6 +59,25 @@
                             {% endif %}
                            
                         </tr>
+                    {% elif  user.is_superuser == True    %}
+                    <tr>
+                            <td>{{ test.id }}</td>
+                            <td>{{ test.Title }}</td>
+                            {% if test.Active %}
+                            <td class="active">Active</td>
+                            {% else %}
+                            <td class="expired">Expired</td>
+                            {% endif %}
+                            <td>{{ test.Test_Duration }} mins</td>
+                            <td>{{test.College}}</td>
+                            {% if test.Active%}
+                            <td><a href="{% url 'candidate_form' challenge_id=test.id  %}"><button class="start_active">Start</button></a></td>
+                            {% else %}
+                            <td><button class="start_disable" disabled>Expired</button></td>
+                            {% endif %}
+
+                        </tr>
+                    {% endif %}
                         {% endfor %}
                     </tbody>
                 </table>
