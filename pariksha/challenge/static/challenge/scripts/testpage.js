@@ -360,7 +360,7 @@ function codeDraft(){
               },
               error: function ( xhr, status, error) {
                 $('#loader').hide();
-               errorNotify(status,error);
+               errorNotify(status,error,xhr.responseJSON);
               }
           }).done(function() {
           });
@@ -521,7 +521,7 @@ function fetchCandidateCodes(id){
         },
         error: function ( xhr, status, error) {
             $('#loader').hide();
-            errorNotify(status,error);
+            errorNotify(status,error,xhr.responseJSON);
 
           }
     }).done(function() {
@@ -632,7 +632,7 @@ function runCode() {
             error: function ( xhr, status, error) {
                 $('#loader').hide();
                 console.log(error)
-                errorNotify(status,error);
+                errorNotify(status,error,xhr.responseJSON);
               }
         }).done(function() {
             
@@ -735,7 +735,7 @@ function renderSampleCases(json){
 //     }
 //  }
 
-function errorNotify(status,error){
+function errorNotify(status,error,msg){
     $(".run_button").attr("disabled", false);
     toastr.options = {
         "closeButton": false,
@@ -774,7 +774,7 @@ function errorNotify(status,error){
       "hideMethod": "fadeOut"
     };
     
-sendWebHook(status,error);
+sendWebHook(status,error,msg);
 }
 
 function addRow(json,num){
@@ -821,12 +821,13 @@ function addRow(json,num){
     
 
 }
-function sendWebHook(status,error){
+function sendWebHook(status,error,msg){
     const headers = new Headers()
     headers.append("Content-Type", "application/json")
 
     const body = {
     "error": JSON.stringify(error),
+    "error_message": JSON.stringify(msg),
     "status":status,
     "username":$("#candidate_name").text().trim(),
     }
