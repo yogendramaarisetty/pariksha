@@ -1,3 +1,4 @@
+import logging
 import os
 from django.shortcuts import render,redirect
 from django.contrib.auth.models import User
@@ -519,113 +520,116 @@ def candidate_form(request,challenge_id):
         return redirect('test_instruction',pk=challenge_id,c_id=c.id)
 
 
-
+from http import HTTPStatus
 
 def testpage(request,challenge_id,c_id):
-    challenge = Challenge.objects.get(pk=challenge_id)
-    candidate = Candidate.objects.get(pk=c_id)
-    contest_questions = challenge_questions.objects.filter(challenge=challenge)
-    candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
-    question_ids = set()
-    for t in contest_questions:
-        if t.question!= None:
-            question_ids.add(t.question.pk)
-    questions = Question.objects.filter(pk__in = question_ids)
-    candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
-    if len(candidate_codes) < len(questions):
-        easy_questions = questions.filter(Level = "easy")
-        medium_questions = questions.filter(Level = "medium")
-        hard_questions = questions.filter(Level = "hard")
-        random_picked_questions = [easy_questions.order_by('?').first() , medium_questions.order_by('?').first() , hard_questions.order_by('?').first()]
-        for question in questions:
-            create_candidate_codes(candidate,question)
-    candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
-    candidate_question_ids = set()
-    for c in candidate_codes:
-        candidate_question_ids.add(c.question.pk)
-    candidate_questions = Question.objects.filter(pk__in = candidate_question_ids)
-
-    if candidate.completed_status is False:
+    try:
+        challenge = Challenge.objects.get(pk=challenge_id)
+        candidate = Candidate.objects.get(pk=c_id)
+        contest_questions = challenge_questions.objects.filter(challenge=challenge)
         candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
-        c= candidate.count
-        candidate.count = c+1
-        candidate.save()
+        question_ids = set()
+        for t in contest_questions:
+            if t.question!= None:
+                question_ids.add(t.question.pk)
+        questions = Question.objects.filter(pk__in = question_ids)
+        candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
+        if len(candidate_codes) < len(questions):
+            easy_questions = questions.filter(Level = "easy")
+            medium_questions = questions.filter(Level = "medium")
+            hard_questions = questions.filter(Level = "hard")
+            random_picked_questions = [easy_questions.order_by('?').first() , medium_questions.order_by('?').first() , hard_questions.order_by('?').first()]
+            for question in questions:
+                create_candidate_codes(candidate,question)
+        candidate_codes = Candidate_codes.objects.filter(candidate = candidate)
+        candidate_question_ids = set()
+        for c in candidate_codes:
+            candidate_question_ids.add(c.question.pk)
+        candidate_questions = Question.objects.filter(pk__in = candidate_question_ids)
 
-        if candidate.count<=1:
-            duration = challenge.Test_Duration
-            candidate.start_time=datetime.now()
-            candidate.end_time=datetime.now()+timedelta(minutes=duration+331)
+        if candidate.completed_status is False:
+            candidate_codes_obj = Candidate_codes.objects.filter(candidate=candidate)
+            c= candidate.count
+            candidate.count = c+1
             candidate.save()
-        
-        if request.is_ajax() and request.method == "POST" :
-            code_output=""
-            if request.POST.get('msg')=='fetch_current_question_codes':
-                question = Question.objects.get(pk=int(request.POST.get('current_question_id')))
-                current_question_codes = candidate_codes_obj.filter(question=question).first()
-                return question_codes(current_question_codes,question)
 
-            if request.POST.get('code_draft')=='yes':
-                q_id = request.POST.get('q_id')
-                question = Question.objects.get(pk=q_id)
-                language = request.POST.get('language')
-                code = request.POST.get('code')
-                candidate_question_code = candidate_codes_obj.filter(question=question).first()
-                save_codes(candidate_question_code,code,language,question)
-                res={'msg':'successfully saved'}
-                return HttpResponse(json.dumps(res), content_type="application/json")
-            elif request.POST.get('submit_test')=='yes':
-                candidate.completed_status = True
+            if candidate.count<=1:
+                duration = challenge.Test_Duration
+                candidate.start_time=datetime.now()
+                candidate.end_time=datetime.now()+timedelta(minutes=duration+331)
                 candidate.save()
-                total_score=0
-                for i in candidate_codes_obj:
-                    total_score+=i.score
-                if candidate.total_score<total_score:
-                    candidate.total_score = total_score
-                candidate.save()
-                # print(candidate,candidate.total_score)
-                # print('submission request Total Score:',total_score)
-                res={'msg':'successfully saved'}
-                return HttpResponse(json.dumps(res), content_type="application/json")
-            elif request.POST.get('question') == 'yes':
-                
-                q_id = request.POST.get('q_id')
-                question = Question.objects.get(pk=q_id)
-                candidate_question_code =""
-                for i in candidate_codes_obj:
-                    if i.question.id is question.id:
-                        candidate_question_code = i
-                return question_codes(candidate_question_code,question)
-            elif request.POST.get('full_screen') == 'yes':
-                candidate.suspicious_count+=1
-                candidate.save() 
-                return HttpResponse(json.dumps({'full screen':"success" ,'suspect_count':candidate.suspicious_count}), content_type="application/json")
-            elif request.POST.get('compile_run') == 'yes':
-                if request.POST.get('input')!="":
-                    code_output = save_run(request,candidate_codes_obj)
-                    return HttpResponse(json.dumps({'custom_output':code_output,'Custom Input': request.POST.get('input') }), content_type="application/json")
-                elif request.POST.get('input') == "":
+
+            if request.is_ajax() and request.method == "POST" :
+                code_output=""
+                if request.POST.get('msg')=='fetch_current_question_codes':
+                    question = Question.objects.get(pk=int(request.POST.get('current_question_id')))
+                    current_question_codes = candidate_codes_obj.filter(question=question).first()
+                    return question_codes(current_question_codes,question)
+
+                if request.POST.get('code_draft')=='yes':
                     q_id = request.POST.get('q_id')
                     question = Question.objects.get(pk=q_id)
                     language = request.POST.get('language')
                     code = request.POST.get('code')
                     candidate_question_code = candidate_codes_obj.filter(question=question).first()
-                    candidate_question_code.submitted_code = code
-                    candidate_question_code.submitted_code_language = language
                     save_codes(candidate_question_code,code,language,question)
-                    testcases = Question_Testcase.objects.filter(question=question,description = "sample testcase")
-                    #print(testcases)
-                    return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"","sample")
-            elif request.POST.get('submit_code')=='yes':
-                # print("code submission request")
-                q_id = request.POST.get('q_id')
-                question = Question.objects.get(pk=q_id)
-                language = request.POST.get('language')
-                code = request.POST.get('code')
-                candidate_question_code = candidate_codes_obj.filter(question=question).first()
-                save_codes(candidate_question_code,code,language,question)
-                testcases = Question_Testcase.objects.filter(question=question)
-                return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"",'')
-        return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':candidate_questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
+                    res={'msg':'successfully saved'}
+                    return HttpResponse(json.dumps(res), content_type="application/json")
+                elif request.POST.get('submit_test')=='yes':
+                    candidate.completed_status = True
+                    candidate.save()
+                    total_score=0
+                    for i in candidate_codes_obj:
+                        total_score+=i.score
+                    if candidate.total_score<total_score:
+                        candidate.total_score = total_score
+                    candidate.save()
+                    # print(candidate,candidate.total_score)
+                    # print('submission request Total Score:',total_score)
+                    res={'msg':'successfully saved'}
+                    return HttpResponse(json.dumps(res), content_type="application/json")
+                elif request.POST.get('question') == 'yes':
+
+                    q_id = request.POST.get('q_id')
+                    question = Question.objects.get(pk=q_id)
+                    candidate_question_code =""
+                    for i in candidate_codes_obj:
+                        if i.question.id is question.id:
+                            candidate_question_code = i
+                    return question_codes(candidate_question_code,question)
+                elif request.POST.get('full_screen') == 'yes':
+                    candidate.suspicious_count+=1
+                    candidate.save()
+                    return HttpResponse(json.dumps({'full screen':"success" ,'suspect_count':candidate.suspicious_count}), content_type="application/json")
+                elif request.POST.get('compile_run') == 'yes':
+                    if request.POST.get('input')!="":
+                        code_output = save_run(request,candidate_codes_obj)
+                        return HttpResponse(json.dumps({'custom_output':code_output,'Custom Input': request.POST.get('input') }), content_type="application/json")
+                    elif request.POST.get('input') == "":
+                        q_id = request.POST.get('q_id')
+                        question = Question.objects.get(pk=q_id)
+                        language = request.POST.get('language')
+                        code = request.POST.get('code')
+                        candidate_question_code = candidate_codes_obj.filter(question=question).first()
+                        candidate_question_code.submitted_code = code
+                        candidate_question_code.submitted_code_language = language
+                        save_codes(candidate_question_code,code,language,question)
+                        testcases = Question_Testcase.objects.filter(question=question,description = "sample testcase")
+                        return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"","sample")
+                elif request.POST.get('submit_code')=='yes':
+                    # print("code submission request")
+                    q_id = request.POST.get('q_id')
+                    question = Question.objects.get(pk=q_id)
+                    language = request.POST.get('language')
+                    code = request.POST.get('code')
+                    candidate_question_code = candidate_codes_obj.filter(question=question).first()
+                    save_codes(candidate_question_code,code,language,question)
+                    testcases = Question_Testcase.objects.filter(question=question)
+                    return validate_testcases(code,testcases,candidate_question_code,language,request,candidate,"",'')
+            return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':candidate_questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
+    except Exception as ex:
+        logging.error(f'Unknown error occured. Details: {str(ex)}')
+        return HttpResponse(status = HTTPStatus.INTERNAL_SERVER_ERROR,content = json.dumps(str(ex)), content_type="application/json")
     else:
         return redirect('completed_testpage',challenge_id = challenge.id,c_id=candidate.id)
 
