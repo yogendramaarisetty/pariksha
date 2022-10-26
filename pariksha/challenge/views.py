@@ -520,7 +520,7 @@ def candidate_form(request,challenge_id):
         return redirect('test_instruction',pk=challenge_id,c_id=c.id)
 
 
-
+from http import HTTPStatus
 
 def testpage(request,challenge_id,c_id):
     try:
@@ -629,7 +629,7 @@ def testpage(request,challenge_id,c_id):
             return render(request,'challenge/testpage.html',{'challenge':challenge,'questions':candidate_questions,'candidate':candidate,'candidate_codes':candidate_codes_obj,'end_time':candidate.end_time})
     except Exception as ex:
         logging.error(f'Unknown error occured. Details: {str(ex)}')
-        return HttpResponse(json.dumps(ex), content_type="application/json")
+        return HttpResponse(status = HTTPStatus.INTERNAL_SERVER_ERROR,content = json.dumps(str(ex)), content_type="application/json")
     else:
         return redirect('completed_testpage',challenge_id = challenge.id,c_id=candidate.id)
 
