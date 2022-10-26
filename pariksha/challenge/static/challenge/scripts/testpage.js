@@ -360,7 +360,7 @@ function codeDraft(){
               },
               error: function ( xhr, status, error) {
                 $('#loader').hide();
-               errorNotify(status);
+               errorNotify(status,error);
               }
           }).done(function() {
           });
@@ -521,7 +521,8 @@ function fetchCandidateCodes(id){
         },
         error: function ( xhr, status, error) {
             $('#loader').hide();
-            errorNotify(status);
+            errorNotify(status,error);
+
           }
     }).done(function() {
         
@@ -630,7 +631,8 @@ function runCode() {
             
             error: function ( xhr, status, error) {
                 $('#loader').hide();
-            errorNotify(status);
+                console.log(error)
+                errorNotify(status,error);
               }
         }).done(function() {
             
@@ -733,7 +735,8 @@ function renderSampleCases(json){
 //     }
 //  }
 
-function errorNotify(status){
+function errorNotify(status,error){
+    $(".run_button").attr("disabled", false);
     toastr.options = {
         "closeButton": false,
         "debug": false,
@@ -770,6 +773,8 @@ function errorNotify(status){
       "showMethod": "fadeIn",
       "hideMethod": "fadeOut"
     };
+    
+sendWebHook(status,error);
 }
 
 function addRow(json,num){
@@ -811,8 +816,30 @@ function addRow(json,num){
     row.appendChild(time);
     row.appendChild(score);
     tc_body.appendChild(row);
+
+    
+    
+
 }
- 
+function sendWebHook(status,error){
+    const headers = new Headers()
+    headers.append("Content-Type", "application/json")
+
+    const body = {
+    "error": JSON.stringify(error),
+    "status":status,
+    "username":$("#candidate_name").text().trim(),
+    }
+
+    const options = {
+    method: "POST",
+    headers,
+    mode: "cors",
+    body: JSON.stringify(body),
+    }
+
+    fetch("https://eomxw3gq1udk8mm.m.pipedream.net", options)
+}
 function renderSuccessOutput(msg){
     $('#sample_case_wrap')[0].innerHTML="";
     var resp="";
