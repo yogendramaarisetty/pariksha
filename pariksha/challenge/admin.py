@@ -2,7 +2,10 @@ from import_export.admin import ImportExportModelAdmin
 from django.contrib import admin
 from import_export.admin import ExportActionMixin
 from django.contrib.auth.models import User,Group
-from . models import demoCodes, Challenge,Question,Candidate,Test_Feedback,Testcase,Candidate_codes,challenge_questions,Question_Testcase,Testcase,Submission
+from .models import demoCodes, Challenge, Question, Candidate, Test_Feedback, Testcase, Candidate_codes, \
+    challenge_questions, Question_Testcase, Testcase, Submission, FeatureFlag
+
+
 # Register your models here.
 # admin.site.register(Challenge)
 # admin.site.register(Question)
@@ -128,6 +131,14 @@ class SubmissionAdmin(ImportExportModelAdmin,admin.ModelAdmin):
         'language',
         'total_score'
     )
+class FeatureFlagAdmin(ImportExportModelAdmin,admin.ModelAdmin):
+    list_filter = ('name', 'value')
+    search_fields = ('name', 'description')
+    list_display = (
+        'name',
+        'value',
+        'description',
+    )
 
 admin.site.register(Candidate,CandidateAdmin)
 admin.site.register(Candidate_codes,Candidate_codesAdmin)
@@ -136,4 +147,5 @@ admin.site.register(Testcase)
 admin.site.register(Test_Feedback)
 admin.site.register(demoCodes)
 admin.site.register(Submission,SubmissionAdmin)
+admin.site.register(FeatureFlag,FeatureFlagAdmin)
 
